@@ -127,6 +127,25 @@ textarea:focus,input:focus,.chip:focus-visible,.btn:focus-visible,.iconbtn:focus
 .mbtn[data-done="1"]{opacity:.3;border-color:#5FD3A2;cursor:default}
 .mbtn[data-bad="1"]{animation:shake .4s;border-color:#FF9E9E}
 @keyframes shake{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.exam{background:#F5F7FA;color:#17233B;border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.exam,.exam *{text-transform:none}
+.exam-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:2px solid #2C5FA8;padding-bottom:10px}
+.exam-brand{font:700 13px 'Space Grotesk',Inter,sans-serif;color:#2C5FA8;letter-spacing:.4px}
+.exam-count{font:600 12px Inter,sans-serif;color:#5A6784;font-variant-numeric:tabular-nums;white-space:nowrap}
+.exam-q{font:600 15px/24px Inter,sans-serif;margin:14px 0 4px;color:#17233B}
+.exam-hint{font:400 13px/21px Inter,sans-serif;color:#5A6784;margin-top:10px}
+.radio{display:flex;gap:10px;align-items:flex-start;padding:12px 13px;border:1px solid #C9D3E0;border-radius:10px;background:#fff;margin-top:8px;cursor:pointer;width:100%;text-align:left;font:500 14px/22px Inter,sans-serif;color:#17233B}
+.radio[data-on="1"]{border-color:#2C5FA8;background:#EAF1FA}
+.rdot{width:16px;height:16px;border-radius:50%;border:2px solid #9AA9BE;flex:0 0 auto;margin-top:2px;position:relative}
+.radio[data-on="1"] .rdot{border-color:#2C5FA8}
+.radio[data-on="1"] .rdot:after{content:"";position:absolute;inset:3px;border-radius:50%;background:#2C5FA8}
+.exam-next{background:#2C5FA8;color:#fff;border:none;border-radius:8px;min-height:44px;padding:0 24px;font:700 13px Inter,sans-serif;letter-spacing:.6px;cursor:pointer}
+.exam-next:active{transform:scale(.97)}
+.exam-next:disabled{opacity:.5;cursor:not-allowed}
+.exam-bar{height:6px;background:#DDE5EF;border-radius:3px;overflow:hidden;margin-top:12px}
+.exam-bar>i{display:block;height:100%;background:#2C5FA8;border-radius:3px;transition:width 1s linear}
+.exam-pulse{width:40%;animation:slidebar 1.2s ease-in-out infinite alternate}
+@keyframes slidebar{from{margin-left:0}to{margin-left:60%}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 `;
 
@@ -991,6 +1010,103 @@ function HumanAudio({ color, rate, update }) {
   );
 }
 
+const EXAM_Q_SECONDS = 30;
+
+function ExamRunner({ quiz, part, color, onDone, onNewPractice }) {
+  const total = quiz.questions.length;
+  const [qIdx, setQIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [qLeft, setQLeft] = useState(EXAM_Q_SECONDS);
+  const [finished, setFinished] = useState(false);
+  const [showScript, setShowScript] = useState(false);
+  const answersRef = useRef({});
+  const idxRef = useRef(0);
+  const doneRef = useRef(false);
+
+  const finish = () => {
+    if (doneRef.current) return;
+    doneRef.current = true;
+    setFinished(true);
+    const score = quiz.questions.filter((q, i) => answersRef.current[i] === q.correct).length;
+    onDone(score, total);
+  };
+
+  const next = () => {
+    if (idxRef.current + 1 >= total) { finish(); return; }
+    idxRef.current += 1;
+    setQIdx(idxRef.current);
+  };
+
+  useEffect(() => {
+    if (finished) return;
+    setQLeft(EXAM_Q_SECONDS);
+    const t = setInterval(() => {
+      setQLeft((v) => {
+        if (v <= 1) { clearInterval(t); next(); return EXAM_Q_SECONDS; }
+        return v - 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [qIdx, finished]);
+
+  if (finished) {
+    const score = quiz.questions.filter((q, i) => answersRef.current[i] === q.correct).length;
+    return (
+      <>
+        <div className="card center" style={{ padding: 24 }}>
+          <span className="disp" style={{ fontSize: 44, fontWeight: 700, color }}>{score}/{total}</span>
+          <span className="dimtx">respuestas correctas</span>
+        </div>
+        <div className="card">
+          {quiz.questions.map((q, i) => {
+            const mine = answersRef.current[i];
+            const ok = mine === q.correct;
+            return (
+              <div key={i} style={{ marginTop: i ? 16 : 0 }}>
+                <p style={{ fontWeight: 600, fontSize: 14 }}>{i + 1}. {q.question}</p>
+                {mine != null && !ok && <p className="dimtx" style={{ color: "#FF9E9E" }}>✗ Tu respuesta: {q.options[mine]}</p>}
+                {mine == null && <p className="dimtx" style={{ color: "#FF9E9E" }}>✗ Sin responder: se acabó el tiempo</p>}
+                <p className="dimtx" style={{ color: "#7FE0B2" }}>✓ {q.options[q.correct]}</p>
+                <p className="dimtx">{q.explanation}</p>
+              </div>
+            );
+          })}
+        </div>
+        <button className="btn btn--ghost" onClick={() => setShowScript(!showScript)}>
+          {showScript ? "Ocultar transcripción" : "Ver transcripción"}
+        </button>
+        {showScript && <div className="paper">{quiz.script}</div>}
+        <button className="btn" style={{ "--acc": color }} onClick={onNewPractice}>Nueva práctica</button>
+      </>
+    );
+  }
+
+  const q = quiz.questions[qIdx];
+  return (
+    <div className="exam">
+      <div className="exam-top">
+        <span className="exam-brand">CELPIP · Listening Part {part.n}</span>
+        <span className="exam-count">Question {qIdx + 1} of {total} · {qLeft}s</span>
+      </div>
+      <div className="exam-bar"><i style={{ width: `${(qLeft / EXAM_Q_SECONDS) * 100}%` }} /></div>
+      <p className="exam-q">{q.question}</p>
+      {q.options.map((o, j) => (
+        <button key={j} className="radio" data-on={answers[qIdx] === j ? "1" : "0"}
+          onClick={() => {
+            answersRef.current = { ...answersRef.current, [qIdx]: j };
+            setAnswers((a) => ({ ...a, [qIdx]: j }));
+          }}>
+          <span className="rdot" /><span>{o}</span>
+        </button>
+      ))}
+      <p className="exam-hint">You cannot return to this question after pressing NEXT.</p>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+        <button className="exam-next" onClick={next}>{qIdx + 1 === total ? "FINISH" : "NEXT"}</button>
+      </div>
+    </div>
+  );
+}
+
 function ListeningScreen({ back, preset, update }) {
   const S = SKILLS.listening;
   const [part, setPart] = useState(LISTENING_PARTS[(preset && preset.part ? preset.part : 1) - 1] || LISTENING_PARTS[0]);
@@ -1007,12 +1123,14 @@ function ListeningScreen({ back, preset, update }) {
   const [mode, setMode] = useState("sim");
   const [quizDone, setQuizDone] = useState(false);
   const [showScript, setShowScript] = useState(false);
+  const [examPhase, setExamPhase] = useState("intro");
 
   useEffect(() => () => window.speechSynthesis && window.speechSynthesis.cancel(), []);
+  useEffect(() => { if (played) setExamPhase("questions"); }, [played]);
 
   const generate = async () => {
     setBusy(true); setErr(""); setQuiz(null); setPlayed(false); setNotes("");
-    setQuizDone(false); setShowScript(false);
+    setQuizDone(false); setShowScript(false); setExamPhase("intro");
     setCols({ a: "", b: "", c: "", favor: "", contra: "" });
     try {
       const data = await askClaudeJSON(
@@ -1152,65 +1270,70 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
       {mode === "sim" && err && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 12 }}>{err}</p>}
       {mode === "sim" && quiz && (
         <>
-          <div className="card center" style={{ padding: 24 }}>
-            <span className="kicker">Lee El Título Antes Del Play</span>
-            <p className="disp" style={{ fontSize: 19, fontWeight: 600, marginTop: 6 }}>
-              <span className="hlmark" style={{ "--acc": S.color }}>{quiz.title}</span>
-            </p>
-            <div style={{ display: "flex", gap: 10, marginTop: 18 }}>
-              <button className="iconbtn iconbtn--acc" style={{ "--acc": S.color, width: 56, height: 56, borderRadius: 18 }}
-                aria-label={playing ? "Detener" : "Reproducir"} disabled={audioBusy} onClick={playing ? stop : play}>
-                {playing ? <Square size={20} /> : <Volume2 size={22} />}
-              </button>
+          {examPhase === "intro" && (
+            <div className="exam">
+              <div className="exam-top">
+                <span className="exam-brand">CELPIP · Listening Part {part.n}</span>
+                <span className="exam-count">{quiz.questions.length} questions</span>
+              </div>
+              <p className="exam-q">{quiz.title}</p>
+              <p className="exam-hint">
+                You will hear the audio only once. You cannot pause or replay it. You may take notes while you listen. After the audio ends, answer each question before the timer runs out — you cannot go back.
+              </p>
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                <button className="exam-next" onClick={() => { setExamPhase("audio"); play(); }} disabled={audioBusy}>
+                  {audioBusy ? "LOADING…" : "START"}
+                </button>
+              </div>
             </div>
-            <span className="dimtx" style={{ marginTop: 10 }}>
-              {audioBusy ? "Preparando audio real…"
-                : playing ? "Reproduciendo a " + rate + "x…"
-                : played ? "Audio terminado"
-                : getKeys().openai ? rate + "x · audio real con voces neuronales"
-                : rate + "x · voces del sistema — agrega tu key de OpenAI en Ajustes para audio real"}
-            </span>
-          </div>
-
-          {part.n === 5 ? (
-            <div className="cols cols--3">
-              {[0, 1, 2].map((i) => (
-                <div key={i}>
-                  <input value={names[i]} aria-label={`Nombre persona ${i + 1}`}
-                    onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} />
-                  <textarea rows={4} placeholder="Notas" value={cols["abc"[i]]}
-                    onChange={(e) => setCols({ ...cols, ["abc"[i]]: e.target.value })} />
-                </div>
-              ))}
-            </div>
-          ) : part.n === 6 ? (
-            <div className="cols cols--2">
-              <div><span className="kicker">A Favor</span>
-                <textarea rows={4} placeholder="Quiénes y por qué" value={cols.favor}
-                  onChange={(e) => setCols({ ...cols, favor: e.target.value })} /></div>
-              <div><span className="kicker">En Contra</span>
-                <textarea rows={4} placeholder="Quiénes y por qué" value={cols.contra}
-                  onChange={(e) => setCols({ ...cols, contra: e.target.value })} /></div>
-            </div>
-          ) : (
-            <textarea rows={3} placeholder="Notas: who · what · when · where"
-              value={notes} onChange={(e) => setNotes(e.target.value)} />
           )}
 
-          {played
-            ? <QuizRunner quiz={quiz} color={S.color} onFinish={(s, t) => { setQuizDone(true); update((st) => ({
+          {examPhase === "audio" && (
+            <div className="exam">
+              <div className="exam-top">
+                <span className="exam-brand">CELPIP · Listening Part {part.n}</span>
+                <span className="exam-count">{audioBusy ? "Loading audio…" : playing ? "Playing…" : "Starting…"}</span>
+              </div>
+              <p className="exam-q">{quiz.title}</p>
+              <div className="exam-bar"><i className="exam-pulse" /></div>
+              <p className="exam-hint">Take notes below. The questions will appear automatically when the audio ends.</p>
+            </div>
+          )}
+
+          {(examPhase === "intro" || examPhase === "audio") && (
+            part.n === 5 ? (
+              <div className="cols cols--3">
+                {[0, 1, 2].map((i) => (
+                  <div key={i}>
+                    <input value={names[i]} aria-label={`Nombre persona ${i + 1}`}
+                      onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} />
+                    <textarea rows={4} placeholder="Notas" value={cols["abc"[i]]}
+                      onChange={(e) => setCols({ ...cols, ["abc"[i]]: e.target.value })} />
+                  </div>
+                ))}
+              </div>
+            ) : part.n === 6 ? (
+              <div className="cols cols--2">
+                <div><span className="kicker">A Favor</span>
+                  <textarea rows={4} placeholder="Quiénes y por qué" value={cols.favor}
+                    onChange={(e) => setCols({ ...cols, favor: e.target.value })} /></div>
+                <div><span className="kicker">En Contra</span>
+                  <textarea rows={4} placeholder="Quiénes y por qué" value={cols.contra}
+                    onChange={(e) => setCols({ ...cols, contra: e.target.value })} /></div>
+              </div>
+            ) : (
+              <textarea rows={3} placeholder="Notas: who · what · when · where"
+                value={notes} onChange={(e) => setNotes(e.target.value)} />
+            )
+          )}
+
+          {examPhase === "questions" && (
+            <ExamRunner quiz={quiz} part={part} color={S.color}
+              onDone={(s, t) => update((st) => ({
                 ...st, history: [...st.history, { date: todayKey(), section: "Listening", detail: `Part ${part.n}: ${s}/${t}` }],
-              })); }} />
-            : <p className="dimtx" style={{ marginTop: 12 }}>Las preguntas aparecen cuando termine el audio, como en el examen.</p>}
-          {quizDone && (
-            <>
-              <button className="btn btn--ghost" onClick={() => setShowScript(!showScript)}>
-                {showScript ? "Ocultar transcripción" : "Ver transcripción"}
-              </button>
-              {showScript && <div className="paper">{quiz.script}</div>}
-            </>
+              }))}
+              onNewPractice={() => setQuiz(null)} />
           )}
-          {played && <button className="btn btn--ghost" onClick={() => setQuiz(null)}>Nueva práctica</button>}
         </>
       )}
     </div>
