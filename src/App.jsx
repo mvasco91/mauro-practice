@@ -447,7 +447,7 @@ async function askGemini(key, system, user) {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: system }] },
           contents: [{ role: "user", parts: [{ text: user }] }],
-          generationConfig: { maxOutputTokens: 1200 },
+          generationConfig: { maxOutputTokens: 4096 },
         }),
       }
     );
@@ -466,12 +466,13 @@ async function askGemini(key, system, user) {
   throw new Error("Ningún modelo de Gemini respondió. Puede que hayan cambiado de nombre; avísame para actualizarlos.");
 }
 
-// Adaptador: usa la key gratuita de Gemini si existe; si no, la de Anthropic.
+// Adaptador: si configuraste la key de Anthropic, se usa Claude;
+// si no, la key gratuita de Gemini.
 async function askClaude(system, user) {
   const k = getKeys();
-  if (k.gemini) return askGemini(k.gemini, system, user);
   if (k.anthropic) return askAnthropic(k.anthropic, system, user);
-  throw new Error("Configura tu API key gratuita de Gemini en Ajustes (engranaje en Inicio).");
+  if (k.gemini) return askGemini(k.gemini, system, user);
+  throw new Error("Configura una API key en Ajustes (engranaje en Inicio): Gemini gratuita o Anthropic.");
 }
 async function askClaudeJSON(system, user) {
   const raw = await askClaude(system + "\nResponde SOLO con JSON válido, sin markdown ni texto extra.", user);
@@ -530,6 +531,7 @@ function withVoices(cb) {
 
 // Audio real con OpenAI TTS: una voz distinta por hablante del diálogo.
 const OPENAI_VOICES = ["nova", "onyx", "shimmer", "echo", "alloy", "fable"];
+const ttsSessionCache = new Map(); // guion → urls de audio ya pagadas en esta sesión
 
 async function ttsOpenAI(key, text, voice) {
   const res = await fetch("https://api.openai.com/v1/audio/speech", {
@@ -583,6 +585,19 @@ function dictationScore(target, attempt) {
   if (!tw.length) return 0;
   return Math.round((tw.filter((w) => aw.has(w)).length / tw.length) * 100);
 }
+
+// Banco local de prácticas ya generadas: repetirlas no gasta tokens.
+const cacheAdd = (key, item, cap = 20) => {
+  try {
+    const arr = JSON.parse(localStorage.getItem(key) || "[]");
+    arr.push(item);
+    while (arr.length > cap) arr.shift();
+    localStorage.setItem(key, JSON.stringify(arr));
+  } catch (e) { /* sin espacio: se omite */ }
+};
+const cacheList = (key) => {
+  try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch (e) { return []; }
+};
 
 /* ---------------------- Primitivas de UI ---------------------- */
 
@@ -882,6 +897,7 @@ Devuelve JSON: {"title":"...","passage":"texto de 180-230 palabras en inglés ca
 Exactamente 4 preguntas. Usa sinónimos y paráfrasis como el examen real. Tema canadiense cotidiano.`
       );
       setQuiz(data);
+      cacheAdd(`celpip:cache:read:${part.n}`, { date: todayKey(), quiz: data });
     } catch (e) { setErr(e.message); }
     setBusy(false);
   };
@@ -899,9 +915,19 @@ Exactamente 4 preguntas. Usa sinónimos y paráfrasis como el examen real. Tema 
         </div>
         <Strategy tips={part.tips} color={S.color} />
         {busy ? <Skeletons /> : (
-          <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
-            Generar práctica <Sparkles size={16} />
-          </button>
+          <>
+            <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
+              Generar práctica <Sparkles size={16} />
+            </button>
+            {cacheList(`celpip:cache:read:${part.n}`).length > 0 && (
+              <button className="btn btn--ghost" onClick={() => {
+                const saved = cacheList(`celpip:cache:read:${part.n}`);
+                setErr(""); setQuiz(saved[Math.floor(Math.random() * saved.length)].quiz);
+              }}>
+                Repetir una guardada · {cacheList(`celpip:cache:read:${part.n}`).length} en tu banco · $0
+              </button>
+            )}
+          </>
         )}
       </>}
       {err && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 12 }}>{err}</p>}
@@ -1146,6 +1172,7 @@ Devuelve JSON: {"title":"A conversation about ...","script":"...","questions":[{
 Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablantes.`
       );
       setQuiz(data);
+      cacheAdd(`celpip:cache:listen:${part.n}`, { date: todayKey(), quiz: data });
     } catch (e) { setErr(e.message); }
     setBusy(false);
   };
@@ -1187,17 +1214,20 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
   const playOpenAI = async (key) => {
     setAudioBusy(true); setErr("");
     try {
-      const { turns, speakers } = parseScript(quiz.script);
-      const map = {};
-      speakers.forEach((sp, i) => { map[sp] = OPENAI_VOICES[i % OPENAI_VOICES.length]; });
-      const urls = await Promise.all(turns.map((t) => ttsOpenAI(key, t.text, t.sp ? map[t.sp] : "nova")));
+      let urls = ttsSessionCache.get(quiz.script);
+      if (!urls) {
+        const { turns, speakers } = parseScript(quiz.script);
+        const map = {};
+        speakers.forEach((sp, i) => { map[sp] = OPENAI_VOICES[i % OPENAI_VOICES.length]; });
+        urls = await Promise.all(turns.map((t) => ttsOpenAI(key, t.text, t.sp ? map[t.sp] : "nova")));
+        ttsSessionCache.set(quiz.script, urls);
+      }
       setAudioBusy(false);
       stopRef.current = false;
       setPlaying(true);
       let i = 0;
       const playNext = () => {
         if (stopRef.current || i >= urls.length) {
-          urls.forEach((u) => URL.revokeObjectURL(u));
           setPlaying(false);
           if (!stopRef.current) setPlayed(true);
           return;
@@ -1225,6 +1255,16 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
     if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setPlaying(false);
+  };
+
+  const loadCached = () => {
+    const saved = cacheList(`celpip:cache:listen:${part.n}`);
+    if (!saved.length) return;
+    const pick = saved[Math.floor(Math.random() * saved.length)].quiz;
+    setErr(""); setPlayed(false); setNotes("");
+    setQuizDone(false); setShowScript(false); setExamPhase("intro");
+    setCols({ a: "", b: "", c: "", favor: "", contra: "" });
+    setQuiz(pick);
   };
 
   return (
@@ -1262,9 +1302,16 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
           ))}
         </div>
         {busy ? <Skeletons /> : (
-          <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
-            Generar audio <Sparkles size={16} />
-          </button>
+          <>
+            <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
+              Generar audio <Sparkles size={16} />
+            </button>
+            {cacheList(`celpip:cache:listen:${part.n}`).length > 0 && (
+              <button className="btn btn--ghost" onClick={loadCached}>
+                Repetir una guardada · {cacheList(`celpip:cache:listen:${part.n}`).length} en tu banco · $0
+              </button>
+            )}
+          </>
         )}
       </>}
       {mode === "sim" && err && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 12 }}>{err}</p>}
@@ -1929,7 +1976,7 @@ function SettingsScreen({ back }) {
         <input type="password" autoComplete="off" placeholder="sk-ant-…" value={keys.anthropic || ""}
           onChange={(e) => setK({ ...keys, anthropic: e.target.value.trim() })} />
         <p className="dimtx" style={{ marginTop: 8 }}>
-          Opcional. Se crea en console.anthropic.com y requiere crédito. Si configuras ambas, la app usa Gemini.
+          Se crea en console.anthropic.com y requiere crédito (~$5). Mejor calidad de evaluación y sin tope diario. Si configuras ambas keys, la app usa esta.
         </p>
       </div>
       <div className="card">
