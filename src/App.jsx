@@ -3,7 +3,7 @@ import {
   Home, LayoutGrid, RotateCcw, TrendingUp, ChevronLeft, Play, Pause,
   RotateCw, Check, Mic, Volume2, Square, Flame, ArrowRight, BookOpen,
   Headphones, PenLine, MessageSquare, Sparkles, ChevronDown, ChevronUp,
-  Settings as SettingsIcon,
+  Settings as SettingsIcon, X,
 } from "lucide-react";
 
 /* ============================================================
@@ -89,11 +89,17 @@ textarea:focus,input:focus,.chip:focus-visible,.btn:focus-visible,.iconbtn:focus
 .meter{height:6px;border-radius:4px;background:var(--surface2);overflow:hidden;margin-top:6px}
 .meter>i{display:block;height:100%;background:var(--acc,#EDF1F8);border-radius:4px}
 
-.steprow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.steprow{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
 .steprow:first-of-type{border-top:none}
 .dot{width:30px;height:30px;border-radius:10px;border:1.5px solid var(--line);flex:0 0 auto;cursor:pointer;
   display:flex;align-items:center;justify-content:center;background:transparent;color:transparent}
 .dot[data-on="1"]{background:var(--acc);border-color:var(--acc);color:#0D1320}
+.stepbtn{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--text);
+  text-align:left;cursor:pointer;padding:0;font:inherit}
+.stepic{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+
+.hero{border:1px solid color-mix(in srgb, var(--acc,#fff) 35%, transparent)}
+.hero .btn{margin-top:14px}
 
 .center{display:flex;flex-direction:column;align-items:center;text-align:center}
 .timeval{font-size:44px;line-height:1;font-weight:700;letter-spacing:1px;font-variant-numeric:tabular-nums}
@@ -146,6 +152,30 @@ textarea:focus,input:focus,.chip:focus-visible,.btn:focus-visible,.iconbtn:focus
 .exam-bar>i{display:block;height:100%;background:#2C5FA8;border-radius:3px;transition:width 1s linear}
 .exam-pulse{width:40%;animation:slidebar 1.2s ease-in-out infinite alternate}
 @keyframes slidebar{from{margin-left:0}to{margin-left:60%}}
+
+.exam2{background:#F5F7FA;color:#17233B;border-radius:16px;overflow:hidden;margin-top:14px;box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.exam2,.exam2 *{text-transform:none}
+.exam2-top{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#2C5FA8;color:#fff;padding:12px 16px}
+.exam2-brand{font:700 13px 'Space Grotesk',Inter,sans-serif;letter-spacing:.4px}
+.exam2-count{font:600 12px Inter,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;opacity:.92}
+.exam2-bar{height:4px;background:#DDE5EF}
+.exam2-bar>i{display:block;height:100%;background:#FFD666;transition:width 1s linear}
+.exam2-toggle{width:100%;text-align:left;background:#EAF1FA;border:none;border-bottom:1px solid #C9D3E0;color:#2C5FA8;
+  font:700 12px Inter,sans-serif;letter-spacing:.3px;padding:9px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.exam2-passage{max-height:240px;overflow-y:auto;padding:14px 16px;border-bottom:1px solid #C9D3E0;background:#fff}
+.exam2-passage-title{font:700 13.5px 'Space Grotesk',sans-serif;color:#2C5FA8;margin-bottom:8px;display:block}
+.exam2-passage p{font:400 13.5px/23px Inter,sans-serif;color:#26324A;white-space:pre-wrap;margin:0 0 12px}
+.exam2-passage p:last-child{margin-bottom:0}
+.exam2-body{padding:16px}
+.exam2-nav{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.exam2-navdot{width:30px;height:30px;border-radius:8px;border:1px solid #C9D3E0;background:#fff;color:#5A6784;
+  font:700 12px Inter,sans-serif;cursor:pointer}
+.exam2-navdot[data-cur="1"]{border-color:#2C5FA8;background:#2C5FA8;color:#fff}
+.exam2-navdot[data-answered="1"]:not([data-cur="1"]){border-color:#7FB8E0;background:#EAF1FA;color:#2C5FA8}
+.exam2-footer{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+.exam2-prev{background:transparent;border:1px solid #C9D3E0;color:#5A6784;border-radius:8px;min-height:44px;
+  padding:0 22px;font:700 13px Inter,sans-serif;cursor:pointer}
+.exam2-prev:disabled{opacity:.4;cursor:not-allowed}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 `;
 
@@ -160,34 +190,74 @@ const SKILLS = {
 
 const READING_PARTS = [
   { n: 1, name: "Correspondence", q: 11, min: 11,
-    tips: ["Leer las preguntas primero y marcar palabras clave",
-      "Es una carta personal: leer con calma y responder",
+    tips: ["Lectura activa (1-3 min): lee todo el correo primero, no saltes directo a las preguntas — las opciones tienen trampas",
+      "Etiqueta cada párrafo con 1-3 palabras (ej. 'Contexto', 'Costos', 'Solución') para ubicarte rápido cuando una pregunta pregunte por eso",
+      "Vistazo inicial (5s): identifica el tono (formal/informal) y el tema general",
+      "Preguntas específicas (1-6): busca la palabra o frase clave en el texto",
+      "La pregunta general (motivo principal / intención) déjala para el final: ya habrás leído todo el correo",
+      "Carta de respuesta (7-11): el receptor responde — no es textual, requiere empatía. Parafrasea las opciones a tus propias palabras simples",
+      "Prefiere opciones específicas y concretas (ej. 'sweet birthday greetings') sobre abstracciones generales (ej. 'encouragement')",
       "Ojo con sinónimos: 'the store is closed' → 'no longer operating'"] },
   { n: 2, name: "Apply a Diagram", q: 8, min: 9,
-    tips: ["Revisar el diagrama antes que las preguntas",
-      "Buscar números, fechas y etiquetas",
-      "CELPIP usa muchos sinónimos: ventajas y desventajas"] },
+    tips: ["Única parte donde analizas la imagen/diagrama PRIMERO (1-2 min), antes que las preguntas",
+      "Observa títulos, columnas, precios, fechas, restricciones y diferencias entre niveles/opciones",
+      "Ojo con palabras trampa: EXCEPT, HOWEVER, INCREASES, NOT",
+      "Usa el método de eliminación: descarta opciones que violen las condiciones del diagrama",
+      "Para relaciones entre personas (ej. 'best friends' vs 'acquaintances'), evalúa el tono general del texto"] },
   { n: 3, name: "For Information", q: 9, min: 10,
-    tips: ["Máximo 1 minuto por pregunta",
-      "Buscar la palabra clave de la pregunta o su sinónimo en el texto",
-      "Responder rápido por palabras clave, sin leerlo todo"] },
+    tips: ["No leas solo la primera y última oración de cada párrafo, y no busques la afirmación 1 por todo el texto",
+      "Lee el párrafo A completo, resúmelo mentalmente en 2-3 puntos",
+      "Revisa las afirmaciones (1-9) y marca cuáles calzan conceptualmente con el párrafo A",
+      "Repite con el párrafo B, C y D",
+      "Opción E (Not Mentioned): no la busques activamente — las afirmaciones que no calzaron con ningún párrafo se marcan E al final"] },
   { n: 4, name: "For Viewpoints", q: 10, min: 13,
-    tips: ["Primer párrafo: idea central de inmediato",
-      "Personajes: proponente, opositor, neutral o escéptico",
-      "Adjetivos delatan: 'alarming' negativo, 'promising' positivo",
-      "Desconfiar de extreme words: always, never, all, completely",
-      "En los gaps: leer la frase completa y hacer tone check",
-      "El punto de vista del autor suele estar en la última frase"] },
+    tips: ["Primer párrafo: identifica al proponente (a favor), el opositor (en contra) y la postura del autor",
+      "Adjetivos delatan el tono: 'alarming', 'disastrous', 'cloud chaser' → negativo; 'promising', 'beneficial', 'vital' → positivo",
+      "Desconfiar de extreme words: always, never, all, completely. La respuesta correcta suele ser más moderada: likely, suggests, often, potentially",
+      "En los gaps: la primera oración del comentario marca el tono. Lee la frase completa y adivina si falta algo bueno o malo (tone check) antes de ver las opciones",
+      "El punto de vista del autor suele estar en la última frase: si termina en pregunta o advertencia es cauteloso, si termina en recomendación es partidario",
+      "Tarea: leer editoriales y la sección de 'opinions' (no 'news') de CBC News o London Free Press",
+      "Tarea: aprenderse los verbos de opinión (advocates, argues, claims, questions, dismisses) — están en Repaso → Conectores"] },
+];
+
+const LISTENING_GENERAL_TIPS = [
+  "El audio se reproduce una sola vez: no confíes solo en la memoria, toma notas todo el tiempo",
+  "Puedes pedir de 3 a 5 hojas de borrador extra al evaluador apenas ingreses tu PIN — usa símbolos para ir rápido: ↑ aumentar, ↓ disminuir, w/ with, b/c because, A/B para marcar de quién es el turno",
+  "Truco maestro: antes de que empiece el audio, lee bien el título de la sección (ej. 'A conversation about a local park') — así el cerebro se activa y no te quedas en blanco",
 ];
 
 const LISTENING_PARTS = [
-  { n: 1, name: "Problem Solving", q: 8, min: 8, tips: ["Tomar notas: who · what · when · where"] },
-  { n: 2, name: "Daily Life", q: 5, min: 5, tips: ["Identificar el tono de la conversación"] },
-  { n: 3, name: "Information", q: 6, min: 6, tips: ["Tomar notas en orden, seguir la secuencia"] },
-  { n: 4, name: "News Items", q: 5, min: 5, tips: ["Main idea primero, luego detalles"] },
-  { n: 5, name: "Discussion", q: 8, min: 9, tips: ["Una columna por persona", "Quién está de acuerdo y quién no"] },
-  { n: 6, name: "Viewpoints", q: 6, min: 8, tips: ["Quién es mencionado, dónde trabaja, qué opina", "Suelen nombrarlos por apellido o cargo"] },
+  { n: 1, name: "Problem Solving", q: 8, min: 8, tips: ["Notas en T: columna izquierda = quién plantea el problema, columna derecha = quién ofrece la solución",
+      "Anota en orden cronológico problema → solución, e identifica el tono emocional"] },
+  { n: 2, name: "Daily Life", q: 5, min: 5, tips: ["Mismo formato de T: una columna por hablante, en orden cronológico",
+      "Identificar el tono de la conversación"] },
+  { n: 3, name: "Information", q: 6, min: 6, tips: ["Mismo formato de T: quién pregunta a la izquierda, quién informa a la derecha",
+      "Tomar notas en orden, seguir la secuencia"] },
+  { n: 4, name: "News Items", q: 5, min: 5, tips: ["Divide la hoja verticalmente y responde las 6 W's: Who, What, When, Where, Why, How",
+      "Main idea primero, luego detalles"] },
+  { n: 5, name: "Discussion", q: 8, min: 9, tips: ["3 columnas, una por persona — identifica de inmediato nombre, color/tipo de ropa y posición en pantalla (izq/centro/der)",
+      "Alinea tus columnas con la posición física de los hablantes para no confundir quién dice qué",
+      "Quién está de acuerdo y quién no; fíjate en expresiones y gestos faciales para intuir el tono"] },
+  { n: 6, name: "Viewpoints", q: 6, min: 8, tips: ["Quién es mencionado, dónde trabaja, qué opina", "Suelen nombrarlos por apellido o cargo (Dr. Smith, City Planner) — anota nombre y postura exacta",
+      "Traza una línea vertical: de un lado los argumentos a favor, del otro los en contra",
+      "Tarea: escuchar podcasts como 'The Dose' o 'Cross Country Checkup', y practicar a 1.25x — si entiendes a esa velocidad, el examen real se sentirá más lento"] },
 ];
+
+// Temas generales del cuaderno para "adaptar el template a temas generales" (días 6-12).
+const CELPIP_TOPICS = [
+  "public parks and green spaces", "garbage, recycling and waste collection", "noise complaints in apartment buildings",
+  "public transport and commuting", "online shopping and deliveries", "neighbourhood safety",
+  "small local businesses", "housing, rent and utilities", "weather and seasonal changes",
+  "community events and volunteering", "workplace policies and remote work", "school and continuing education",
+  "healthcare access and wait times", "environment and sustainability", "technology and social media use",
+];
+
+const READING_SPECS = {
+  1: "una carta o correo PERSONAL informal (de un amigo, familiar o vecino) sobre un problema, invitación o favor cotidiano",
+  2: "un aviso, volante o cronograma (horarios, precios, reglas) seguido de un párrafo breve que lo interpreta, con datos concretos (números, fechas, etiquetas) que las preguntas deben usar",
+  3: "un artículo informativo tipo noticia local, factual y neutral, sin opiniones fuertes, con varios datos concretos",
+  4: "un artículo de OPINIÓN/editorial, al estilo de la sección 'Opinion' de CBC News o London Free Press: una postura clara (proponente, opositor o neutral/escéptico), con adjetivos que delatan el tono del autor (ej. 'alarming' es negativo, 'promising' es positivo) y una última frase que resuma su posición (una recomendación si es partidario, o una pregunta/advertencia si es cauteloso)",
+};
 
 const LISTEN_SPECS = {
   1: "una conversación telefónica de DOS personas (un hombre y una mujer) resolviendo un problema práctico: una reserva, una entrega, un servicio",
@@ -200,20 +270,54 @@ const LISTEN_SPECS = {
 
 const WRITING_TASKS = [
   { id: "w1", name: "Email", min: 27, brief: "Correo de 150–200 palabras respondiendo a la situación.",
-    templates: ["email-formal", "email-informal", "email-semi"] },
+    templates: ["email-formal", "email-informal", "email-semi"],
+    tips: ["Memoriza un template y adáptalo a la situación: no lo reinventes cada vez",
+      "Usa la mayor cantidad de conectores posibles (Repaso → Conectores) y cambia palabras simples por sofisticadas",
+      "Días 1–5: escribe el template a mano en la mañana, en el computador en la tarde, y repasa los conectores en voz alta de noche",
+      "Días 6–12: adapta el template a temas generales (parques, basura, ruido, transporte, compras online), usando al menos 3 palabras de alto nivel",
+      "Días 13–17: simulacro completo — si te faltan palabras agrega una frase de cortesía o un ejemplo, si te sobran corta adjetivos innecesarios"] },
   { id: "w2", name: "Survey", min: 26, brief: "Elige la opción A o B y defiéndela en 150–200 palabras.",
-    templates: ["survey"] },
+    templates: ["survey"],
+    tips: ["Elige un lado (A o B) rápido y no cambies de opinión a mitad de texto",
+      "Da 2 razones: una a favor de tu opción y otra reconociendo (y descartando) un contra de la otra",
+      "Cierra dejando claro que apoyarás la decisión final, sea cual sea"] },
+];
+
+const SPEAKING_GENERAL_TIPS = [
+  "El examen no se trata de perfección sino de fluidez: es mejor hablar constante que parar buscando una palabra sofisticada",
+  "Si te pierdes: di 'What I mean is…' y repite la idea — le muestra al examinador que sabes corregirte",
 ];
 
 const SPEAKING_TASKS = [
-  { n: 1, name: "Giving advice", prep: 30, talk: 90, tense: "Presente", tpl: "sp-advice" },
-  { n: 2, name: "Personal experience", prep: 30, talk: 60, tense: "Pasado", tpl: "sp-experience" },
-  { n: 3, name: "Describing a scene", prep: 30, talk: 60, tense: "Presente continuo", tpl: "sp-scene" },
-  { n: 4, name: "Making predictions", prep: 30, talk: 60, tense: "Futuro", tpl: "sp-predict" },
-  { n: 5, name: "Comparing & persuading", prep: 60, talk: 60, tense: "Comparativos", tpl: "sp-compare" },
-  { n: 6, name: "Difficult situation", prep: 60, talk: 60, tense: "Presente y futuro", tpl: "sp-difficult" },
-  { n: 7, name: "Expressing opinions", prep: 30, talk: 90, tense: "Presente", tpl: "sp-opinion" },
-  { n: 8, name: "Unusual situation", prep: 30, talk: 60, tense: "Presente", tpl: "sp-unusual" },
+  { n: 1, name: "Giving advice", prep: 30, talk: 90, tense: "Presente", tpl: "sp-advice",
+    tips: ["Ten 2 ideas claras que se complementen, no repitas la misma idea con otras palabras"] },
+  { n: 2, name: "Personal experience", prep: 30, talk: 60, tense: "Pasado", tpl: "sp-experience",
+    tips: ["Contexto (15-20s): usa pasado simple y menciona con quién estabas",
+      "La acción (20s): marca el momento especial con conectores de secuencia — 'Suddenly', 'To my surprise'",
+      "El cierre es lo que más puntos da: cuenta cómo te sentiste (10s). Ej: 'Looking back, I felt delighted to spend that quality time with my loved ones.'",
+      "Si la experiencia fue triste o difícil, no te quedes en la dificultad — cuenta cómo la resolviste: 'Despite the difficulty, I decided to take action… and eventually, I managed to find a solution.'"] },
+  { n: 3, name: "Describing a scene", prep: 30, talk: 60, tense: "Presente continuo", tpl: "sp-scene",
+    tips: ["Recorre la imagen por zonas para no quedarte sin qué decir: centro, primer plano, izquierda/derecha, fondo, arriba y abajo",
+      "Usa vocabulario alto: gorgeous, stunning, illuminating, spectacular",
+      "Cierre alternativo si sobra tiempo: 'Overall, it seems like a very lively atmosphere.'"] },
+  { n: 4, name: "Making predictions", prep: 30, talk: 60, tense: "Futuro", tpl: "sp-predict",
+    tips: ["Todo el task en tiempo futuro (will / going to)",
+      "Si te queda poco tiempo (5-10s), cierra rápido: 'In short, I believe the scene will become even more active in the next few minutes.'",
+      "Cierre sentimental si sobra tiempo: 'Overall, it seems like everyone will have a wonderful time and create great memories by the end of the day.'",
+      "Cierre de calma si la actividad ya terminó: 'Ultimately, once the activity is over, the park will probably become quiet and peaceful again.'"] },
+  { n: 5, name: "Comparing & persuading", prep: 60, talk: 60, tense: "Comparativos", tpl: "sp-compare",
+    tips: ["Usa comparison words (even though, more suitable, better quality) para contrastar A y B",
+      "Si te queda poco tiempo, cierra con: 'In the end, I think this is our best bet.'"] },
+  { n: 6, name: "Difficult situation", prep: 60, talk: 60, tense: "Presente y futuro", tpl: "sp-difficult",
+    tips: ["Sé educada pero firme, y siempre ofrece una solución, no solo la disculpa",
+      "Cierra dejando la puerta abierta: 'Let me know if on Sunday we can do something and I will be there for you. Bye!'"] },
+  { n: 7, name: "Expressing opinions", prep: 30, talk: 90, tense: "Presente", tpl: "sp-opinion",
+    tips: ["Habla despacio y pronuncia bien; cuenta tus razones con los dedos (1, 2, además…) para no perder el hilo",
+      "Si te sobra tiempo, extiende con: 'Another point to consider is (otro beneficio)' e inventa un estudio o experiencia: 'A recent study showed…' / 'In my experience at work…'"] },
+  { n: 8, name: "Unusual situation", prep: 30, talk: 60, tense: "Presente", tpl: "sp-unusual",
+    tips: ["Empieza con un saludo de sorpresa genuina: 'You won't believe what I'm seeing right now!'",
+      "Usa formas, colores y comparaciones para describir el objeto",
+      "Si no sabes cómo se dice algo, usa: 'It reminds me of a (something similar)' en vez de trabarte"] },
 ];
 
 const TEMPLATES = {
@@ -325,8 +429,79 @@ const CONNECTORS = [
   { id: "cl", en: "Claims", es: "Afirma", g: "Verbos De Opinión", cz: "The company ___ that delays were caused by weather." },
   { id: "qu", en: "Questions", es: "Cuestiona", g: "Verbos De Opinión", cz: "The journalist ___ whether the data is accurate." },
   { id: "di", en: "Dismisses", es: "Descarta", g: "Verbos De Opinión", cz: "The mayor ___ the idea as too expensive." },
+
+  { id: "fo", en: "First of all", es: "En primer lugar", g: "Iniciar", cz: "___, we need to outline our goals." },
+  { id: "ini", en: "Initially", es: "Inicialmente", g: "Iniciar", cz: "___, the project faced several delays." },
+  { id: "af", en: "At first", es: "Al principio", g: "Iniciar", cz: "___, I did not understand the instructions." },
+
+  { id: "mo", en: "Moreover", es: "Además", g: "Agregar", cz: "He is experienced; ___, he is highly motivated." },
+  { id: "adt", en: "Additionally", es: "Adicionalmente", g: "Agregar", cz: "___, candidates must submit two references." },
+  { id: "bs", en: "Besides", es: "Además", g: "Agregar", cz: "___ being fast, the service is very reliable." },
+  { id: "lk", en: "Likewise", es: "Así mismo", g: "Agregar", cz: "The manager supported the initiative, and the team did ___." },
+  { id: "asw", en: "As with", es: "Al igual que con", g: "Agregar", cz: "___ any new software, training is required." },
+
+  { id: "fi", en: "For instance", es: "Por ejemplo", g: "Ejemplos", cz: "Many cities, ___ Vancouver, invest in green energy." },
+  { id: "sc", en: "Such as", es: "Tal como", g: "Ejemplos", cz: "We prefer eco-friendly materials, ___ bamboo and glass." },
+
+  { id: "hv", en: "However", es: "Sin embargo", g: "Contrastar", cz: "The budget was tight; ___, we delivered on time." },
+  { id: "bt", en: "But", es: "Pero", g: "Contrastar", cz: "The plan was risky, ___ it yielded great results." },
+  { id: "yt", en: "Yet", es: "Aún así", g: "Contrastar", cz: "It was a simple design, ___ it was extremely effective." },
+  { id: "nv", en: "Nevertheless", es: "No obstante", g: "Contrastar", cz: "The climate was harsh; ___, they completed the trek." },
+  { id: "alt", en: "Although", es: "Aunque", g: "Contrastar", cz: "___ it was late, they continued working." },
+  { id: "wh", en: "While", es: "Mientras que", g: "Contrastar", cz: "___ Option A is cheaper, Option B is higher quality." },
+  { id: "whr", en: "Whereas", es: "Mientras que", g: "Contrastar", cz: "Electric cars produce zero emissions, ___ gas cars pollute." },
+  { id: "isp", en: "In spite of", es: "A pesar de", g: "Contrastar", cz: "___ the storm, the flight landed safely." },
+  { id: "dsp", en: "Despite", es: "A pesar de", g: "Contrastar", cz: "___ his lack of experience, he got the position." },
+  { id: "dfc", en: "Despite the difficulty", es: "A pesar de la dificultad", g: "Contrastar", cz: "___, the team achieved its quota." },
+  { id: "iso", en: "Instead of", es: "En vez de", g: "Contrastar", cz: "We chose to renovate ___ rebuilding." },
+  { id: "ist", en: "Instead", es: "En su lugar", g: "Contrastar", cz: "He did not complain; ___, he offered a solution." },
+  { id: "unl", en: "Unlike", es: "A diferencia de", g: "Contrastar", cz: "___ traditional methods, this approach is automated." },
+  { id: "cv", en: "Conversely", es: "Por el contrario", g: "Contrastar", cz: "High prices reduce demand; ___, discounts boost sales." },
+  { id: "wia", en: "While I acknowledge that", es: "Aunque reconozco que", g: "Contrastar", cz: "___ option A is faster, option B is safer." },
+
+  { id: "ths", en: "Thus", es: "De este modo", g: "Causa Y Efecto", cz: "The system was automated, ___ reducing human error." },
+  { id: "hn", en: "Hence", es: "Por eso", g: "Causa Y Efecto", cz: "The deadline passed; ___ the delay in delivery." },
+  { id: "so1", en: "So", es: "Así que", g: "Causa Y Efecto", cz: "The weather improved, ___ we resumed the outdoor event." },
+  { id: "bc", en: "Because", es: "Porque", g: "Causa Y Efecto", cz: "We rescheduled the meeting ___ the client was ill." },
+  { id: "sn", en: "Since", es: "Ya que", g: "Causa Y Efecto", cz: "___ you are already here, let's review the contract." },
+  { id: "dt", en: "Due to", es: "Debido a", g: "Causa Y Efecto", cz: "The outdoor event was canceled ___ severe weather." },
+  { id: "bco", en: "Because of", es: "Debido a", g: "Causa Y Efecto", cz: "Traffic was slow ___ road construction." },
+
+  { id: "mw", en: "Meanwhile", es: "Mientras tanto", g: "Tiempo Y Secuencia", cz: "The engineers fixed the server; ___, support assisted users." },
+  { id: "aft", en: "Afterward", es: "Después", g: "Tiempo Y Secuencia", cz: "We attended the briefing and met the client ___." },
+  { id: "asn", en: "As soon as", es: "Tan pronto como", g: "Tiempo Y Secuencia", cz: "We will dispatch the order ___ payment is confirmed." },
+  { id: "asl", en: "As long as", es: "Siempre que", g: "Tiempo Y Secuencia", cz: "You may use the equipment ___ you follow safety guidelines." },
+  { id: "lb", en: "Looking back", es: "Mirando hacia atrás", g: "Tiempo Y Secuencia", cz: "___, taking that risk was the best decision." },
+
+  { id: "ind", en: "Indeed", es: "Así es", g: "Enfatizar", cz: "The results were ___ impressive." },
+  { id: "ift", en: "In fact", es: "De hecho", g: "Enfatizar", cz: "The project is not failing; ___, it is ahead of schedule." },
+
+  { id: "unls", en: "Unless", es: "A menos que", g: "Condicionales", cz: "We will not proceed ___ approval is granted." },
+  { id: "oth", en: "Otherwise", es: "De lo contrario", g: "Condicionales", cz: "Please confirm your reservation; ___, it will be canceled." },
+  { id: "wht", en: "Whether", es: "Si (entre alternativas)", g: "Condicionales", cz: "We must decide ___ to expand now or wait." },
+  { id: "iuty", en: "It is up to you", es: "Tú decides", g: "Condicionales", cz: "You can choose the morning or afternoon shift; ___." },
+
+  { id: "tsu", en: "To sum up", es: "Para resumir", g: "Concluir", cz: "___, we achieved our quarterly targets." },
+  { id: "tsz", en: "To summarize", es: "Para resumir", g: "Concluir", cz: "___, three key factors contributed to our success." },
+  { id: "ov", en: "Overall", es: "En general", g: "Concluir", cz: "___, the campaign exceeded our expectations." },
+  { id: "ite", en: "In the end", es: "Al final", g: "Concluir", cz: "___, all parties reached a fair agreement." },
+  { id: "ev", en: "Eventually", es: "Con el tiempo", g: "Concluir", cz: "He persisted, and ___, he secured the grant." },
+  { id: "ab", en: "Above all", es: "Sobre todo", g: "Concluir", cz: "___, maintain clarity in your writing." },
+
+  { id: "vc1", en: "Expenditure", es: "Sinónimo alto de 'cost'", g: "Vocabulario Alto Nivel", cz: "The renovation caused a significant ___ that exceeded our budget." },
+  { id: "vc2", en: "Assist", es: "Sinónimo alto de 'help'", g: "Vocabulario Alto Nivel", cz: "The new software will ___ employees with daily reporting." },
+  { id: "vc3", en: "Issue", es: "Sinónimo alto de 'problem'", g: "Vocabulario Alto Nivel", cz: "We need to address this ___ before it affects other departments." },
+  { id: "vc4", en: "Beneficial", es: "Sinónimo alto de 'good'", g: "Vocabulario Alto Nivel", cz: "Regular exercise is highly ___ for mental health." },
+  { id: "vc5", en: "Detrimental", es: "Sinónimo alto de 'bad'", g: "Vocabulario Alto Nivel", cz: "Excessive screen time can be ___ to children's sleep." },
+  { id: "vc6", en: "Demonstrate", es: "Sinónimo alto de 'show'", g: "Vocabulario Alto Nivel", cz: "These results clearly ___ the value of the new policy." },
+  { id: "vc7", en: "Substantial", es: "Sinónimo alto de 'big'", g: "Vocabulario Alto Nivel", cz: "The city made a ___ investment in public transit." },
+  { id: "vc8", en: "Minor", es: "Sinónimo alto de 'small'", g: "Vocabulario Alto Nivel", cz: "Aside from a few ___ delays, the project went smoothly." },
 ];
-const CONN_GROUPS = ["Ordenar Y Agregar", "Contrastar", "Concluir", "Relajados", "Frases Útiles", "Verbos De Opinión"];
+const CONN_GROUPS = [
+  "Iniciar", "Ordenar Y Agregar", "Agregar", "Ejemplos", "Contrastar", "Causa Y Efecto",
+  "Tiempo Y Secuencia", "Enfatizar", "Condicionales", "Concluir", "Relajados",
+  "Frases Útiles", "Verbos De Opinión", "Vocabulario Alto Nivel",
+];
 
 const shuffle = (a) => a.map((x) => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map((p) => p[1]);
 
@@ -355,12 +530,12 @@ const PLAN = [
 function sessionSteps(day) {
   const spk = ((day - 1) % 8) + 1;
   if (day <= 5) return [
-    { label: "3·2·1 con dos templates de writing", go: { tab: "review" } },
-    { label: "3·2·1 con un template de speaking", go: { tab: "review" } },
+    { label: "3·2·1 con dos templates de writing", go: { tab: "review", preset: { view: "ritual", group: "Writing" } } },
+    { label: "3·2·1 con un template de speaking", go: { tab: "review", preset: { view: "ritual", group: "Speaking" } } },
     { label: `Speaking Task ${spk} con cronómetro`, go: { tab: "train", skill: "speaking", preset: { task: spk } } },
     { label: "Listening: una práctica a 1.25x", go: { tab: "train", skill: "listening", preset: { part: ((day - 1) % 6) + 1 } } },
     { label: "Reading: una práctica cronometrada", go: { tab: "train", skill: "reading", preset: { part: ((day - 1) % 4) + 1 } } },
-    { label: "Conectores: una ronda de parejas y una en contexto", go: { tab: "review" } },
+    { label: "Conectores: una ronda de parejas y una en contexto", go: { tab: "review", preset: { view: "conn" } } },
   ];
   if (day <= 12) return [
     { label: "Writing: adaptar un template a un tema general", go: { tab: "train", skill: "writing", preset: { task: "w1" } } },
@@ -374,6 +549,17 @@ function sessionSteps(day) {
     { label: "Writing: email y survey", go: { tab: "train", skill: "writing", preset: { task: "w1" } } },
     { label: "Speaking: los 8 tasks seguidos", go: { tab: "train", skill: "speaking", preset: { task: 1 } } },
   ];
+}
+
+// Marca automáticamente como hecho el paso del plan de hoy que corresponda
+// a la actividad que el usuario acaba de completar (si aún no estaba marcado).
+function completeTodayStep(state, matchFn) {
+  const steps = sessionSteps(state.day);
+  const idx = steps.findIndex((st) => matchFn(st.go));
+  if (idx === -1) return state;
+  const prevDone = state.session && state.session.date === todayKey() ? state.session.done : [];
+  if (prevDone.includes(idx)) return state;
+  return { ...state, session: { date: todayKey(), done: [...prevDone, idx] } };
 }
 
 /* ---------------------- Estado y servicios ---------------------- */
@@ -539,7 +725,7 @@ async function ttsOpenAI(key, text, voice) {
     headers: { Authorization: "Bearer " + key, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "gpt-4o-mini-tts", voice, input: text, response_format: "mp3",
-      instructions: "Natural spoken Canadian English, conversational pace, as in a real phone call or radio segment.",
+      instructions: "Natural, human, conversational Canadian English — like a real person on a phone call or radio segment, not a narrator reading a script. Vary pitch and pace naturally, use realistic micro-pauses at commas, slight breath before new sentences, and let filler words (well, you know, actually) land casually and unhurried. Avoid a flat or robotic monotone; sound relaxed and spontaneous, as if thinking while speaking.",
     }),
   });
   if (!res.ok) throw new Error("tts");
@@ -598,6 +784,25 @@ const cacheAdd = (key, item, cap = 20) => {
 const cacheList = (key) => {
   try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch (e) { return []; }
 };
+const cacheRemoveAt = (key, idx) => {
+  try {
+    const arr = JSON.parse(localStorage.getItem(key) || "[]");
+    arr.splice(idx, 1);
+    localStorage.setItem(key, JSON.stringify(arr));
+  } catch (e) { /* sin espacio: se omite */ }
+};
+
+// Los modelos suelen partir el pasaje en un salto de línea por frase: lo
+// normalizamos a párrafos reales (línea en blanco = nuevo párrafo).
+function cleanPassage(t) {
+  if (!t) return "";
+  return t
+    .replace(/\r\n?/g, "\n")
+    .split(/\n{2,}/)
+    .map((p) => p.replace(/\s*\n\s*/g, " ").replace(/[ \t]{2,}/g, " ").trim())
+    .filter(Boolean)
+    .join("\n\n");
+}
 
 /* ---------------------- Primitivas de UI ---------------------- */
 
@@ -735,9 +940,118 @@ function QuizRunner({ quiz, color, onFinish }) {
             Revisar respuestas
           </button>
         : <div className="card center" style={{ padding: 22 }}>
-            <span className="disp" style={{ fontSize: 40, fontWeight: 700, color }}>{score}/{quiz.questions.length}</span>
-            <span className="dimtx">respuestas correctas</span>
+            <span className="disp" style={{ fontSize: 40, lineHeight: 1.1, fontWeight: 700, color }}>{score}/{quiz.questions.length}</span>
+            <span className="dimtx" style={{ marginTop: 6, display: "block" }}>Respuestas correctas</span>
           </div>}
+    </div>
+  );
+}
+
+// Replica la interfaz de la prueba real de Reading de CELPIP: pasaje fijo
+// arriba, una pregunta a la vez abajo, navegación libre entre preguntas y
+// un único cronómetro para toda la parte (como en el examen real).
+function ReadingExamRunner({ quiz, part, onFinish, onNewPractice }) {
+  const total = quiz.questions.length;
+  const [qIdx, setQIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [finished, setFinished] = useState(false);
+  const [showPassage, setShowPassage] = useState(true);
+  const [showPassageEnd, setShowPassageEnd] = useState(false);
+  const answersRef = useRef({});
+  const doneRef = useRef(false);
+
+  const finish = () => {
+    if (doneRef.current) return;
+    doneRef.current = true;
+    const score = quiz.questions.filter((q, i) => answersRef.current[i] === q.correct).length;
+    setFinished(true);
+    onFinish(score, total);
+  };
+
+  const totalSeconds = part.min * 60;
+  const { left } = useCountdown(totalSeconds, true, finish);
+
+  if (finished) {
+    const score = quiz.questions.filter((q, i) => answersRef.current[i] === q.correct).length;
+    return (
+      <>
+        <div className="card center" style={{ padding: 24 }}>
+          <span className="disp" style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 700, color: "#FFD666" }}>{score}/{total}</span>
+          <span className="dimtx" style={{ marginTop: 6, display: "block" }}>Respuestas correctas</span>
+        </div>
+        <div className="card">
+          {quiz.questions.map((q, i) => {
+            const mine = answersRef.current[i];
+            const ok = mine === q.correct;
+            return (
+              <div key={i} style={{ marginTop: i ? 16 : 0 }}>
+                <p style={{ fontWeight: 600, fontSize: 14 }}>{i + 1}. {q.question}</p>
+                {mine != null && !ok && <p className="dimtx" style={{ color: "#FF9E9E" }}>✗ Tu respuesta: {q.options[mine]}</p>}
+                {mine == null && <p className="dimtx" style={{ color: "#FF9E9E" }}>✗ Sin responder</p>}
+                <p className="dimtx" style={{ color: "#7FE0B2" }}>✓ {q.options[q.correct]}</p>
+                <p className="dimtx">{q.explanation}</p>
+              </div>
+            );
+          })}
+        </div>
+        <button className="btn btn--ghost" onClick={() => setShowPassageEnd(!showPassageEnd)}>
+          {showPassageEnd ? "Ocultar pasaje" : "Ver pasaje"}
+        </button>
+        {showPassageEnd && (
+          <div className="paper">
+            {cleanPassage(quiz.passage).split("\n\n").map((p, i) => <p key={i} style={{ margin: i ? "10px 0 0" : 0 }}>{p}</p>)}
+          </div>
+        )}
+        <button className="btn" style={{ "--acc": "#FFD666" }} onClick={onNewPractice}>Nueva práctica</button>
+      </>
+    );
+  }
+
+  const q = quiz.questions[qIdx];
+  const paragraphs = cleanPassage(quiz.passage).split("\n\n");
+  return (
+    <div className="exam2">
+      <div className="exam2-top">
+        <span className="exam2-brand">CELPIP · Reading Part {part.n}</span>
+        <span className="exam2-count">{fmt(left)}</span>
+      </div>
+      <div className="exam2-bar"><i style={{ width: `${(left / totalSeconds) * 100}%` }} /></div>
+      <button className="exam2-toggle" onClick={() => setShowPassage(!showPassage)}>
+        <span>{quiz.title}</span>
+        {showPassage ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+      </button>
+      {showPassage && (
+        <div className="exam2-passage">
+          {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+        </div>
+      )}
+      <div className="exam2-body">
+        <span className="exam-count" style={{ color: "#5A6784" }}>Question {qIdx + 1} of {total}</span>
+        <p className="exam-q">{q.question}</p>
+        {q.options.map((o, j) => (
+          <button key={j} className="radio" data-on={answers[qIdx] === j ? "1" : "0"}
+            onClick={() => {
+              answersRef.current = { ...answersRef.current, [qIdx]: j };
+              setAnswers((a) => ({ ...a, [qIdx]: j }));
+            }}>
+            <span className="rdot" /><span>{o}</span>
+          </button>
+        ))}
+        <div className="exam2-nav">
+          {quiz.questions.map((_, i) => (
+            <button key={i} className="exam2-navdot" data-cur={i === qIdx ? "1" : "0"}
+              data-answered={answers[i] != null ? "1" : "0"} onClick={() => setQIdx(i)}>
+              {i + 1}
+            </button>
+          ))}
+        </div>
+        <div className="exam2-footer">
+          <button className="exam2-prev" disabled={qIdx === 0} onClick={() => setQIdx((i) => Math.max(0, i - 1))}>BACK</button>
+          <button className="exam-next" onClick={() => (qIdx + 1 >= total ? finish() : setQIdx((i) => i + 1))}>
+            {qIdx + 1 === total ? "FINISH" : "NEXT"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -797,11 +1111,16 @@ function HomeScreen({ state, update, launch }) {
   }));
   const goStep = (i) => { const g = steps[i].go; launch(g.tab, g.skill || null, g.preset || null); };
 
+  const skillFor = (st) => (st.go.skill ? SKILLS[st.go.skill] : null);
+  const nextSkill = nextIdx !== -1 ? skillFor(steps[nextIdx]) : null;
+  const heroColor = nextSkill ? nextSkill.color : "#7FE0B2";
+  const HeroIcon = nextSkill ? nextSkill.icon : Check;
+
   return (
     <div className="screen">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
-          <div className="kicker">Celpip 3.0 · Día {state.day} De 17</div>
+          <div className="kicker">Día {state.day} de 17 · {block.title}</div>
           <h1 className="disp h1">Hola, Mauricio</h1>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6 }}>
@@ -815,43 +1134,107 @@ function HomeScreen({ state, update, launch }) {
         </div>
       </div>
 
-      <div className="card" style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <Ring size={84} stroke={7} progress={sess.done.length / steps.length} color="#EDF1F8">
-          <span className="disp" style={{ fontSize: 17, fontWeight: 700 }}>{sess.done.length}/{steps.length}</span>
-        </Ring>
-        <div style={{ flex: 1 }}>
-          <div className="kicker">{block.title}</div>
-          <p style={{ fontWeight: 600, fontSize: 15, marginTop: 2 }}>
-            {nextIdx === -1 ? "Sesión de hoy completa" : steps[nextIdx].label}
-          </p>
+      <div className="card hero" style={{ "--acc": heroColor }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <Ring size={58} stroke={5} progress={sess.done.length / steps.length} color={heroColor}>
+            <HeroIcon size={22} color={heroColor} />
+          </Ring>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <span className="kicker">
+              {nextIdx === -1 ? "Sesión de hoy" : `Paso ${nextIdx + 1} de ${steps.length} · Sigue con esto`}
+            </span>
+            <p style={{ fontWeight: 700, fontSize: 16, lineHeight: "22px", marginTop: 2 }}>
+              {nextIdx === -1 ? "¡Completaste todo hoy! 🎉" : steps[nextIdx].label}
+            </p>
+          </div>
         </div>
+        {nextIdx !== -1
+          ? <button className="btn" style={{ "--acc": heroColor }} onClick={() => goStep(nextIdx)}>
+              Empezar <ArrowRight size={17} />
+            </button>
+          : <button className="btn" style={{ "--acc": heroColor }} onClick={markDay} disabled={doneToday}>
+              {doneToday ? "Día registrado" : "Marcar día completado"} <Check size={17} />
+            </button>}
       </div>
 
-      {nextIdx !== -1
-        ? <button className="btn" onClick={() => goStep(nextIdx)}>Continuar sesión <ArrowRight size={17} /></button>
-        : <button className="btn" onClick={markDay} disabled={doneToday}>
-            {doneToday ? "Día registrado" : "Marcar día completado"} <Check size={17} />
-          </button>}
+      <RoadmapPreview currentDay={state.day} />
 
       <div className="card" style={{ paddingTop: 6, paddingBottom: 6 }}>
-        {steps.map((st, i) => (
-          <div className="steprow" key={i}>
-            <button className="dot" data-on={stepDone(i) ? "1" : "0"} style={{ "--acc": "#7FE0B2" }}
-              aria-label={`Marcar paso ${i + 1}`} onClick={() => toggleStep(i)}>
-              <Check size={15} />
-            </button>
-            <span style={{ flex: 1, fontSize: 14, lineHeight: "21px", opacity: stepDone(i) ? 0.45 : 1 }}>{st.label}</span>
-            <button className="iconbtn" style={{ width: 38, height: 38, borderRadius: 11 }}
-              aria-label={`Ir al paso ${i + 1}`} onClick={() => goStep(i)}>
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        ))}
+        <div className="kicker" style={{ padding: "10px 0 2px" }}>Plan de hoy · {sess.done.length}/{steps.length}</div>
+        {steps.map((st, i) => {
+          const sk = skillFor(st);
+          const Ic = sk ? sk.icon : RotateCcw;
+          const color = sk ? sk.color : "var(--dim)";
+          const done = stepDone(i);
+          return (
+            <div className="steprow" key={i}>
+              <button className="dot" data-on={done ? "1" : "0"} style={{ "--acc": "#7FE0B2" }}
+                aria-label={`Marcar paso ${i + 1} como hecho`} onClick={() => toggleStep(i)}>
+                <Check size={15} />
+              </button>
+              <button className="stepbtn" style={{ opacity: done ? 0.45 : 1 }}
+                aria-label={`Ir al paso ${i + 1}`} onClick={() => goStep(i)}>
+                <span className="stepic" style={{ background: `${color}22`, color }}><Ic size={15} /></span>
+                <span style={{ flex: 1, fontSize: 14, lineHeight: "21px", textDecoration: done ? "line-through" : "none" }}>{st.label}</span>
+                <ArrowRight size={16} color="var(--dim)" />
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       <p className="dimtx" style={{ marginTop: 14 }}>
         Método del cuaderno: leer 3 veces, repetir en voz alta 2 veces, escribirlo 1 vez. Vive en la pestaña Repaso.
       </p>
+    </div>
+  );
+}
+
+const phaseColor = (day) => (day <= 5 ? "#7FE0B2" : day <= 12 ? "#FFD666" : "#FF9E9E");
+
+function RoadmapPreview({ currentDay }) {
+  const [open, setOpen] = useState(false);
+  const [selDay, setSelDay] = useState(currentDay);
+  const selSteps = sessionSteps(selDay);
+
+  return (
+    <div className="card">
+      <button style={{ display: "flex", width: "100%", gap: 12, alignItems: "center", background: "none", border: "none", color: "var(--text)", cursor: "pointer", font: "inherit", textAlign: "left", padding: 0 }}
+        onClick={() => setOpen(!open)}>
+        <span className="stepic" style={{ background: "rgba(237,241,248,.12)", color: "var(--text)" }}><RotateCcw size={15} /></span>
+        <span style={{ flex: 1, fontWeight: 600, fontSize: 14 }}>Ruta completa · 17 días</span>
+        {open ? <ChevronUp size={16} color="var(--dim)" /> : <ChevronDown size={16} color="var(--dim)" />}
+      </button>
+
+      {open && <>
+        {PLAN.map((phase) => (
+          <div key={phase.title} style={{ marginTop: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 2 }}>
+              <span style={{ width: 8, height: 8, borderRadius: 4, background: phaseColor(phase.from), flex: "0 0 auto" }} />
+              <span className="dimtx" style={{ fontWeight: 600 }}>{phase.title}</span>
+            </div>
+            <div className="chiprow" style={{ marginTop: 8 }}>
+              {Array.from({ length: phase.to - phase.from + 1 }, (_, i) => phase.from + i).map((day) => (
+                <button key={day} className="chip" data-on={day === selDay ? "1" : "0"}
+                  style={{ "--acc": phaseColor(day), opacity: day < currentDay ? 0.5 : 1 }}
+                  onClick={() => setSelDay(day)}>
+                  {day === currentDay && <Flame size={11} />} Día {day}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <div className="card card--flat" style={{ marginTop: 18, padding: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+            <span className="pill pill--acc" style={{ "--acc": phaseColor(selDay) }}>Día {selDay}</span>
+            {selDay === currentDay && <span className="kicker">Hoy</span>}
+          </div>
+          {selSteps.map((s, i) => (
+            <p key={i} className="dimtx" style={{ marginTop: i ? 6 : 10 }}>· {s.label}</p>
+          ))}
+        </div>
+      </>}
     </div>
   );
 }
@@ -890,22 +1273,28 @@ function ReadingScreen({ back, preset, update }) {
   const generate = async () => {
     setBusy(true); setErr(""); setQuiz(null);
     try {
+      const topic = CELPIP_TOPICS[Math.floor(Math.random() * CELPIP_TOPICS.length)];
       const data = await askClaudeJSON(
         "Eres un generador de práctica para el examen CELPIP General, sección Reading.",
         `Genera una práctica de CELPIP Reading Part ${part.n}: ${part.name}.
-Devuelve JSON: {"title":"...","passage":"texto de 180-230 palabras en inglés canadiense","questions":[{"question":"...","options":["a","b","c","d"],"correct":0,"explanation":"breve, en español, qué sinónimo delata la respuesta"}]}
-Exactamente 4 preguntas. Usa sinónimos y paráfrasis como el examen real. Tema canadiense cotidiano.`
+El texto debe ser ${READING_SPECS[part.n]}.
+Tema: ${topic}, en un contexto canadiense.
+El texto debe tener suficiente contenido para sostener ${part.q} preguntas distintas sin repetir la misma idea (aprox. ${part.q * 25}-${part.q * 32} palabras).
+Devuelve JSON: {"title":"...","passage":"el texto en inglés canadiense","questions":[{"question":"...","options":["a","b","c","d"],"correct":0,"explanation":"breve, en español, qué sinónimo delata la respuesta"}]}
+Exactamente ${part.q} preguntas, como en el examen real de esta parte. Usa sinónimos y paráfrasis como el examen real.`
       );
+      data.passage = cleanPassage(data.passage);
       setQuiz(data);
       cacheAdd(`celpip:cache:read:${part.n}`, { date: todayKey(), quiz: data });
     } catch (e) { setErr(e.message); }
     setBusy(false);
   };
 
+  const savedForPart = cacheList(`celpip:cache:read:${part.n}`);
+
   return (
     <div className="screen" style={{ "--acc": S.color }}>
-      <TopBar title="Reading" sub={`Part ${part.n} · ${part.q} Preguntas · ${part.min} Min`} onBack={back}
-        right={quiz && <MiniTimer total={part.min * 60} color={S.color} />} />
+      <TopBar title="Reading" sub={`Part ${part.n} · ${part.q} Preguntas · ${part.min} Min`} onBack={back} />
       {!quiz && <>
         <div className="chiprow">
           {READING_PARTS.map((p) => (
@@ -915,32 +1304,39 @@ Exactamente 4 preguntas. Usa sinónimos y paráfrasis como el examen real. Tema 
         </div>
         <Strategy tips={part.tips} color={S.color} />
         {busy ? <Skeletons /> : (
-          <>
-            <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
-              Generar práctica <Sparkles size={16} />
-            </button>
-            {cacheList(`celpip:cache:read:${part.n}`).length > 0 && (
-              <button className="btn btn--ghost" onClick={() => {
-                const saved = cacheList(`celpip:cache:read:${part.n}`);
-                setErr(""); setQuiz(saved[Math.floor(Math.random() * saved.length)].quiz);
-              }}>
-                Repetir una guardada · {cacheList(`celpip:cache:read:${part.n}`).length} en tu banco · $0
-              </button>
-            )}
-          </>
+          <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
+            Generar práctica <Sparkles size={16} />
+          </button>
+        )}
+        {!busy && savedForPart.length > 0 && (
+          <div className="card">
+            <span className="kicker">Guardadas · Part {part.n} · {savedForPart.length}/20 · $0 al repetirlas</span>
+            {savedForPart.slice().reverse().map((item, i) => {
+              const realIdx = savedForPart.length - 1 - i;
+              return (
+                <div key={realIdx} className="steprow" style={{ gap: 8 }}>
+                  <button style={{ flex: 1, textAlign: "left", background: "none", border: "none", cursor: "pointer", color: "var(--text)", padding: 0 }}
+                    onClick={() => { setErr(""); setQuiz(item.quiz); }}>
+                    <span style={{ fontWeight: 600, fontSize: 13.5, display: "block" }}>{item.quiz.title}</span>
+                    <span className="dimtx">{item.date}</span>
+                  </button>
+                  <button className="iconbtn" aria-label="Borrar guardada" style={{ width: 36, height: 36, borderRadius: 10 }}
+                    onClick={() => { cacheRemoveAt(`celpip:cache:read:${part.n}`, realIdx); setPart({ ...part }); }}>
+                    <X size={14} />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         )}
       </>}
       {err && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 12 }}>{err}</p>}
       {quiz && (
         <>
-          <div className="card">
-            <span className="kicker">{quiz.title}</span>
-            <p style={{ marginTop: 8, fontSize: 14.5, lineHeight: 25, whiteSpace: "pre-wrap" }}>{quiz.passage}</p>
-          </div>
-          <QuizRunner quiz={quiz} color={S.color} onFinish={(s, t) => update((st) => ({
+          <ReadingExamRunner quiz={quiz} part={part} onFinish={(s, t) => update((st) => completeTodayStep({
             ...st, history: [...st.history, { date: todayKey(), section: "Reading", detail: `Part ${part.n}: ${s}/${t}` }],
-          }))} />
-          <button className="btn btn--ghost" onClick={() => setQuiz(null)}>Nueva práctica</button>
+          }, (g) => g.tab === "train" && g.skill === "reading"))} onNewPractice={() => setQuiz(null)} />
+          <button className="btn btn--ghost" onClick={() => setQuiz(null)}>Salir sin terminar</button>
         </>
       )}
     </div>
@@ -1080,8 +1476,8 @@ function ExamRunner({ quiz, part, color, onDone, onNewPractice }) {
     return (
       <>
         <div className="card center" style={{ padding: 24 }}>
-          <span className="disp" style={{ fontSize: 44, fontWeight: 700, color }}>{score}/{total}</span>
-          <span className="dimtx">respuestas correctas</span>
+          <span className="disp" style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 700, color }}>{score}/{total}</span>
+          <span className="dimtx" style={{ marginTop: 6, display: "block" }}>Respuestas correctas</span>
         </div>
         <div className="card">
           {quiz.questions.map((q, i) => {
@@ -1159,17 +1555,19 @@ function ListeningScreen({ back, preset, update }) {
     setQuizDone(false); setShowScript(false); setExamPhase("intro");
     setCols({ a: "", b: "", c: "", favor: "", contra: "" });
     try {
+      const topic = CELPIP_TOPICS[Math.floor(Math.random() * CELPIP_TOPICS.length)];
       const data = await askClaudeJSON(
         "Eres un guionista de audios de práctica para el examen CELPIP General, sección Listening. Escribes inglés canadiense HABLADO, no leído.",
         `Genera una práctica de CELPIP Listening Part ${part.n}: ${part.name}.
 El audio debe ser ${LISTEN_SPECS[part.n]}.
+Tema: ${topic}, en un contexto canadiense.
 Reglas del guion para que suene natural en voz sintetizada:
 - Contracciones siempre (I'm, don't, we've), frases cortas, alguna muletilla ligera (well, you know, actually).
 - Cada intervención en su propia línea con el formato exacto "Nombre: texto". En monólogos, un solo hablante (por ejemplo "Announcer:").
 - Sin acotaciones, sin paréntesis, sin emojis. Puntuación cuidada (comas y puntos) porque marca las pausas de la voz.
-- 150-220 palabras en total. En diálogos, 8-12 turnos cortos que se responden entre sí como una conversación real.
+- Suficiente contenido para sostener ${part.q} preguntas sin repetir la misma idea (aprox. ${part.q * 30}-${part.q * 40} palabras). En diálogos, turnos cortos que se responden entre sí como una conversación real.
 Devuelve JSON: {"title":"A conversation about ...","script":"...","questions":[{"question":"...","options":["a","b","c","d"],"correct":0,"explanation":"breve, en español"}]}
-Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablantes.`
+Exactamente ${part.q} preguntas, como en el examen real de esta parte, sobre who, what, when, where u opiniones de los hablantes.`
       );
       setQuiz(data);
       cacheAdd(`celpip:cache:listen:${part.n}`, { date: todayKey(), quiz: data });
@@ -1294,7 +1692,7 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
               onClick={() => setPart(p)}>Part {p.n} · {p.name}</button>
           ))}
         </div>
-        <Strategy tips={part.tips} color={S.color} />
+        <Strategy tips={[...LISTENING_GENERAL_TIPS, ...part.tips]} color={S.color} />
         <div className="chiprow" role="group" aria-label="Velocidad">
           {[1, 1.25, 1.5].map((r) => (
             <button key={r} className="chip" data-on={r === rate ? "1" : "0"} style={{ "--acc": S.color }}
@@ -1376,9 +1774,9 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
 
           {examPhase === "questions" && (
             <ExamRunner quiz={quiz} part={part} color={S.color}
-              onDone={(s, t) => update((st) => ({
+              onDone={(s, t) => update((st) => completeTodayStep({
                 ...st, history: [...st.history, { date: todayKey(), section: "Listening", detail: `Part ${part.n}: ${s}/${t}` }],
-              }))}
+              }, (g) => g.tab === "train" && g.skill === "listening"))}
               onNewPractice={() => setQuiz(null)} />
           )}
         </>
@@ -1421,11 +1819,11 @@ Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score"
 Máximo 4 fixes y 4 upgrades. Comentarios en español, ejemplos en inglés.`
       );
       setResult(r);
-      update((s) => ({
+      update((s) => completeTodayStep({
         ...s,
         history: [...s.history, { date: todayKey(), section: "Writing", detail: `${task.name}: nivel ${r.level}` }],
         errors: [...(s.errors || []), ...((r.fixes || []).map((f) => ({ date: todayKey(), section: "Writing", text: f })))],
-      }));
+      }, (g) => g.tab === "train" && g.skill === "writing"));
     } catch (e) { setErr(e.message); }
     setBusy(false);
   };
@@ -1448,6 +1846,8 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español, ejemplos en inglés.`
             onClick={() => { setTask(t); setPrompt(""); }}>{t.name} · {t.min} min</button>
         ))}
       </div>
+
+      <Strategy tips={task.tips} color={S.color} />
 
       <div className="card">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
@@ -1539,11 +1939,11 @@ Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score"
 Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal (${task.tense}).`
       );
       setResult(r);
-      update((s) => ({
+      update((s) => completeTodayStep({
         ...s,
         history: [...s.history, { date: todayKey(), section: "Speaking", detail: `Task ${task.n}: nivel ${r.level}` }],
         errors: [...(s.errors || []), ...((r.fixes || []).map((f) => ({ date: todayKey(), section: "Speaking", text: f })))],
-      }));
+      }, (g) => g.tab === "train" && g.skill === "speaking"));
     } catch (e) { setErr(e.message); }
     setBusy(false);
   };
@@ -1571,9 +1971,7 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
           <span className="kicker">{task.name} · Tiempo {task.tense}</span>
         </div>
         <div className="paper">{TEMPLATES[task.tpl].body}</div>
-        <p className="dimtx" style={{ marginTop: 12 }}>
-          Fluidez sobre perfección. Si te pierdes: "What I mean is…" y repites la idea.
-        </p>
+        <Strategy tips={[...SPEAKING_GENERAL_TIPS, ...task.tips]} color={S.color} />
         <button className="btn" style={{ "--acc": S.color }} onClick={start} disabled={busy}>
           {busy ? "Generando consigna…" : "Empezar task"} <Play size={16} />
         </button>
@@ -1645,7 +2043,7 @@ function MatchGame({ items, color, onResult, onNewRound }) {
 
   if (finished) return (
     <div className="card center" style={{ padding: 24 }}>
-      <span className="disp" style={{ fontSize: 40, fontWeight: 700, color }}>
+      <span className="disp" style={{ fontSize: 40, lineHeight: 1.1, fontWeight: 700, color }}>
         {misses === 0 ? "Perfecto" : `${misses} ${misses === 1 ? "fallo" : "fallos"}`}
       </span>
       <span className="dimtx">los que fallaste volverán más seguido</span>
@@ -1699,7 +2097,7 @@ function ClozeGame({ items, color, onResult, onNewRound }) {
 
   if (finished) return (
     <div className="card center" style={{ padding: 24 }}>
-      <span className="disp" style={{ fontSize: 40, fontWeight: 700, color }}>{score}/{items.length}</span>
+      <span className="disp" style={{ fontSize: 40, lineHeight: 1.1, fontWeight: 700, color }}>{score}/{items.length}</span>
       <span className="dimtx">frases correctas</span>
       <button className="btn" style={{ "--acc": color }} onClick={onNewRound}>Otra ronda</button>
     </div>
@@ -1794,13 +2192,41 @@ function RitualCard({ id, tpl, data, update, color }) {
   const [open, setOpen] = useState(false);
   const [writing, setWriting] = useState(false);
   const [draft, setDraft] = useState("");
+  const [recording, setRecording] = useState(false);
+  const [heard, setHeard] = useState("");
+  const [spokenScore, setSpokenScore] = useState(null);
+  const recRef = useRef(null);
+  const isSpeaking = tpl.group === "Speaking";
+  const SR = typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition);
   const set = (patch) => update((s) => ({ ...s, ritual: { ...s.ritual, [id]: { ...st, ...patch } } }));
   const complete = st.read >= 3 && st.spoken >= 2 && st.written != null;
 
-  const coverage = () => {
+  const matchWords = (text) => {
     const key = [...new Set(tpl.body.toLowerCase().match(/[a-z']{5,}/g) || [])];
-    const mine = new Set(draft.toLowerCase().match(/[a-z']{5,}/g) || []);
+    const mine = new Set(text.toLowerCase().match(/[a-z']{5,}/g) || []);
     return Math.round((key.filter((w) => mine.has(w)).length / Math.max(key.length, 1)) * 100);
+  };
+
+  const startSpeaking = () => {
+    if (!SR) return;
+    const rec = new SR();
+    rec.lang = "en-CA"; rec.continuous = true; rec.interimResults = false;
+    let full = "";
+    rec.onresult = (e) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) full += e.results[i][0].transcript + " ";
+      setHeard(full);
+    };
+    rec.onerror = () => setRecording(false);
+    rec.onend = () => setRecording(false);
+    recRef.current = rec; rec.start();
+    setHeard(""); setSpokenScore(null); setRecording(true);
+  };
+  const stopSpeaking = () => {
+    recRef.current && recRef.current.stop();
+    setRecording(false);
+    const score = matchWords(heard);
+    setSpokenScore(score);
+    if (score >= 40) set({ spoken: Math.min(2, st.spoken + 1) });
   };
 
   return (
@@ -1818,18 +2244,35 @@ function RitualCard({ id, tpl, data, update, color }) {
           <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => set({ read: Math.min(3, st.read + 1) })}>
             Leer {st.read}/3
           </button>
-          <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => set({ spoken: Math.min(2, st.spoken + 1) })}>
-            Voz alta {st.spoken}/2
-          </button>
+          {isSpeaking && SR ? (
+            <button className="btn btn--sm" style={{ flex: 1, "--acc": recording ? "#FF9E9E" : color }}
+              onClick={recording ? stopSpeaking : startSpeaking}>
+              {recording ? <><Square size={14} /> Grabando…</> : <><Mic size={14} /> Decirlo {st.spoken}/2</>}
+            </button>
+          ) : (
+            <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => set({ spoken: Math.min(2, st.spoken + 1) })}>
+              Voz alta {st.spoken}/2
+            </button>
+          )}
           <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => { setWriting(!writing); setDraft(""); }}>
             {writing ? "Cancelar" : "Escribir 1"}
           </button>
         </div>
+        {isSpeaking && spokenScore != null && (
+          <p style={{ marginTop: 10, fontSize: 13.5 }}>
+            <span className="hlmark" style={{ "--acc": spokenScore >= 40 ? "#7FE0B2" : "#FF9E9E" }}>
+              {spokenScore >= 40 ? `Dijiste el ${spokenScore}% del template` : `Solo captó el ${spokenScore}% — repítelo mirando el template`}
+            </span>
+          </p>
+        )}
+        {isSpeaking && !SR && (
+          <p className="dimtx" style={{ marginTop: 10 }}>Tu navegador no soporta reconocimiento de voz — usa Chrome de escritorio para practicar con micrófono aquí.</p>
+        )}
         {writing ? <>
           <p className="dimtx" style={{ marginTop: 10 }}>Template oculto: escríbelo de memoria.</p>
           <textarea rows={7} value={draft} onChange={(e) => setDraft(e.target.value)} />
           <button className="btn btn--sm" style={{ "--acc": color, marginTop: 10 }}
-            onClick={() => { set({ written: coverage() }); setWriting(false); }}>
+            onClick={() => { set({ written: matchWords(draft) }); setWriting(false); }}>
             Comparar con el original
           </button>
         </> : <>
@@ -1847,14 +2290,21 @@ function RitualCard({ id, tpl, data, update, color }) {
   );
 }
 
-function ReviewScreen({ state, update }) {
-  const [view, setView] = useState("ritual");
+function ReviewScreen({ state, update, preset }) {
+  const [view, setView] = useState((preset && preset.view) || "ritual");
   const ids = Object.keys(TEMPLATES);
-  const done = ids.filter((id) => {
-    const r = state.ritual[id];
-    return r && r.read >= 3 && r.spoken >= 2 && r.written != null;
-  }).length;
-  const groups = ["Writing", "Speaking"];
+  const isRitualDone = (id) => { const r = state.ritual[id]; return r && r.read >= 3 && r.spoken >= 2 && r.written != null; };
+  const done = ids.filter(isRitualDone).length;
+  const groups = preset && preset.group ? [preset.group] : ["Writing", "Speaking"];
+
+  // Auto-completar los pasos "3·2·1" del plan de hoy cuando ya se hicieron
+  // suficientes templates (2 de Writing o 1 de Speaking, según el paso).
+  useEffect(() => {
+    const writingDone = ids.filter((id) => TEMPLATES[id].group === "Writing" && isRitualDone(id)).length;
+    const speakingDone = ids.filter((id) => TEMPLATES[id].group === "Speaking" && isRitualDone(id)).length;
+    if (writingDone >= 2) update((s) => completeTodayStep(s, (g) => g.tab === "review" && g.preset && g.preset.group === "Writing"));
+    if (speakingDone >= 1) update((s) => completeTodayStep(s, (g) => g.tab === "review" && g.preset && g.preset.group === "Speaking"));
+  }, [state.ritual]);
 
   return (
     <div className="screen">
@@ -1918,7 +2368,7 @@ function ProgressScreen({ state }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
         <div className="card center" style={{ margin: 0, padding: 18 }}>
           <Flame size={20} color="#FFD666" />
-          <span className="disp" style={{ fontSize: 30, fontWeight: 700, marginTop: 4 }}>{state.streak}</span>
+          <span className="disp" style={{ fontSize: 30, lineHeight: 1.1, fontWeight: 700, marginTop: 4 }}>{state.streak}</span>
           <span className="dimtx">días de racha</span>
         </div>
         <div className="card center" style={{ margin: 0, padding: 18 }}>
@@ -1953,6 +2403,42 @@ function ProgressScreen({ state }) {
 
 /* ---------------------- App ---------------------- */
 
+function VoicePicker({ color }) {
+  const [voices, setVoices] = useState([]);
+  useEffect(() => { withVoices(() => setVoices(bestEnglishVoices())); }, []);
+  const speak = (v) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance("Hi! I wanted to check if this voice sounds natural enough for your listening practice.");
+    u.voice = v; u.lang = v.lang || "en-CA";
+    window.speechSynthesis.speak(u);
+  };
+  return (
+    <div className="card">
+      <span className="kicker">Voces Del Sistema Detectadas · Gratis</span>
+      {voices.length === 0 ? (
+        <p className="dimtx" style={{ marginTop: 8 }}>
+          No se detectaron voces en inglés en este navegador. Prueba con Chrome (trae voces "Google" gratis) o Edge de escritorio (voces neuronales), o descarga una voz Enhanced/Premium en Ajustes del Sistema → Accesibilidad.
+        </p>
+      ) : voices.slice(0, 6).map((v, i) => (
+        <div className="errrow" key={v.name} style={{ alignItems: "center" }}>
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <strong style={{ fontSize: 13.5 }}>{v.name}</strong><br /><span className="dimtx">{v.lang}</span>
+          </span>
+          {i === 0 && <span className="pill pill--acc" style={{ "--acc": color, marginRight: 8 }}>Se usará esta</span>}
+          <button className="iconbtn" style={{ width: 38, height: 38, borderRadius: 11 }}
+            aria-label={`Probar voz ${v.name}`} onClick={() => speak(v)}>
+            <Volume2 size={16} />
+          </button>
+        </div>
+      ))}
+      <p className="dimtx" style={{ marginTop: 10 }}>
+        La app elige automáticamente la mejor voz en inglés disponible (prioriza nombres "Natural/Neural/Premium/Enhanced" o "Google/Microsoft"). Sin API key de OpenAI, esta es la que se usa en Listening.
+      </p>
+    </div>
+  );
+}
+
 function SettingsScreen({ back }) {
   const [keys, setK] = useState(getKeys());
   const [saved, setSaved] = useState(false);
@@ -1984,9 +2470,10 @@ function SettingsScreen({ back }) {
         <input type="password" autoComplete="off" placeholder="sk-…" value={keys.openai || ""}
           onChange={(e) => setK({ ...keys, openai: e.target.value.trim() })} />
         <p className="dimtx" style={{ marginTop: 8 }}>
-          Opcional y de pago (~2 centavos por audio). Sin ella, la app usa las voces del sistema: en Microsoft Edge de escritorio son voces neuronales gratis.
+          Opcional y de pago (~2 centavos por audio). Sin ella, la app usa las voces del sistema: en Chrome de escritorio son voces "Google" gratis, y en Microsoft Edge son voces neuronales gratis.
         </p>
       </div>
+      <VoicePicker color="#FF9E9E" />
       <button className="btn" onClick={save}>{saved ? "Guardado" : "Guardar"}</button>
       <p className="dimtx" style={{ marginTop: 12 }}>
         Las keys se guardan únicamente en este navegador. Nunca las escribas en el código ni las subas al repositorio.
@@ -2026,7 +2513,7 @@ export default function CelpipTrainer() {
           {tab === "train" && SkillScreen && (
             <SkillScreen key={skill + JSON.stringify(preset)} back={() => launch("train")} preset={preset} update={update} />
           )}
-          {tab === "review" && <ReviewScreen state={state} update={update} />}
+          {tab === "review" && <ReviewScreen key={JSON.stringify(preset)} state={state} update={update} preset={preset} />}
           {tab === "progress" && <ProgressScreen state={state} />}
           {tab === "settings" && <SettingsScreen back={() => launch("home")} />}
         </>}
