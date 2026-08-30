@@ -665,6 +665,48 @@ async function askClaudeJSON(system, user) {
   return JSON.parse(raw.replace(/```json/g, "").replace(/```/g, "").trim());
 }
 
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+// Gemini puede "escuchar" audio directamente (gratis, misma key) — lo usamos
+// para dar un análisis breve de pronunciación a partir de la grabación real,
+// no solo de la transcripción.
+async function askGeminiAudio(key, system, user, base64Audio, mimeType) {
+  for (const model of GEMINI_MODELS) {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=` + encodeURIComponent(key),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: system }] },
+          contents: [{ role: "user", parts: [{ text: user }, { inline_data: { mime_type: mimeType, data: base64Audio } }] }],
+          generationConfig: { maxOutputTokens: 1024 },
+        }),
+      }
+    );
+    if (res.status === 404) continue;
+    if (!res.ok) {
+      throw new Error(res.status === 429 ? "Se alcanzó el límite gratuito de Gemini por hoy."
+        : res.status === 400 ? "Gemini no pudo procesar este audio (formato no compatible con tu navegador)."
+        : res.status === 403 ? "API key de Gemini inválida. Revísala en Ajustes."
+        : "El análisis de voz no respondió. Intenta otra vez.");
+    }
+    const data = await res.json();
+    const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+    const text = parts.map((p) => p.text || "").join("\n");
+    if (!text) throw new Error("El análisis llegó vacío. Intenta otra vez.");
+    return text;
+  }
+  throw new Error("Ningún modelo de Gemini respondió para el análisis de voz.");
+}
+
 function ping() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1056,9 +1098,20 @@ function ReadingExamRunner({ quiz, part, onFinish, onNewPractice }) {
   );
 }
 
-function ScorePanel({ result, color }) {
+function ScorePanel({ result, color, audioURL, transcript }) {
   return (
     <div className="screen">
+      {audioURL && (
+        <div className="card">
+          <span className="kicker">Tu grabación</span>
+          <audio controls src={audioURL} style={{ width: "100%", marginTop: 10 }} />
+          {transcript && (
+            <p className="dimtx" style={{ marginTop: 10 }}>
+              Escúchala mientras lees la transcripción para ubicar dónde suena distinto a como querías decirlo.
+            </p>
+          )}
+        </div>
+      )}
       <div className="card center" style={{ padding: 26 }}>
         <span className="kicker">Nivel Estimado</span>
         <span className="disp" style={{ fontSize: 56, fontWeight: 700, lineHeight: 1.1, color }}>{result.level}</span>
@@ -1075,6 +1128,15 @@ function ScorePanel({ result, color }) {
           </div>
         ))}
       </div>
+      {result.pronunciation && result.pronunciation.length > 0 && (
+        <div className="card">
+          <span className="kicker">Pronunciación Y Ritmo · Estimado De Tu Audio</span>
+          {result.pronunciation.map((f, k) => <p key={k} style={{ fontSize: 13.5, lineHeight: 21, marginTop: 8 }}>{f}</p>)}
+          <p className="dimtx" style={{ marginTop: 10 }}>
+            No es un análisis fonético real, sino pistas a partir de tu transcripción y ritmo — para eso, escucha tu grabación arriba.
+          </p>
+        </div>
+      )}
       {result.fixes && result.fixes.length > 0 && (
         <div className="card">
           <span className="kicker">Correcciones · guardadas en tu banco de errores</span>
@@ -1896,13 +1958,72 @@ function SpeakingScreen({ back, preset, update }) {
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [audioURL, setAudioURL] = useState(null);
+  const [voiceAnalysis, setVoiceAnalysis] = useState(null);
+  const [vaBusy, setVaBusy] = useState(false);
+  const [vaErr, setVaErr] = useState("");
   const recRef = useRef(null);
+  const mediaRecRef = useRef(null);
+  const chunksRef = useRef([]);
+  const audioBlobRef = useRef(null);
   const SR = typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition);
+  const hasGemini = !!getKeys().gemini;
 
-  const pick = (t) => { setTask(t); setPhase("setup"); setPrompt(""); setTranscript(""); setResult(null); };
+  const pick = (t) => {
+    setTask(t); setPhase("setup"); setPrompt(""); setTranscript(""); setResult(null);
+    setAudioURL(null); audioBlobRef.current = null; setVoiceAnalysis(null); setVaErr("");
+  };
+
+  const analyzeVoice = async () => {
+    if (!audioBlobRef.current) return;
+    setVaBusy(true); setVaErr(""); setVoiceAnalysis(null);
+    try {
+      const { gemini } = getKeys();
+      const b64 = await blobToBase64(audioBlobRef.current);
+      const raw = await askGeminiAudio(gemini,
+        "Eres un evaluador certificado de pronunciación y fluidez en inglés para el examen CELPIP General, sección Speaking. Escuchas el audio real del candidato y respondes SOLO con JSON válido, sin markdown ni texto extra.",
+        `Escucha este audio de un candidato respondiendo Speaking Task ${task.n}: ${task.name}.
+Evalúa exclusivamente pronunciación, ritmo/fluidez y entonación (no el contenido ni la gramática, eso se evalúa aparte).
+Devuelve JSON: {"score":7,"summary":"una frase breve en español","strengths":["punto positivo concreto"],"improvements":["mejora concreta y accionable en español, con el sonido o palabra en inglés si aplica"]}
+"score" de 1 a 10 según el criterio CELPIP de Listenability (qué tan fácil es entenderte sin esfuerzo, con acento neutro y ritmo natural). Máximo 2 strengths y 3 improvements, cada uno de 1 línea, específico y accionable — nunca genérico como "practica más".`,
+        b64, audioBlobRef.current.type || "audio/webm");
+      setVoiceAnalysis(JSON.parse(raw.replace(/```json/g, "").replace(/```/g, "").trim()));
+    } catch (e) { setVaErr(e.message || "No se pudo analizar el audio."); }
+    setVaBusy(false);
+  };
+
+  // Graba el audio real del intento (independiente de la transcripción) para poder
+  // escucharlo después y detectar dónde la pronunciación sonó distinto a lo esperado.
+  useEffect(() => {
+    if (phase !== "talk") return;
+    let stream;
+    let cancelled = false;
+    (async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
+        const mr = new MediaRecorder(stream);
+        chunksRef.current = [];
+        mr.ondataavailable = (e) => { if (e.data.size) chunksRef.current.push(e.data); };
+        mr.onstop = () => {
+          const blob = new Blob(chunksRef.current, { type: mr.mimeType || "audio/webm" });
+          audioBlobRef.current = blob;
+          setAudioURL((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(blob); });
+          stream.getTracks().forEach((t) => t.stop());
+        };
+        mediaRecRef.current = mr;
+        mr.start();
+      } catch (e) { /* micrófono no disponible o permiso denegado: sigue sin audio */ }
+    })();
+    return () => {
+      cancelled = true;
+      if (mediaRecRef.current && mediaRecRef.current.state !== "inactive") mediaRecRef.current.stop();
+    };
+  }, [phase]);
 
   const start = async () => {
-    setBusy(true); setErr(""); setResult(null); setTranscript("");
+    setBusy(true); setErr(""); setResult(null); setTranscript(""); setAudioURL(null);
+    audioBlobRef.current = null; setVoiceAnalysis(null); setVaErr("");
     try {
       const r = await askClaude("Eres examinador del CELPIP General, sección Speaking.",
         `Escribe UNA consigna realista para Speaking Task ${task.n}: ${task.name}. Solo la consigna en inglés, 40-70 palabras, como en el examen.`);
@@ -1929,14 +2050,16 @@ function SpeakingScreen({ back, preset, update }) {
   const evaluate = async () => {
     setBusy(true); setErr("");
     try {
+      const wpm = Math.round(countWords(transcript) / (task.talk / 60));
       const r = await askClaudeJSON(
         "Eres examinador certificado del CELPIP General, sección Speaking. Rúbrica oficial: Content/Coherence, Vocabulary, Listenability, Task Fulfillment. Se evalúa fluidez, no perfección.",
         `Task ${task.n}: ${task.name} (${task.talk} segundos, tiempo ${task.tense}).
 Consigna: ${prompt || "(genérica)"}
 Transcripción:
 """${transcript}"""
-Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score":9,"comment":"en español, 2 frases"},{"name":"Vocabulary","score":8,"comment":"..."},{"name":"Listenability","score":9,"comment":"..."},{"name":"Task Fulfillment","score":9,"comment":"..."}],"fixes":["error concreto → corrección"],"upgrades":["frase simple → frase de alto nivel"]}
-Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal (${task.tense}).`
+Ritmo estimado: ${wpm} palabras por minuto (conversacional natural ≈130-160 wpm; mucho más alto sugiere que habló atropellado, mucho más bajo sugiere pausas largas o bloqueos).
+Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score":9,"comment":"en español, 2 frases"},{"name":"Vocabulary","score":8,"comment":"..."},{"name":"Listenability","score":9,"comment":"..."},{"name":"Task Fulfillment","score":9,"comment":"..."}],"pronunciation":["nota breve en español sobre ritmo, muletillas repetidas o palabras que la transcripción parece haber captado mal por posible pronunciación poco clara"],"fixes":["error concreto → corrección"],"upgrades":["frase simple → frase de alto nivel"]}
+Máximo 3 notas de pronunciación, 4 fixes y 4 upgrades. Comentarios en español, ejemplos en inglés. Verifica el tiempo verbal (${task.tense}). Sé explícito en "pronunciation" de que son señales indirectas de la transcripción y el ritmo, no un análisis fonético real.`
       );
       setResult(r);
       update((s) => completeTodayStep({
@@ -1951,7 +2074,43 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
   if (result) return (
     <div style={{ "--acc": S.color }}>
       <TopBar title="Resultado" sub={`Task ${task.n} · ${task.name}`} onBack={() => setResult(null)} />
-      <ScorePanel result={result} color={S.color} />
+      <ScorePanel result={result} color={S.color} audioURL={audioURL} transcript={transcript} />
+
+      {audioURL && hasGemini && (
+        <div className="card">
+          <span className="kicker">Pronunciación Real · Analizada Por Gemini</span>
+          {!voiceAnalysis && (
+            <button className="btn btn--ghost btn--sm" style={{ marginTop: 10 }} onClick={analyzeVoice} disabled={vaBusy}>
+              {vaBusy ? "Escuchando tu audio…" : "Analizar mi pronunciación"}
+            </button>
+          )}
+          {vaErr && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 10 }}>{vaErr}</p>}
+          {voiceAnalysis && (
+            <>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 10 }}>
+                <span style={{ fontWeight: 600, fontSize: 14 }}>{voiceAnalysis.summary}</span>
+                <span className="pill pill--acc" style={{ "--acc": S.color, flex: "0 0 auto", marginLeft: 8 }}>{voiceAnalysis.score}/10</span>
+              </div>
+              <div className="meter" style={{ "--acc": S.color }}><i style={{ width: `${(voiceAnalysis.score / 10) * 100}%` }} /></div>
+              {(voiceAnalysis.strengths || []).map((s, k) => (
+                <p key={k} style={{ fontSize: 13.5, lineHeight: 21, marginTop: 10, color: "#7FE0B2" }}>✓ {s}</p>
+              ))}
+              {(voiceAnalysis.improvements || []).map((s, k) => (
+                <p key={k} style={{ fontSize: 13.5, lineHeight: 21, marginTop: 8 }}>→ {s}</p>
+              ))}
+              <button className="btn btn--ghost btn--sm" style={{ marginTop: 12 }} onClick={analyzeVoice} disabled={vaBusy}>
+                {vaBusy ? "Escuchando…" : "Analizar otra vez"}
+              </button>
+            </>
+          )}
+        </div>
+      )}
+      {audioURL && !hasGemini && (
+        <p className="dimtx" style={{ marginTop: 12 }}>
+          Configura la key gratuita de Gemini en Ajustes para analizar tu pronunciación real a partir del audio.
+        </p>
+      )}
+
       <button className="btn btn--ghost" onClick={() => pick(task)}>Repetir task</button>
     </div>
   );
@@ -2004,6 +2163,12 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
         <div className="card"><span className="kicker">Consigna</span>
           <p style={{ marginTop: 8, fontSize: 14, lineHeight: 23 }}>{prompt}</p>
         </div>
+        {audioURL && (
+          <div className="card">
+            <span className="kicker">Tu grabación</span>
+            <audio controls src={audioURL} style={{ width: "100%", marginTop: 10 }} />
+          </div>
+        )}
         <textarea rows={7} value={transcript} onChange={(e) => setTranscript(e.target.value)}
           placeholder="Transcripción de tu respuesta…" />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
