@@ -68,6 +68,7 @@ h1,h2,h3,p{margin:0}
   font-size:13.5px;line-height:24px;white-space:pre-wrap;
   background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 23px,rgba(30,42,69,.08) 23px,rgba(30,42,69,.08) 24px);
   box-shadow:0 6px 18px rgba(0,0,0,.35)}
+mark.miss{background:#F5A9A4;color:#5A1F1B;border-radius:2px;padding:0 2px}
 .hlmark{background:var(--acc,#FFD666);padding:0 4px;border-radius:2px;color:#0D1320;font-weight:600}
 
 textarea,input{width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:14px;
@@ -127,6 +128,25 @@ textarea:focus,input:focus,.chip:focus-visible,.btn:focus-visible,.iconbtn:focus
 .mbtn[data-done="1"]{opacity:.3;border-color:#5FD3A2;cursor:default}
 .mbtn[data-bad="1"]{animation:shake .4s;border-color:#FF9E9E}
 @keyframes shake{20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.exam{background:#F5F7FA;color:#17233B;border-radius:16px;padding:16px;margin-top:14px;box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.exam,.exam *{text-transform:none}
+.exam-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:2px solid #2C5FA8;padding-bottom:10px}
+.exam-brand{font:700 13px 'Space Grotesk',Inter,sans-serif;color:#2C5FA8;letter-spacing:.4px}
+.exam-count{font:600 12px Inter,sans-serif;color:#5A6784;font-variant-numeric:tabular-nums;white-space:nowrap}
+.exam-q{font:600 15px/24px Inter,sans-serif;margin:14px 0 4px;color:#17233B}
+.exam-hint{font:400 13px/21px Inter,sans-serif;color:#5A6784;margin-top:10px}
+.radio{display:flex;gap:10px;align-items:flex-start;padding:12px 13px;border:1px solid #C9D3E0;border-radius:10px;background:#fff;margin-top:8px;cursor:pointer;width:100%;text-align:left;font:500 14px/22px Inter,sans-serif;color:#17233B}
+.radio[data-on="1"]{border-color:#2C5FA8;background:#EAF1FA}
+.rdot{width:16px;height:16px;border-radius:50%;border:2px solid #9AA9BE;flex:0 0 auto;margin-top:2px;position:relative}
+.radio[data-on="1"] .rdot{border-color:#2C5FA8}
+.radio[data-on="1"] .rdot:after{content:"";position:absolute;inset:3px;border-radius:50%;background:#2C5FA8}
+.exam-next{background:#2C5FA8;color:#fff;border:none;border-radius:8px;min-height:44px;padding:0 24px;font:700 13px Inter,sans-serif;letter-spacing:.6px;cursor:pointer}
+.exam-next:active{transform:scale(.97)}
+.exam-next:disabled{opacity:.5;cursor:not-allowed}
+.exam-bar{height:6px;background:#DDE5EF;border-radius:3px;overflow:hidden;margin-top:12px}
+.exam-bar>i{display:block;height:100%;background:#2C5FA8;border-radius:3px;transition:width 1s linear}
+.exam-pulse{width:40%;animation:slidebar 1.2s ease-in-out infinite alternate}
+@keyframes slidebar{from{margin-left:0}to{margin-left:60%}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 `;
 
@@ -395,20 +415,28 @@ function usePersistentState() {
 }
 
 async function askAnthropic(key, system, user) {
+  const headers = {
+    "Content-Type": "application/json",
+    "x-api-key": key,
+    "anthropic-version": "2023-06-01",
+    "anthropic-dangerous-direct-browser-access": "true",
+  };
+  const ws = getKeys().anthropicWorkspace;
+  if (ws) headers["anthropic-workspace-id"] = ws;
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": key,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
+    headers,
     body: JSON.stringify({
       model: "claude-sonnet-4-6", max_tokens: 1000, system,
       messages: [{ role: "user", content: user }],
     }),
   });
   if (!res.ok) {
+    let msg = "";
+    try { const j = await res.json(); msg = (j.error && j.error.message) || ""; } catch (e) { /* sin cuerpo */ }
+    if (msg.includes("workspace-id")) {
+      throw new Error("Tu key de Anthropic necesita un Workspace ID: pégalo en Ajustes (empieza con wrkspc_, está en Console → Settings → Workspaces), o crea una key nueva vinculada a un workspace.");
+    }
     throw new Error(res.status === 401 ? "API key de Anthropic inválida. Revísala en Ajustes."
       : "La generación no respondió. Intenta otra vez.");
   }
@@ -428,7 +456,7 @@ async function askGemini(key, system, user) {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: system }] },
           contents: [{ role: "user", parts: [{ text: user }] }],
-          generationConfig: { maxOutputTokens: 1200 },
+          generationConfig: { maxOutputTokens: 4096 },
         }),
       }
     );
@@ -447,12 +475,13 @@ async function askGemini(key, system, user) {
   throw new Error("Ningún modelo de Gemini respondió. Puede que hayan cambiado de nombre; avísame para actualizarlos.");
 }
 
-// Adaptador: usa la key gratuita de Gemini si existe; si no, la de Anthropic.
+// Adaptador: si configuraste la key de Anthropic, se usa Claude;
+// si no, la key gratuita de Gemini.
 async function askClaude(system, user) {
   const k = getKeys();
-  if (k.gemini) return askGemini(k.gemini, system, user);
   if (k.anthropic) return askAnthropic(k.anthropic, system, user);
-  throw new Error("Configura tu API key gratuita de Gemini en Ajustes (engranaje en Inicio).");
+  if (k.gemini) return askGemini(k.gemini, system, user);
+  throw new Error("Configura una API key en Ajustes (engranaje en Inicio): Gemini gratuita o Anthropic.");
 }
 async function askClaudeJSON(system, user) {
   const raw = await askClaude(system + "\nResponde SOLO con JSON válido, sin markdown ni texto extra.", user);
@@ -511,6 +540,7 @@ function withVoices(cb) {
 
 // Audio real con OpenAI TTS: una voz distinta por hablante del diálogo.
 const OPENAI_VOICES = ["nova", "onyx", "shimmer", "echo", "alloy", "fable"];
+const ttsSessionCache = new Map(); // guion → urls de audio ya pagadas en esta sesión
 
 async function ttsOpenAI(key, text, voice) {
   const res = await fetch("https://api.openai.com/v1/audio/speech", {
@@ -564,6 +594,19 @@ function dictationScore(target, attempt) {
   if (!tw.length) return 0;
   return Math.round((tw.filter((w) => aw.has(w)).length / tw.length) * 100);
 }
+
+// Banco local de prácticas ya generadas: repetirlas no gasta tokens.
+const cacheAdd = (key, item, cap = 20) => {
+  try {
+    const arr = JSON.parse(localStorage.getItem(key) || "[]");
+    arr.push(item);
+    while (arr.length > cap) arr.shift();
+    localStorage.setItem(key, JSON.stringify(arr));
+  } catch (e) { /* sin espacio: se omite */ }
+};
+const cacheList = (key) => {
+  try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch (e) { return []; }
+};
 
 /* ---------------------- Primitivas de UI ---------------------- */
 
@@ -669,6 +712,21 @@ function Strategy({ tips, color }) {
 
 function Skeletons() {
   return <div className="card"><div className="skel" style={{ width: "55%" }} /><div className="skel" /><div className="skel" /><div className="skel" style={{ width: "80%" }} /></div>;
+}
+
+function DiffWords({ target, attempt, minLen = 1 }) {
+  const mine = new Set((String(attempt).toLowerCase().match(/[a-z']+/g) || []));
+  const parts = String(target).split(/(\s+)/);
+  return (
+    <div className="paper">
+      {parts.map((p, i) => {
+        const m = p.toLowerCase().match(/[a-z']+/);
+        const w = m && m[0];
+        const isMiss = w && w.length >= minLen && !mine.has(w);
+        return isMiss ? <mark key={i} className="miss">{p}</mark> : <span key={i}>{p}</span>;
+      })}
+    </div>
+  );
 }
 
 function QuizRunner({ quiz, color, onFinish }) {
@@ -863,6 +921,7 @@ Devuelve JSON: {"title":"...","passage":"texto de 180-230 palabras en inglés ca
 Exactamente 4 preguntas. Usa sinónimos y paráfrasis como el examen real. Tema canadiense cotidiano.`
       );
       setQuiz(data);
+      cacheAdd(`celpip:cache:read:${part.n}`, { date: todayKey(), quiz: data });
     } catch (e) { setErr(e.message); }
     setBusy(false);
   };
@@ -880,9 +939,19 @@ Exactamente 4 preguntas. Usa sinónimos y paráfrasis como el examen real. Tema 
         </div>
         <Strategy tips={part.tips} color={S.color} />
         {busy ? <Skeletons /> : (
-          <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
-            Generar práctica <Sparkles size={16} />
-          </button>
+          <>
+            <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
+              Generar práctica <Sparkles size={16} />
+            </button>
+            {cacheList(`celpip:cache:read:${part.n}`).length > 0 && (
+              <button className="btn btn--ghost" onClick={() => {
+                const saved = cacheList(`celpip:cache:read:${part.n}`);
+                setErr(""); setQuiz(saved[Math.floor(Math.random() * saved.length)].quiz);
+              }}>
+                Repetir una guardada · {cacheList(`celpip:cache:read:${part.n}`).length} en tu banco · $0
+              </button>
+            )}
+          </>
         )}
       </>}
       {err && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 12 }}>{err}</p>}
@@ -974,7 +1043,8 @@ function HumanAudio({ color, rate, update }) {
                   Captaste el {score}% de las palabras
                 </span>
               </p>
-              <div className="paper">{pretty(clip.text)}</div>
+              <DiffWords target={pretty(clip.text)} attempt={attempt} />
+              <p className="dimtx" style={{ marginTop: 6 }}>En rojo: las palabras que no escribiste.</p>
               {!hquiz && (
                 <button className="btn btn--ghost" onClick={genQuestions} disabled={qbusy}>
                   {qbusy ? "Generando…" : "Generar preguntas de comprensión"}
@@ -988,6 +1058,103 @@ function HumanAudio({ color, rate, update }) {
         </>
       )}
     </>
+  );
+}
+
+const EXAM_Q_SECONDS = 30;
+
+function ExamRunner({ quiz, part, color, onDone, onNewPractice }) {
+  const total = quiz.questions.length;
+  const [qIdx, setQIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [qLeft, setQLeft] = useState(EXAM_Q_SECONDS);
+  const [finished, setFinished] = useState(false);
+  const [showScript, setShowScript] = useState(false);
+  const answersRef = useRef({});
+  const idxRef = useRef(0);
+  const doneRef = useRef(false);
+
+  const finish = () => {
+    if (doneRef.current) return;
+    doneRef.current = true;
+    setFinished(true);
+    const score = quiz.questions.filter((q, i) => answersRef.current[i] === q.correct).length;
+    onDone(score, total);
+  };
+
+  const next = () => {
+    if (idxRef.current + 1 >= total) { finish(); return; }
+    idxRef.current += 1;
+    setQIdx(idxRef.current);
+  };
+
+  useEffect(() => {
+    if (finished) return;
+    setQLeft(EXAM_Q_SECONDS);
+    const t = setInterval(() => {
+      setQLeft((v) => {
+        if (v <= 1) { clearInterval(t); next(); return EXAM_Q_SECONDS; }
+        return v - 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [qIdx, finished]);
+
+  if (finished) {
+    const score = quiz.questions.filter((q, i) => answersRef.current[i] === q.correct).length;
+    return (
+      <>
+        <div className="card center" style={{ padding: 24 }}>
+          <span className="disp" style={{ fontSize: 44, fontWeight: 700, color }}>{score}/{total}</span>
+          <span className="dimtx">respuestas correctas</span>
+        </div>
+        <div className="card">
+          {quiz.questions.map((q, i) => {
+            const mine = answersRef.current[i];
+            const ok = mine === q.correct;
+            return (
+              <div key={i} style={{ marginTop: i ? 16 : 0 }}>
+                <p style={{ fontWeight: 600, fontSize: 14 }}>{i + 1}. {q.question}</p>
+                {mine != null && !ok && <p className="dimtx" style={{ color: "#FF9E9E" }}>✗ Tu respuesta: {q.options[mine]}</p>}
+                {mine == null && <p className="dimtx" style={{ color: "#FF9E9E" }}>✗ Sin responder: se acabó el tiempo</p>}
+                <p className="dimtx" style={{ color: "#7FE0B2" }}>✓ {q.options[q.correct]}</p>
+                <p className="dimtx">{q.explanation}</p>
+              </div>
+            );
+          })}
+        </div>
+        <button className="btn btn--ghost" onClick={() => setShowScript(!showScript)}>
+          {showScript ? "Ocultar transcripción" : "Ver transcripción"}
+        </button>
+        {showScript && <div className="paper">{quiz.script}</div>}
+        <button className="btn" style={{ "--acc": color }} onClick={onNewPractice}>Nueva práctica</button>
+      </>
+    );
+  }
+
+  const q = quiz.questions[qIdx];
+  return (
+    <div className="exam">
+      <div className="exam-top">
+        <span className="exam-brand">CELPIP · Listening Part {part.n}</span>
+        <span className="exam-count">Question {qIdx + 1} of {total} · {qLeft}s</span>
+      </div>
+      <div className="exam-bar"><i style={{ width: `${(qLeft / EXAM_Q_SECONDS) * 100}%` }} /></div>
+      <p className="exam-q">{q.question}</p>
+      {q.options.map((o, j) => (
+        <button key={j} className="radio" data-on={answers[qIdx] === j ? "1" : "0"}
+          onClick={() => {
+            answersRef.current = { ...answersRef.current, [qIdx]: j };
+            setAnswers((a) => ({ ...a, [qIdx]: j }));
+          }}>
+          <span className="rdot" /><span>{o}</span>
+        </button>
+      ))}
+      <p className="exam-hint">You cannot return to this question after pressing NEXT.</p>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+        <button className="exam-next" onClick={next}>{qIdx + 1 === total ? "FINISH" : "NEXT"}</button>
+      </div>
+    </div>
   );
 }
 
@@ -1007,12 +1174,14 @@ function ListeningScreen({ back, preset, update }) {
   const [mode, setMode] = useState("sim");
   const [quizDone, setQuizDone] = useState(false);
   const [showScript, setShowScript] = useState(false);
+  const [examPhase, setExamPhase] = useState("intro");
 
   useEffect(() => () => window.speechSynthesis && window.speechSynthesis.cancel(), []);
+  useEffect(() => { if (played) setExamPhase("questions"); }, [played]);
 
   const generate = async () => {
     setBusy(true); setErr(""); setQuiz(null); setPlayed(false); setNotes("");
-    setQuizDone(false); setShowScript(false);
+    setQuizDone(false); setShowScript(false); setExamPhase("intro");
     setCols({ a: "", b: "", c: "", favor: "", contra: "" });
     try {
       const data = await askClaudeJSON(
@@ -1028,6 +1197,7 @@ Devuelve JSON: {"title":"A conversation about ...","script":"...","questions":[{
 Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablantes.`
       );
       setQuiz(data);
+      cacheAdd(`celpip:cache:listen:${part.n}`, { date: todayKey(), quiz: data });
     } catch (e) { setErr(e.message); }
     setBusy(false);
   };
@@ -1069,17 +1239,20 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
   const playOpenAI = async (key) => {
     setAudioBusy(true); setErr("");
     try {
-      const { turns, speakers } = parseScript(quiz.script);
-      const map = {};
-      speakers.forEach((sp, i) => { map[sp] = OPENAI_VOICES[i % OPENAI_VOICES.length]; });
-      const urls = await Promise.all(turns.map((t) => ttsOpenAI(key, t.text, t.sp ? map[t.sp] : "nova")));
+      let urls = ttsSessionCache.get(quiz.script);
+      if (!urls) {
+        const { turns, speakers } = parseScript(quiz.script);
+        const map = {};
+        speakers.forEach((sp, i) => { map[sp] = OPENAI_VOICES[i % OPENAI_VOICES.length]; });
+        urls = await Promise.all(turns.map((t) => ttsOpenAI(key, t.text, t.sp ? map[t.sp] : "nova")));
+        ttsSessionCache.set(quiz.script, urls);
+      }
       setAudioBusy(false);
       stopRef.current = false;
       setPlaying(true);
       let i = 0;
       const playNext = () => {
         if (stopRef.current || i >= urls.length) {
-          urls.forEach((u) => URL.revokeObjectURL(u));
           setPlaying(false);
           if (!stopRef.current) setPlayed(true);
           return;
@@ -1107,6 +1280,16 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
     if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     setPlaying(false);
+  };
+
+  const loadCached = () => {
+    const saved = cacheList(`celpip:cache:listen:${part.n}`);
+    if (!saved.length) return;
+    const pick = saved[Math.floor(Math.random() * saved.length)].quiz;
+    setErr(""); setPlayed(false); setNotes("");
+    setQuizDone(false); setShowScript(false); setExamPhase("intro");
+    setCols({ a: "", b: "", c: "", favor: "", contra: "" });
+    setQuiz(pick);
   };
 
   return (
@@ -1144,73 +1327,85 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
           ))}
         </div>
         {busy ? <Skeletons /> : (
-          <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
-            Generar audio <Sparkles size={16} />
-          </button>
+          <>
+            <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
+              Generar audio <Sparkles size={16} />
+            </button>
+            {cacheList(`celpip:cache:listen:${part.n}`).length > 0 && (
+              <button className="btn btn--ghost" onClick={loadCached}>
+                Repetir una guardada · {cacheList(`celpip:cache:listen:${part.n}`).length} en tu banco · $0
+              </button>
+            )}
+          </>
         )}
       </>}
       {mode === "sim" && err && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 12 }}>{err}</p>}
       {mode === "sim" && quiz && (
         <>
-          <div className="card center" style={{ padding: 24 }}>
-            <span className="kicker">Lee El Título Antes Del Play</span>
-            <p className="disp" style={{ fontSize: 19, fontWeight: 600, marginTop: 6 }}>
-              <span className="hlmark" style={{ "--acc": S.color }}>{quiz.title}</span>
-            </p>
-            <div style={{ display: "flex", gap: 10, marginTop: 18 }}>
-              <button className="iconbtn iconbtn--acc" style={{ "--acc": S.color, width: 56, height: 56, borderRadius: 18 }}
-                aria-label={playing ? "Detener" : "Reproducir"} disabled={audioBusy} onClick={playing ? stop : play}>
-                {playing ? <Square size={20} /> : <Volume2 size={22} />}
-              </button>
+          {examPhase === "intro" && (
+            <div className="exam">
+              <div className="exam-top">
+                <span className="exam-brand">CELPIP · Listening Part {part.n}</span>
+                <span className="exam-count">{quiz.questions.length} questions</span>
+              </div>
+              <p className="exam-q">{quiz.title}</p>
+              <p className="exam-hint">
+                You will hear the audio only once. You cannot pause or replay it. You may take notes while you listen. After the audio ends, answer each question before the timer runs out — you cannot go back.
+              </p>
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+                <button className="exam-next" onClick={() => { setExamPhase("audio"); play(); }} disabled={audioBusy}>
+                  {audioBusy ? "LOADING…" : "START"}
+                </button>
+              </div>
             </div>
-            <span className="dimtx" style={{ marginTop: 10 }}>
-              {audioBusy ? "Preparando audio real…"
-                : playing ? "Reproduciendo a " + rate + "x…"
-                : played ? "Audio terminado"
-                : getKeys().openai ? rate + "x · audio real con voces neuronales"
-                : rate + "x · voces del sistema — agrega tu key de OpenAI en Ajustes para audio real"}
-            </span>
-          </div>
-
-          {part.n === 5 ? (
-            <div className="cols cols--3">
-              {[0, 1, 2].map((i) => (
-                <div key={i}>
-                  <input value={names[i]} aria-label={`Nombre persona ${i + 1}`}
-                    onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} />
-                  <textarea rows={4} placeholder="Notas" value={cols["abc"[i]]}
-                    onChange={(e) => setCols({ ...cols, ["abc"[i]]: e.target.value })} />
-                </div>
-              ))}
-            </div>
-          ) : part.n === 6 ? (
-            <div className="cols cols--2">
-              <div><span className="kicker">A Favor</span>
-                <textarea rows={4} placeholder="Quiénes y por qué" value={cols.favor}
-                  onChange={(e) => setCols({ ...cols, favor: e.target.value })} /></div>
-              <div><span className="kicker">En Contra</span>
-                <textarea rows={4} placeholder="Quiénes y por qué" value={cols.contra}
-                  onChange={(e) => setCols({ ...cols, contra: e.target.value })} /></div>
-            </div>
-          ) : (
-            <textarea rows={3} placeholder="Notas: who · what · when · where"
-              value={notes} onChange={(e) => setNotes(e.target.value)} />
           )}
 
-          {played
-            ? <QuizRunner quiz={quiz} color={S.color} onFinish={(s, t) => { setQuizDone(true); update((st) => ({
+          {examPhase === "audio" && (
+            <div className="exam">
+              <div className="exam-top">
+                <span className="exam-brand">CELPIP · Listening Part {part.n}</span>
+                <span className="exam-count">{audioBusy ? "Loading audio…" : playing ? "Playing…" : "Starting…"}</span>
+              </div>
+              <p className="exam-q">{quiz.title}</p>
+              <div className="exam-bar"><i className="exam-pulse" /></div>
+              <p className="exam-hint">Take notes below. The questions will appear automatically when the audio ends.</p>
+            </div>
+          )}
+
+          {(examPhase === "intro" || examPhase === "audio") && (
+            part.n === 5 ? (
+              <div className="cols cols--3">
+                {[0, 1, 2].map((i) => (
+                  <div key={i}>
+                    <input value={names[i]} aria-label={`Nombre persona ${i + 1}`}
+                      onChange={(e) => setNames(names.map((n, j) => (j === i ? e.target.value : n)))} />
+                    <textarea rows={4} placeholder="Notas" value={cols["abc"[i]]}
+                      onChange={(e) => setCols({ ...cols, ["abc"[i]]: e.target.value })} />
+                  </div>
+                ))}
+              </div>
+            ) : part.n === 6 ? (
+              <div className="cols cols--2">
+                <div><span className="kicker">A Favor</span>
+                  <textarea rows={4} placeholder="Quiénes y por qué" value={cols.favor}
+                    onChange={(e) => setCols({ ...cols, favor: e.target.value })} /></div>
+                <div><span className="kicker">En Contra</span>
+                  <textarea rows={4} placeholder="Quiénes y por qué" value={cols.contra}
+                    onChange={(e) => setCols({ ...cols, contra: e.target.value })} /></div>
+              </div>
+            ) : (
+              <textarea rows={3} placeholder="Notas: who · what · when · where"
+                value={notes} onChange={(e) => setNotes(e.target.value)} />
+            )
+          )}
+
+          {examPhase === "questions" && (
+            <ExamRunner quiz={quiz} part={part} color={S.color}
+              onDone={(s, t) => update((st) => ({
                 ...st, history: [...st.history, { date: todayKey(), section: "Listening", detail: `Part ${part.n}: ${s}/${t}` }],
-              })); }} />
-            : <p className="dimtx" style={{ marginTop: 12 }}>Las preguntas aparecen cuando termine el audio, como en el examen.</p>}
-          {quizDone && (
-            <>
-              <button className="btn btn--ghost" onClick={() => setShowScript(!showScript)}>
-                {showScript ? "Ocultar transcripción" : "Ver transcripción"}
-              </button>
-              {showScript && <div className="paper">{quiz.script}</div>}
-            </>
+              }))}
+              onNewPractice={() => setQuiz(null)} />
           )}
-          {played && <button className="btn btn--ghost" onClick={() => setQuiz(null)}>Nueva práctica</button>}
         </>
       )}
     </div>
@@ -1624,6 +1819,7 @@ function RitualCard({ id, tpl, data, update, color }) {
   const [open, setOpen] = useState(false);
   const [writing, setWriting] = useState(false);
   const [draft, setDraft] = useState("");
+  const [lastDraft, setLastDraft] = useState("");
   const set = (patch) => update((s) => ({ ...s, ritual: { ...s.ritual, [id]: { ...st, ...patch } } }));
   const complete = st.read >= 3 && st.spoken >= 2 && st.written != null;
 
@@ -1659,7 +1855,7 @@ function RitualCard({ id, tpl, data, update, color }) {
           <p className="dimtx" style={{ marginTop: 10 }}>Template oculto: escríbelo de memoria.</p>
           <textarea rows={7} value={draft} onChange={(e) => setDraft(e.target.value)} />
           <button className="btn btn--sm" style={{ "--acc": color, marginTop: 10 }}
-            onClick={() => { set({ written: coverage() }); setWriting(false); }}>
+            onClick={() => { setLastDraft(draft); set({ written: coverage() }); setWriting(false); }}>
             Comparar con el original
           </button>
         </> : <>
@@ -1670,7 +1866,12 @@ function RitualCard({ id, tpl, data, update, color }) {
               </span>
             </p>
           )}
-          <div className="paper">{tpl.body}</div>
+          {lastDraft
+            ? <>
+                <DiffWords target={tpl.body} attempt={lastDraft} minLen={5} />
+                <p className="dimtx" style={{ marginTop: 6 }}>En rojo: las palabras clave que faltaron en tu versión.</p>
+              </>
+            : <div className="paper">{tpl.body}</div>}
         </>}
       </>}
     </div>
@@ -1805,8 +2006,10 @@ function SettingsScreen({ back }) {
         <span className="kicker">Anthropic · Alternativa De Pago</span>
         <input type="password" autoComplete="off" placeholder="sk-ant-…" value={keys.anthropic || ""}
           onChange={(e) => setK({ ...keys, anthropic: e.target.value.trim() })} />
+        <input type="text" autoComplete="off" placeholder="Workspace ID (opcional): wrkspc_…" value={keys.anthropicWorkspace || ""}
+          onChange={(e) => setK({ ...keys, anthropicWorkspace: e.target.value.trim() })} />
         <p className="dimtx" style={{ marginTop: 8 }}>
-          Opcional. Se crea en console.anthropic.com y requiere crédito. Si configuras ambas, la app usa Gemini.
+          Se crea en console.anthropic.com y requiere crédito (~$5). Si la key da error de workspace, pega aquí el ID de tu workspace (Console → Settings → Workspaces) o crea la key vinculada a un workspace. Si configuras ambas keys, la app usa esta.
         </p>
       </div>
       <div className="card">
