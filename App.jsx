@@ -1826,6 +1826,7 @@ function RitualCard({ id, tpl, data, update, color }) {
   const [writing, setWriting] = useState(false);
   const [draft, setDraft] = useState("");
   const [lastDraft, setLastDraft] = useState("");
+  const [showMine, setShowMine] = useState(false);
   const set = (patch) => update((s) => ({ ...s, ritual: { ...s.ritual, [id]: { ...st, ...patch } } }));
   const complete = st.read >= 3 && st.spoken >= 2 && st.written != null;
 
@@ -1880,8 +1881,18 @@ function RitualCard({ id, tpl, data, update, color }) {
           )}
           {lastDraft
             ? <>
-                <DiffWords target={tpl.body} attempt={lastDraft} minLen={5} />
-                <p className="dimtx" style={{ marginTop: 6 }}>En rojo: las palabras clave que faltaron en tu versión.</p>
+                <div className="chiprow" style={{ marginTop: 0 }}>
+                  <button className="chip" data-on={!showMine ? "1" : "0"} style={{ "--acc": color }}
+                    onClick={() => setShowMine(false)}>Original con fallos</button>
+                  <button className="chip" data-on={showMine ? "1" : "0"} style={{ "--acc": color }}
+                    onClick={() => setShowMine(true)}>Lo que escribiste</button>
+                </div>
+                {showMine
+                  ? <div className="paper">{lastDraft}</div>
+                  : <DiffWords target={tpl.body} attempt={lastDraft} minLen={5} />}
+                <p className="dimtx" style={{ marginTop: 6 }}>
+                  {showMine ? "Tu versión, tal como la escribiste." : "En rojo: las palabras clave que faltaron en tu versión."}
+                </p>
               </>
             : <div className="paper">{tpl.body}</div>}
         </>}
