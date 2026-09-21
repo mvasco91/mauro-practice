@@ -856,6 +856,12 @@ function HomeScreen({ state, update, launch }) {
         : <button className="btn" onClick={markDay} disabled={doneToday}>
             {doneToday ? "Día registrado" : "Marcar día completado"} <Check size={17} />
           </button>}
+      {sess.done.length > 0 && (
+        <button className="btn btn--ghost btn--sm" style={{ marginTop: 10 }}
+          onClick={() => update((s) => ({ ...s, session: { date: todayKey(), done: [] } }))}>
+          <RotateCw size={13} /> Reiniciar pasos de hoy
+        </button>
+      )}
 
       <div className="card" style={{ paddingTop: 6, paddingBottom: 6 }}>
         {steps.map((st, i) => (
@@ -1851,6 +1857,12 @@ function RitualCard({ id, tpl, data, update, color }) {
             {writing ? "Cancelar" : "Escribir 1"}
           </button>
         </div>
+        {(st.read > 0 || st.spoken > 0 || st.written != null) && (
+          <button className="btn btn--ghost btn--sm" style={{ marginTop: 8, width: "100%" }}
+            onClick={() => { set({ read: 0, spoken: 0, written: null }); setLastDraft(""); setDraft(""); setWriting(false); }}>
+            <RotateCw size={13} /> Reiniciar este template
+          </button>
+        )}
         {writing ? <>
           <p className="dimtx" style={{ marginTop: 10 }}>Template oculto: escríbelo de memoria.</p>
           <textarea rows={7} value={draft} onChange={(e) => setDraft(e.target.value)} />
@@ -1939,9 +1951,14 @@ function ReviewScreen({ state, update }) {
 
 /* ---------------------- Progreso ---------------------- */
 
-function ProgressScreen({ state }) {
+function ProgressScreen({ state, update }) {
   const counts = {};
   state.history.forEach((h) => { counts[h.section] = (counts[h.section] || 0) + 1; });
+  const [confirm, setConfirm] = useState(false);
+  const resetCycle = () => {
+    update((s) => ({ ...s, day: 1, streak: 0, lastDone: null, session: null }));
+    setConfirm(false);
+  };
   return (
     <div className="screen">
       <div className="kicker">Progreso</div>
@@ -1977,6 +1994,21 @@ function ProgressScreen({ state }) {
                 <span className="pill">{h.section}</span>
               </div>
             ))}
+      </div>
+      <div className="card">
+        <span className="kicker">Reiniciar Ciclo</span>
+        <p className="dimtx" style={{ marginTop: 6 }}>
+          Vuelve al día 1 y reinicia la racha, sin borrar tu historial ni tu banco de errores.
+        </p>
+        {!confirm
+          ? <button className="btn btn--ghost" onClick={() => setConfirm(true)}><RotateCw size={15} /> Reiniciar ciclo</button>
+          : <>
+              <p style={{ marginTop: 10, fontSize: 13.5, color: "#FF9E9E" }}>¿Seguro? El día y la racha volverán a cero.</p>
+              <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => setConfirm(false)}>Cancelar</button>
+                <button className="btn btn--sm" style={{ flex: 1, background: "#FF9E9E", color: "#3A1210" }} onClick={resetCycle}>Confirmar</button>
+              </div>
+            </>}
       </div>
     </div>
   );
@@ -2060,7 +2092,7 @@ export default function CelpipTrainer() {
             <SkillScreen key={skill + JSON.stringify(preset)} back={() => launch("train")} preset={preset} update={update} />
           )}
           {tab === "review" && <ReviewScreen state={state} update={update} />}
-          {tab === "progress" && <ProgressScreen state={state} />}
+          {tab === "progress" && <ProgressScreen state={state} update={update} />}
           {tab === "settings" && <SettingsScreen back={() => launch("home")} />}
         </>}
       </div>
