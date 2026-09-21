@@ -1,50 +1,43 @@
 # CELPIP Trainer
 
 App de preparación para el CELPIP: reading, listening, writing y speaking, método 3·2·1,
-entrenador de conectores, banco de errores y ciclo de 17 días. **Funciona 100% gratis.**
+entrenador de conectores, banco de errores y ciclo de 17 días. Funciona 100% gratis.
 
-## Configuración gratuita (5 minutos)
+## Estructura
+Archivos en la raíz del proyecto (App.jsx, main.jsx, index.html) — sin carpeta src/.
 
-### 1. Crear la API key gratuita de Gemini
-- Entra a https://aistudio.google.com/apikey con tu cuenta de Google.
-- Crea una API key. No pide tarjeta ni facturación.
-- El plan gratuito da 250 solicitudes/día con Gemini 2.5 Flash: una sesión diaria completa usa ~20.
+## Configuración gratuita
+1. Crea tu API key gratuita en https://aistudio.google.com/apikey (Gemini, sin tarjeta).
+2. Opcional: key de Anthropic en https://console.anthropic.com (requiere crédito, mejor calidad).
+   Al crearla, vincúlala a un Workspace específico (no "todos los espacios de trabajo").
+3. Abre la app → Inicio → engranaje (Ajustes) → pega tus keys → Guardar.
 
-### 2. Probar local
+## Correr local
 ```bash
 npm install
 npm run dev
 ```
-Abrir la app → Inicio → engranaje (Ajustes) → pegar la key de Gemini → Guardar.
 
-### 3. Publicar gratis en GitHub Pages
-1. Crear un repositorio **público** en GitHub (Pages gratuito requiere repo público).
-2. Subir el proyecto:
-   ```bash
-   git init && git add . && git commit -m "CELPIP Trainer"
-   git branch -M main
-   git remote add origin git@github.com:TU_USUARIO/celpip-trainer.git
-   git push -u origin main
-   ```
-3. En GitHub: **Settings → Pages → Source: GitHub Actions**.
-4. El workflow incluido construye y publica solo en cada push.
-5. La app queda en `https://TU_USUARIO.github.io/celpip-trainer/`.
-6. Abrirla, ir a Ajustes y pegar la key de Gemini en ese navegador.
+## Publicar en GitHub Pages (gratis)
+1. Repo público en GitHub.
+2. git init && git add . && git commit -m "CELPIP Trainer" && git branch -M main
+   git remote add origin https://github.com/TU_USUARIO/TU_REPO.git && git push -u origin main
+3. Settings → Pages → Source: GitHub Actions.
+4. El workflow (.github/workflows/deploy.yml) construye y publica en cada push.
+5. URL: https://TU_USUARIO.github.io/TU_REPO/
 
-Es seguro que el repo sea público: las keys nunca están en el código, viven solo en el
-localStorage del navegador donde las pegaste. La URL es pública pero nadie puede gastar tu cuota.
-
-Alternativa con login real (también gratis): Cloudflare Pages + Cloudflare Access.
-
-## Audio de listening sin pagar
-Las voces del sistema se eligen automáticamente priorizando las neuronales. En
-**Microsoft Edge de escritorio** son las voces "Natural" de Azure: gratis y de alta calidad.
-Opcional de pago: key de OpenAI en Ajustes para audio con una voz por personaje (~US$0.02/audio).
-
-## Keys opcionales
-- **Anthropic** (pago): alternativa a Gemini para generar/evaluar. Si hay ambas, se usa Gemini.
-- **OpenAI** (pago): solo para el audio real de listening.
+## Actualizar después
+Reemplaza App.jsx en la raíz del proyecto y:
+```bash
+git add .
+git commit -m "actualización"
+git push
+```
+`git add .` sube cualquier archivo modificado sin importar en qué carpeta esté —
+es el comando más seguro para actualizar.
 
 ## Notas
-- El progreso se guarda en localStorage por navegador/dispositivo.
-- El dictado de speaking usa Web Speech API (Chrome/Safari/Edge).
+- Progreso guardado en localStorage por navegador/dispositivo.
+- Dictado de speaking: Web Speech API (Chrome/Safari/Edge).
+- Listening con voces del sistema por defecto; Edge de escritorio trae voces neuronales gratis.
+- Audio real opcional con key de OpenAI TTS en Ajustes (~US$0.02/audio).
