@@ -201,7 +201,7 @@ const LISTEN_SPECS = {
 
 const WRITING_TASKS = [
   { id: "w1", name: "Email", min: 27, brief: "Correo de 150–200 palabras respondiendo a la situación.",
-    templates: ["email-formal", "email-informal"] },
+    templates: ["email-formal", "email-informal", "email-semi"] },
   { id: "w2", name: "Survey", min: 26, brief: "Elige la opción A o B y defiéndela en 150–200 palabras.",
     templates: ["survey"] },
 ];
@@ -227,8 +227,15 @@ Secondly, (responde el segundo punto: nombres, lugares, fechas). This has caused
 Finally, (responde el tercer punto del enunciado).
 In light of this, I would like to suggest that (la solución).
 I sincerely appreciate your time and attention to this matter. I look forward to your prompt response.
-Best regards,
-If it is a store or a service, soften the tone: I was a bit disappointed because... / Is there any way you could (send me a replacement / give me a refund)?` },
+Best regards,` },
+  "email-semi": { title: "Email Semi-Formal", group: "Writing",
+    note: "Para una tienda o servicio: preguntar por un producto, pedir una ayuda o reclamar algo de manera amable pero sencilla.",
+    body: `Hello (store name) Team, / Hi there,
+I am writing to ask about a recent order I placed. / I was wondering if you could help me with...
+To be honest, I was a bit disappointed because... (queja suave)
+Is there any way you could (send me a replacement / give me a refund)?
+Thanks in advance for your help.
+Regards / Sincerely,` },
   "email-informal": { title: "Email Informal", group: "Writing",
     body: `Hi / Hey (name),
 I hope you are doing great. It has been a while since we last caught up.
