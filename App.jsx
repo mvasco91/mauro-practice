@@ -71,9 +71,9 @@ h1,h2,h3,p{margin:0}
 mark.miss{background:#F5A9A4;color:#5A1F1B;border-radius:2px;padding:0 2px}
 .hlmark{background:var(--acc,#FFD666);padding:0 4px;border-radius:2px;color:#0D1320;font-weight:600}
 
-textarea,input{width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:14px;
+textarea,input,select{width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:14px;
   padding:13px 14px;color:var(--text);font:400 15px/24px Inter,sans-serif;margin-top:10px}
-textarea:focus,input:focus,.chip:focus-visible,.btn:focus-visible,.iconbtn:focus-visible,.skill:focus-visible,.opt:focus-visible{
+textarea:focus,input:focus,select:focus,.chip:focus-visible,.btn:focus-visible,.iconbtn:focus-visible,.skill:focus-visible,.opt:focus-visible{
   outline:2px solid var(--acc,#EDF1F8);outline-offset:2px}
 
 .opt{display:flex;gap:10px;width:100%;text-align:left;font:500 14px/22px Inter,sans-serif;
@@ -660,6 +660,9 @@ function parseScript(script) {
   return { turns, speakers };
 }
 
+const VOICES_KEY = "celpip:voices";
+const getVoicePrefs = () => { try { return JSON.parse(localStorage.getItem(VOICES_KEY) || "{}"); } catch (e) { return {}; } };
+
 function bestEnglishVoices() {
   const vs = (window.speechSynthesis ? window.speechSynthesis.getVoices() : [])
     .filter((v) => v.lang && v.lang.toLowerCase().startsWith("en"));
@@ -667,7 +670,11 @@ function bestEnglishVoices() {
     (/natural|neural|premium|enhanced/i.test(v.name) ? 8 : 0) +
     (/google|microsoft/i.test(v.name) ? 3 : 0) +
     (v.lang === "en-CA" ? 2 : /en-(US|GB)/i.test(v.lang) ? 1 : 0);
-  return [...vs].sort((a, b) => score(b) - score(a));
+  const sorted = [...vs].sort((a, b) => score(b) - score(a));
+  // Las voces que elegiste en Ajustes van primero (hablante 1 y hablante 2).
+  const prefs = getVoicePrefs();
+  const chosen = [prefs.a, prefs.b].map((n) => sorted.find((v) => v.name === n)).filter(Boolean);
+  return [...chosen, ...sorted.filter((v) => !chosen.includes(v))];
 }
 
 function withVoices(cb) {
@@ -2776,6 +2783,52 @@ function ProgressScreen({ state, update }) {
 
 /* ---------------------- App ---------------------- */
 
+function VoicePicker() {
+  const [voices, setVoices] = useState([]);
+  const [prefs, setPrefs] = useState(getVoicePrefs());
+  useEffect(() => { withVoices(() => setVoices(bestEnglishVoices())); }, []);
+  const set = (k, v) => {
+    const n = { ...prefs, [k]: v };
+    setPrefs(n);
+    try { localStorage.setItem(VOICES_KEY, JSON.stringify(n)); } catch (e) { /* sin espacio */ }
+  };
+  const test = (name) => {
+    const synth = window.speechSynthesis; if (!synth) return;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance("Hi, this is Sam from the front desk. I'm calling about your booking for Thursday.");
+    u.lang = "en-CA";
+    const v = voices.find((x) => x.name === name); if (v) u.voice = v;
+    synth.speak(u);
+  };
+  const natural = voices.filter((v) => /natural|neural|premium|enhanced/i.test(v.name)).length;
+  return (
+    <div className="card">
+      <span className="kicker">Voces Del Audio (Listening)</span>
+      {voices.length === 0
+        ? <p className="dimtx" style={{ marginTop: 8 }}>Este navegador no expone voces en inglés.</p>
+        : <>
+            {[["a", "Hablante 1"], ["b", "Hablante 2"]].map(([k, label]) => (
+              <div key={k} style={{ marginTop: 10 }}>
+                <span className="dimtx">{label}</span>
+                <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                  <select value={prefs[k] || ""} onChange={(e) => set(k, e.target.value)} style={{ flex: 1, minWidth: 0 }}>
+                    <option value="">Automática</option>
+                    {voices.map((v) => <option key={v.name} value={v.name}>{v.name} ({v.lang})</option>)}
+                  </select>
+                  <button className="btn btn--ghost btn--sm" style={{ width: "auto" }} onClick={() => test(prefs[k] || (voices[k === "a" ? 0 : 1] || voices[0]).name)}>Probar</button>
+                </div>
+              </div>
+            ))}
+            <p className="dimtx" style={{ marginTop: 10 }}>
+              {natural === 0
+                ? `Tu navegador solo ofrece ${voices.length} voces básicas (ninguna neural). Para voces naturales gratis abre la app en Microsoft Edge de escritorio, o agrega una llave de OpenAI.`
+                : `Voces naturales detectadas: ${natural}. Elige las que mejor suenen.`}
+            </p>
+          </>}
+    </div>
+  );
+}
+
 function SettingsScreen({ back }) {
   const [keys, setK] = useState(getKeys());
   const [saved, setSaved] = useState(false);
@@ -2812,6 +2865,7 @@ function SettingsScreen({ back }) {
           Opcional y de pago (~2 centavos por audio). Sin ella, la app usa las voces del sistema: en Microsoft Edge de escritorio son voces neuronales gratis.
         </p>
       </div>
+      <VoicePicker />
       <button className="btn" onClick={save}>{saved ? "Guardado" : "Guardar"}</button>
       <p className="dimtx" style={{ marginTop: 12 }}>
         Las keys se guardan únicamente en este navegador. Nunca las escribas en el código ni las subas al repositorio.
