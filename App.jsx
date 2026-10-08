@@ -514,6 +514,137 @@ function ping() {
 
 const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 const countWords = (t) => (t.trim() ? t.trim().split(/\s+/).length : 0);
+const addDays = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+
+/* ---------- Métricas de voz y detector de template ---------- */
+
+const SAFE_BEFORE = new Set(["i", "you", "we", "they", "would", "do", "don't", "to", "feel", "look", "looks", "looked", "not", "really", "also", "might", "could", "who", "people", "just", "and"]);
+
+function speechMetrics(transcript, secs, talkTotal) {
+  const low = transcript.toLowerCase().match(/[a-z']+/g) || [];
+  const counts = {};
+  const bump = (k) => { counts[k] = (counts[k] || 0) + 1; };
+  for (let i = 0; i < low.length; i++) {
+    const w = low[i];
+    const w2 = w + " " + (low[i + 1] || "");
+    if (/^(um+|uh+|erm?|ah+)$/.test(w)) bump(w.startsWith("um") ? "um" : w.startsWith("uh") ? "uh" : w.startsWith("er") ? "er" : "ah");
+    else if (["you know", "i mean", "kind of", "sort of"].includes(w2)) bump(w2);
+    else if (w === "like" && !SAFE_BEFORE.has(low[i - 1] || "")) bump("like");
+  }
+  const fillers = Object.values(counts).reduce((a, b) => a + b, 0);
+  return {
+    words: low.length, secs: Math.round(secs), counts, fillers,
+    wpm: secs >= 5 ? Math.round(low.length / (secs / 60)) : null,
+    usePct: talkTotal ? Math.min(100, Math.round((secs / talkTotal) * 100)) : null,
+  };
+}
+
+// Porcentaje de la respuesta que es copia literal del template (trigramas de palabras).
+function templateShare(text, tplIds) {
+  const tok = (s) => s.toLowerCase().match(/[a-z']+/g) || [];
+  const words = tok(text);
+  if (words.length < 10) return null;
+  const covered = new Array(words.length).fill(false);
+  for (const id of tplIds) {
+    const tw = tok(TEMPLATES[id].body.replace(/\([^)]*\)/g, " | "));
+    const grams = new Set();
+    for (let i = 0; i + 3 <= tw.length; i++) grams.add(tw.slice(i, i + 3).join(" "));
+    for (let i = 0; i + 3 <= words.length; i++) {
+      if (grams.has(words.slice(i, i + 3).join(" "))) covered[i] = covered[i + 1] = covered[i + 2] = true;
+    }
+  }
+  const n = covered.filter(Boolean).length;
+  return { pct: Math.round((n / words.length) * 100), words: words.length };
+}
+
+function useSpeakCapture() {
+  const [transcript, setTranscript] = useState("");
+  const [listening, setListening] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const recRef = useRef(null);
+  const mrRef = useRef(null);
+  const chunks = useRef([]);
+  const t0 = useRef(0);
+  const SR = typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition);
+  const canRecord = typeof navigator !== "undefined" && !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && typeof MediaRecorder !== "undefined";
+
+  const startDictation = () => {
+    if (!SR) return;
+    try {
+      const rec = new SR();
+      rec.lang = "en-CA"; rec.continuous = true; rec.interimResults = false;
+      rec.onresult = (e) => {
+        let add = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) add += e.results[i][0].transcript + " ";
+        setTranscript((t) => t + add);
+      };
+      rec.onerror = () => setListening(false);
+      rec.onend = () => setListening(false);
+      recRef.current = rec; rec.start(); setListening(true);
+    } catch (e) { setListening(false); }
+  };
+  const stopDictation = () => { try { recRef.current && recRef.current.stop(); } catch (e) { /* ya detenido */ } setListening(false); };
+
+  const begin = async () => {
+    t0.current = Date.now();
+    setAudioUrl(null);
+    if (canRecord) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mr = new MediaRecorder(stream);
+        chunks.current = [];
+        mr.ondataavailable = (e) => { if (e.data && e.data.size) chunks.current.push(e.data); };
+        mr.onstop = () => {
+          setAudioUrl(URL.createObjectURL(new Blob(chunks.current, { type: mr.mimeType || "audio/webm" })));
+          stream.getTracks().forEach((t) => t.stop());
+          setRecording(false);
+        };
+        mr.start(); mrRef.current = mr; setRecording(true);
+      } catch (e) { /* sin permiso de micrófono: se sigue sin grabar */ }
+    }
+    startDictation();
+  };
+
+  // Detiene todo y devuelve los segundos hablados.
+  const end = () => {
+    stopDictation();
+    try { if (mrRef.current && mrRef.current.state !== "inactive") mrRef.current.stop(); } catch (e) { /* ya detenido */ }
+    return t0.current ? Math.max(1, (Date.now() - t0.current) / 1000) : 0;
+  };
+
+  useEffect(() => () => {
+    try { recRef.current && recRef.current.abort(); } catch (e) { /* nada */ }
+    try { if (mrRef.current && mrRef.current.state !== "inactive") mrRef.current.stop(); } catch (e) { /* nada */ }
+  }, []);
+
+  return { transcript, setTranscript, listening, recording, audioUrl, begin, end, startDictation, stopDictation, SR, canRecord };
+}
+
+// Evaluaciones compartidas por las pantallas de práctica y el simulacro.
+function evalWriting(task, prompt, text) {
+  return askClaudeJSON(
+    "Eres examinador certificado del CELPIP General. Evalúas Writing con la rúbrica oficial: Content/Coherence, Vocabulary, Readability, Task Fulfillment. Exigente y realista.",
+    `Consigna: ${prompt || "(evalúa como " + task.name + ")"}
+Respuesta del candidato (${countWords(text)} palabras):
+"""${text}"""
+Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score":9,"comment":"en español, 2 frases"},{"name":"Vocabulary","score":8,"comment":"..."},{"name":"Readability","score":9,"comment":"..."},{"name":"Task Fulfillment","score":9,"comment":"..."}],"checks":[{"label":"Responde cada punto de la consigna","ok":true},{"label":"Usa detalles concretos propios, no solo frases de template","ok":true},{"label":"Desarrolla dos razones o ideas completas","ok":false}],"fixes":["error concreto → corrección"],"upgrades":["palabra simple → sofisticada"]}
+Máximo 4 fixes y 4 upgrades. Exactamente 3 checks, con ok true o false según la respuesta real. Comentarios en español, ejemplos en inglés. En fixes usa SIEMPRE el formato "frase incorrecta → frase corregida".`
+  );
+}
+
+function evalSpeaking(task, prompt, transcript, m) {
+  return askClaudeJSON(
+    "Eres examinador certificado del CELPIP General, sección Speaking. Rúbrica oficial: Content/Coherence, Vocabulary, Listenability, Task Fulfillment. Se evalúa fluidez, no perfección.",
+    `Task ${task.n}: ${task.name} (${task.talk} segundos, tiempo ${task.tense}).
+Consigna: ${prompt || "(genérica)"}
+Transcripción:
+"""${transcript}"""
+${m ? `Datos de fluidez: ${m.words} palabras en ${m.secs}s (${m.wpm || "?"} palabras por minuto), ${m.fillers} muletillas, usó ${m.usePct}% del tiempo.` : ""}
+Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score":9,"comment":"en español, 2 frases"},{"name":"Vocabulary","score":8,"comment":"..."},{"name":"Listenability","score":9,"comment":"..."},{"name":"Task Fulfillment","score":9,"comment":"..."}],"checks":[{"label":"Responde cada punto de la consigna","ok":true},{"label":"Usa detalles concretos propios, no solo frases de template","ok":true},{"label":"Cierra con una conclusión clara dentro del tiempo","ok":false}],"fixes":["error concreto → corrección"],"upgrades":["frase simple → frase de alto nivel"]}
+Máximo 4 fixes y 4 upgrades. Exactamente 3 checks. Comentarios en español. Verifica el tiempo verbal (${task.tense}). En fixes usa SIEMPRE el formato "frase incorrecta → frase corregida".`
+  );
+}
 
 function parseScript(script) {
   const lines = script.split("\n").map((l) => l.trim()).filter(Boolean);
@@ -785,13 +916,72 @@ function QuizRunner({ quiz, color, onFinish }) {
   );
 }
 
-function ScorePanel({ result, color }) {
+function MetricsCard({ m, color, audioUrl }) {
+  const wpmNote = m.wpm == null ? "Habla al menos unos segundos para medir el ritmo."
+    : m.wpm < 100 ? "Ritmo lento: apunta a 110–160 palabras por minuto."
+    : m.wpm > 170 ? "Ritmo muy rápido: respira entre ideas."
+    : "Ritmo en rango (110–160).";
+  const useNote = m.usePct == null ? "" : m.usePct < 85 ? "Dejaste tiempo sin usar: agrega un detalle o un ejemplo." : "Aprovechaste el tiempo.";
+  const fillerList = Object.entries(m.counts).map(([k, v]) => `${k} ×${v}`).join(" · ");
+  const stat = (v, l) => (
+    <div style={{ textAlign: "center" }}>
+      <span className="disp" style={{ fontSize: 26, fontWeight: 700, color, display: "block" }}>{v}</span>
+      <span className="dimtx">{l}</span>
+    </div>
+  );
+  return (
+    <div className="card">
+      <span className="kicker">Tu Voz</span>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginTop: 12 }}>
+        {stat(m.wpm == null ? "–" : m.wpm, "palabras / min")}
+        {stat(m.fillers, "muletillas")}
+        {stat(m.usePct == null ? "–" : m.usePct + "%", "tiempo usado")}
+      </div>
+      <p className="dimtx" style={{ marginTop: 12 }}>{wpmNote} {useNote}</p>
+      {fillerList && <p className="dimtx" style={{ marginTop: 4 }}>Muletillas: {fillerList}</p>}
+      {audioUrl && <audio controls src={audioUrl} style={{ width: "100%", marginTop: 12 }} />}
+    </div>
+  );
+}
+
+function ShareCard({ share }) {
+  if (!share) return null;
+  const level = share.pct > 40 ? "high" : share.pct > 30 ? "mid" : "ok";
+  const c = level === "high" ? "#FF9E9E" : level === "mid" ? "#FFD666" : "#7FE0B2";
+  const msg = level === "high" ? "Dependes demasiado del template: reemplaza frases genéricas por detalles concretos de la consigna."
+    : level === "mid" ? "Estás en el límite. Un detalle propio más y queda en rango."
+    : "Buen equilibrio: el template sostiene la estructura y el contenido es tuyo.";
+  return (
+    <div className="card">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <span className="kicker">Uso Del Template</span>
+        <span className="disp" style={{ fontSize: 26, fontWeight: 700, color: c }}>{share.pct}%</span>
+      </div>
+      <div className="meter" style={{ "--acc": c }}><i style={{ width: `${Math.min(100, share.pct)}%` }} /></div>
+      <p className="dimtx" style={{ marginTop: 8 }}>{msg} Meta: 30–40% o menos.</p>
+    </div>
+  );
+}
+
+function ScorePanel({ result, color, extra }) {
   return (
     <div className="screen">
       <div className="card center" style={{ padding: 26 }}>
         <span className="kicker">Nivel Estimado</span>
         <span className="disp" style={{ fontSize: 56, fontWeight: 700, lineHeight: 1.1, color }}>{result.level}</span>
+        <span className="dimtx" style={{ marginTop: 6 }}>Estimación orientativa: contrástala con las prácticas oficiales de celpip.ca.</span>
       </div>
+      {extra}
+      {result.checks && result.checks.length > 0 && (
+        <div className="card">
+          <span className="kicker">Revisión Rápida</span>
+          {result.checks.map((c, k) => (
+            <p key={k} style={{ fontSize: 13.5, lineHeight: "21px", marginTop: 8, color: c.ok ? "#7FE0B2" : "#FF9E9E" }}>
+              {c.ok ? "✓" : "✗"} {c.label}
+            </p>
+          ))}
+        </div>
+      )}
       <div className="card">
         {(result.criteria || []).map((c, k) => (
           <div key={k} style={{ marginTop: k ? 14 : 0 }}>
@@ -882,6 +1072,12 @@ function HomeScreen({ state, update, launch }) {
         </button>
       )}
 
+      {(state.errors || []).filter(isDue).length > 0 && (
+        <button className="btn btn--ghost" style={{ marginTop: 12 }} onClick={() => launch("review", null, { view: "bank" })}>
+          Repasar {(state.errors || []).filter(isDue).length} errores de hoy <ArrowRight size={15} />
+        </button>
+      )}
+
       <div className="card" style={{ paddingTop: 6, paddingBottom: 6 }}>
         {steps.map((st, i) => (
           <div className="steprow" key={i}>
@@ -912,6 +1108,14 @@ function TrainGrid({ open }) {
     <div className="screen">
       <div className="kicker">Entrenamiento</div>
       <h1 className="disp h1">¿Qué practicamos?</h1>
+      <button className="skill" onClick={() => open("mock")}>
+        <span className="ic" style={{ background: "#EDF1F8" }}><Sparkles size={22} /></span>
+        <span style={{ flex: 1 }}>
+          <span className="disp" style={{ fontWeight: 600, fontSize: 16, display: "block" }}>Simulacro Completo</span>
+          <span className="dimtx">Las 4 habilidades · tiempos reales</span>
+        </span>
+        <ArrowRight size={18} color="var(--dim)" />
+      </button>
       {Object.entries(SKILLS).map(([id, s]) => {
         const Ic = s.icon;
         return (
@@ -1088,7 +1292,7 @@ function HumanAudio({ color, rate, update }) {
 
 const EXAM_Q_SECONDS = 30;
 
-function ExamRunner({ quiz, part, color, onDone, onNewPractice }) {
+function ExamRunner({ quiz, part, color, onDone, onNewPractice, hideReview = false }) {
   const total = quiz.questions.length;
   const [qIdx, setQIdx] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -1125,6 +1329,7 @@ function ExamRunner({ quiz, part, color, onDone, onNewPractice }) {
     return () => clearInterval(t);
   }, [qIdx, finished]);
 
+  if (finished && hideReview) return null;
   if (finished) {
     const score = quiz.questions.filter((q, i) => answersRef.current[i] === q.correct).length;
     return (
@@ -1444,6 +1649,7 @@ function WritingScreen({ back, preset, update }) {
   const [text, setText] = useState("");
   const [showTpl, setShowTpl] = useState(false);
   const [result, setResult] = useState(null);
+  const [share, setShare] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const words = countWords(text);
@@ -1462,19 +1668,13 @@ function WritingScreen({ back, preset, update }) {
   const evaluate = async () => {
     setBusy(true); setErr("");
     try {
-      const r = await askClaudeJSON(
-        "Eres examinador certificado del CELPIP General. Evalúas Writing con la rúbrica oficial: Content/Coherence, Vocabulary, Readability, Task Fulfillment. Exigente y realista.",
-        `Consigna: ${prompt || "(evalúa como " + task.name + ")"}
-Respuesta del candidato (${words} palabras):
-"""${text}"""
-Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score":9,"comment":"en español, 2 frases"},{"name":"Vocabulary","score":8,"comment":"..."},{"name":"Readability","score":9,"comment":"..."},{"name":"Task Fulfillment","score":9,"comment":"..."}],"fixes":["error concreto → corrección"],"upgrades":["palabra simple → sofisticada"]}
-Máximo 4 fixes y 4 upgrades. Comentarios en español, ejemplos en inglés.`
-      );
-      setResult(r);
+      const r = await evalWriting(task, prompt, text);
+      const sh = templateShare(text, task.templates);
+      setResult(r); setShare(sh);
       update((s) => ({
         ...s,
-        history: [...s.history, { date: todayKey(), section: "Writing", detail: `${task.name}: nivel ${r.level}` }],
-        errors: [...(s.errors || []), ...((r.fixes || []).map((f) => ({ date: todayKey(), section: "Writing", text: f })))],
+        history: [...s.history, { date: todayKey(), section: "Writing", detail: `${task.name}: nivel ${r.level}${sh ? ` · template ${sh.pct}%` : ""}` }],
+        errors: [...(s.errors || []), ...((r.fixes || []).map((f) => ({ date: todayKey(), section: "Writing", text: f, box: 0, due: todayKey() })))],
       }));
     } catch (e) { setErr(e.message); }
     setBusy(false);
@@ -1483,7 +1683,7 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español, ejemplos en inglés.`
   if (result) return (
     <div style={{ "--acc": S.color }}>
       <TopBar title="Resultado" sub={task.name} onBack={() => setResult(null)} />
-      <ScorePanel result={result} color={S.color} />
+      <ScorePanel result={result} color={S.color} extra={<ShareCard share={share} />} />
       <button className="btn btn--ghost" onClick={() => { setResult(null); setText(""); setPrompt(""); }}>Nueva práctica</button>
     </div>
   );
@@ -1541,15 +1741,16 @@ function SpeakingScreen({ back, preset, update }) {
   const [task, setTask] = useState(SPEAKING_TASKS.find((t) => preset && t.n === preset.task) || SPEAKING_TASKS[0]);
   const [phase, setPhase] = useState("setup"); // setup | prep | talk | review
   const [prompt, setPrompt] = useState("");
-  const [transcript, setTranscript] = useState("");
-  const [listening, setListening] = useState(false);
   const [result, setResult] = useState(null);
+  const [metrics, setMetrics] = useState(null);
+  const [share, setShare] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const recRef = useRef(null);
-  const SR = typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition);
+  const cap = useSpeakCapture();
+  const { transcript, setTranscript } = cap;
+  const secsRef = useRef(0);
 
-  const pick = (t) => { setTask(t); setPhase("setup"); setPrompt(""); setTranscript(""); setResult(null); };
+  const pick = (t) => { setTask(t); setPhase("setup"); setPrompt(""); setTranscript(""); setResult(null); setMetrics(null); setShare(null); };
 
   const start = async () => {
     setBusy(true); setErr(""); setResult(null); setTranscript("");
@@ -1561,38 +1762,22 @@ function SpeakingScreen({ back, preset, update }) {
     setBusy(false);
   };
 
-  const startDictation = () => {
-    if (!SR) return;
-    const rec = new SR();
-    rec.lang = "en-CA"; rec.continuous = true; rec.interimResults = false;
-    rec.onresult = (e) => {
-      let add = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) add += e.results[i][0].transcript + " ";
-      setTranscript((t) => t + add);
-    };
-    rec.onerror = () => setListening(false);
-    rec.onend = () => setListening(false);
-    recRef.current = rec; rec.start(); setListening(true);
-  };
-  const stopDictation = () => { recRef.current && recRef.current.stop(); setListening(false); };
+  // Al entrar a "talk" arranca la grabación de voz y el dictado a la vez.
+  useEffect(() => { if (phase === "talk") cap.begin(); }, [phase]);
+
+  const finishTalk = () => { secsRef.current = cap.end(); setPhase("review"); };
 
   const evaluate = async () => {
     setBusy(true); setErr("");
+    const m = speechMetrics(transcript, secsRef.current || task.talk, task.talk);
+    const sh = templateShare(transcript, [task.tpl]);
     try {
-      const r = await askClaudeJSON(
-        "Eres examinador certificado del CELPIP General, sección Speaking. Rúbrica oficial: Content/Coherence, Vocabulary, Listenability, Task Fulfillment. Se evalúa fluidez, no perfección.",
-        `Task ${task.n}: ${task.name} (${task.talk} segundos, tiempo ${task.tense}).
-Consigna: ${prompt || "(genérica)"}
-Transcripción:
-"""${transcript}"""
-Devuelve JSON: {"level":"9-10","criteria":[{"name":"Content / Coherence","score":9,"comment":"en español, 2 frases"},{"name":"Vocabulary","score":8,"comment":"..."},{"name":"Listenability","score":9,"comment":"..."},{"name":"Task Fulfillment","score":9,"comment":"..."}],"fixes":["error concreto → corrección"],"upgrades":["frase simple → frase de alto nivel"]}
-Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal (${task.tense}).`
-      );
-      setResult(r);
+      const r = await evalSpeaking(task, prompt, transcript, m);
+      setResult(r); setMetrics(m); setShare(sh);
       update((s) => ({
         ...s,
-        history: [...s.history, { date: todayKey(), section: "Speaking", detail: `Task ${task.n}: nivel ${r.level}` }],
-        errors: [...(s.errors || []), ...((r.fixes || []).map((f) => ({ date: todayKey(), section: "Speaking", text: f })))],
+        history: [...s.history, { date: todayKey(), section: "Speaking", detail: `Task ${task.n}: nivel ${r.level} · ${m.wpm || "?"} ppm · ${m.fillers} muletillas${sh ? ` · template ${sh.pct}%` : ""}` }],
+        errors: [...(s.errors || []), ...((r.fixes || []).map((f) => ({ date: todayKey(), section: "Speaking", text: f, box: 0, due: todayKey() })))],
       }));
     } catch (e) { setErr(e.message); }
     setBusy(false);
@@ -1601,7 +1786,8 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
   if (result) return (
     <div style={{ "--acc": S.color }}>
       <TopBar title="Resultado" sub={`Task ${task.n} · ${task.name}`} onBack={() => setResult(null)} />
-      <ScorePanel result={result} color={S.color} />
+      <ScorePanel result={result} color={S.color}
+        extra={<>{metrics && <MetricsCard m={metrics} color={S.color} audioUrl={cap.audioUrl} />}<ShareCard share={share} /></>} />
       <button className="btn btn--ghost" onClick={() => pick(task)}>Repetir task</button>
     </div>
   );
@@ -1641,14 +1827,17 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
             <button className="btn btn--ghost" onClick={() => setPhase("talk")}>Saltar preparación</button>
           </>}
           {phase === "talk" && <>
-            <BigTimer total={task.talk} color={S.color} label="Hablando" autoStart
-              onDone={() => { stopDictation(); setPhase("review"); }} />
-            {SR
-              ? <button className="btn" style={{ "--acc": listening ? "#FF9E9E" : S.color }}
-                  onClick={listening ? stopDictation : startDictation}>
-                  <Mic size={16} /> {listening ? "Escuchando… toca para detener" : "Dictar mientras hablas"}
-                </button>
-              : <p className="dimtx" style={{ marginTop: 14 }}>Este navegador no transcribe voz: al terminar, escribe lo que dijiste.</p>}
+            <BigTimer total={task.talk} color={S.color} label="Hablando" autoStart onDone={finishTalk} />
+            <p className="dimtx center" style={{ marginTop: 14, color: cap.recording ? "#FF9E9E" : "var(--dim)" }}>
+              {cap.recording ? "● Grabando tu voz" : cap.canRecord ? "Sin micrófono: concede el permiso para grabar" : "Este navegador no graba audio"}
+              {cap.SR ? (cap.listening ? " · transcribiendo" : "") : " · sin transcripción automática"}
+            </p>
+            <button className="btn" style={{ "--acc": S.color }} onClick={finishTalk}>
+              <Square size={15} /> Terminar respuesta
+            </button>
+            {cap.SR && !cap.listening && (
+              <button className="btn btn--ghost btn--sm" onClick={cap.startDictation}><Mic size={14} /> Reanudar transcripción</button>
+            )}
           </>}
         </>
       )}
@@ -1657,11 +1846,17 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
         <div className="card"><span className="kicker">Consigna</span>
           <p style={{ marginTop: 8, fontSize: 14, lineHeight: 23 }}>{prompt}</p>
         </div>
+        {cap.audioUrl && (
+          <div className="card">
+            <span className="kicker">Escúchate</span>
+            <audio controls src={cap.audioUrl} style={{ width: "100%", marginTop: 10 }} />
+          </div>
+        )}
         <textarea rows={7} value={transcript} onChange={(e) => setTranscript(e.target.value)}
-          placeholder="Transcripción de tu respuesta…" />
+          placeholder="Transcripción de tu respuesta: corrígela si el dictado se equivocó…" />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
           <span className="pill">{countWords(transcript)} palabras</span>
-          <button className="btn btn--ghost btn--sm" onClick={() => setPhase("talk")}>Repetir</button>
+          <button className="btn btn--ghost btn--sm" onClick={() => { setTranscript(""); setPhase("talk"); }}>Repetir</button>
         </div>
         <button className="btn" style={{ "--acc": S.color }} onClick={evaluate}
           disabled={busy || countWords(transcript) < 20}>
@@ -1669,6 +1864,467 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
         </button>
         {err && <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 12 }}>{err}</p>}
       </>}
+    </div>
+  );
+}
+
+/* ---------------------- Simulacro completo ---------------------- */
+
+const MOCK_MODES = {
+  express: {
+    label: "Express", note: "≈ 50 min · una parte de cada habilidad",
+    steps: [["listening", 1], ["reading", 3], ["writing", "w1"], ["speaking", 1], ["speaking", 5]],
+  },
+  full: {
+    label: "Completo", note: "≈ 2 h 45 min · todas las partes",
+    steps: [
+      ...[1, 2, 3, 4, 5, 6].map((n) => ["listening", n]),
+      ...[1, 2, 3, 4].map((n) => ["reading", n]),
+      ["writing", "w1"], ["writing", "w2"],
+      ...[1, 2, 3, 4, 5, 6, 7, 8].map((n) => ["speaking", n]),
+    ],
+  },
+};
+
+const stepInfo = ([skill, id]) => {
+  if (skill === "listening") { const p = LISTENING_PARTS[id - 1]; return { skill, label: `Listening Part ${p.n} · ${p.name}`, min: p.min, ref: p }; }
+  if (skill === "reading") { const p = READING_PARTS[id - 1]; return { skill, label: `Reading Part ${p.n} · ${p.name}`, min: p.min, ref: p }; }
+  if (skill === "writing") { const t = WRITING_TASKS.find((x) => x.id === id); return { skill, label: `Writing · ${t.name}`, min: t.min, ref: t }; }
+  const t = SPEAKING_TASKS[id - 1];
+  return { skill, label: `Speaking Task ${t.n} · ${t.name}`, min: Math.ceil((t.prep + t.talk) / 60), ref: t };
+};
+
+async function makeMockContent(info) {
+  const r = info.ref;
+  if (info.skill === "reading") {
+    const n = Math.min(r.q, 8);
+    return askClaudeJSON(
+      "Eres un generador de práctica para el examen CELPIP General, sección Reading.",
+      `Genera una práctica de CELPIP Reading Part ${r.n}: ${r.name}.
+Devuelve JSON: {"title":"...","passage":"texto de 230-300 palabras en inglés canadiense","questions":[{"question":"...","options":["a","b","c","d"],"correct":0,"explanation":"breve, en español"}]}
+Exactamente ${n} preguntas. Usa sinónimos y paráfrasis como el examen real. Tema canadiense cotidiano.`
+    );
+  }
+  if (info.skill === "listening") {
+    return askClaudeJSON(
+      "Eres un guionista de audios de práctica para el examen CELPIP General, sección Listening. Escribes inglés canadiense HABLADO, no leído.",
+      `Genera una práctica de CELPIP Listening Part ${r.n}: ${r.name}.
+El audio debe ser ${LISTEN_SPECS[r.n]}.
+Reglas: contracciones siempre, frases cortas, alguna muletilla ligera. Cada intervención en su propia línea con el formato exacto "Nombre: texto". En monólogos, un solo hablante (por ejemplo "Announcer:"). Sin acotaciones, sin paréntesis, sin emojis. 150-220 palabras en total.
+Devuelve JSON: {"title":"A conversation about ...","script":"...","questions":[{"question":"...","options":["a","b","c","d"],"correct":0,"explanation":"breve, en español"}]}
+Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablantes.`
+    );
+  }
+  if (info.skill === "writing") {
+    const p = await askClaude("Eres examinador del CELPIP General.",
+      `Escribe UNA consigna realista para la tarea "${r.name}" del CELPIP (${r.brief}). Solo la consigna en inglés, 60-90 palabras, sin encabezados.`);
+    return { prompt: p.trim() };
+  }
+  const p = await askClaude("Eres examinador del CELPIP General, sección Speaking.",
+    `Escribe UNA consigna realista para Speaking Task ${r.n}: ${r.name}. Solo la consigna en inglés, 40-70 palabras, como en el examen.`);
+  return { prompt: p.trim() };
+}
+
+// Reproduce un guion UNA sola vez (sin pausa ni repetición), como en el examen.
+function playScriptOnce(script, { stopRef, audioRef, onEnd, onError }) {
+  const { openai } = getKeys();
+  const { turns, speakers } = parseScript(script);
+  if (openai) {
+    (async () => {
+      try {
+        let urls = ttsSessionCache.get(script);
+        if (!urls) {
+          const map = {};
+          speakers.forEach((sp, i) => { map[sp] = OPENAI_VOICES[i % OPENAI_VOICES.length]; });
+          urls = await Promise.all(turns.map((t) => ttsOpenAI(openai, t.text, t.sp ? map[t.sp] : "nova")));
+          ttsSessionCache.set(script, urls);
+        }
+        let i = 0;
+        const next = () => {
+          if (stopRef.current) return;
+          if (i >= urls.length) { onEnd(); return; }
+          const a = new Audio(urls[i++]);
+          audioRef.current = a;
+          a.onended = () => setTimeout(next, 260);
+          a.onerror = onError;
+          a.play().catch(onError);
+        };
+        next();
+      } catch (e) { onError(); }
+    })();
+    return;
+  }
+  const synth = window.speechSynthesis;
+  if (!synth) { onError(); return; }
+  synth.cancel();
+  withVoices(() => {
+    const voices = bestEnglishVoices();
+    const map = {};
+    speakers.forEach((sp, i) => { map[sp] = voices.length ? voices[i % voices.length] : null; });
+    let idx = 0;
+    const next = () => {
+      if (stopRef.current) return;
+      if (idx >= turns.length) { onEnd(); return; }
+      const t = turns[idx++];
+      const u = new SpeechSynthesisUtterance(t.text);
+      u.lang = "en-CA"; u.rate = 1;
+      if (t.sp && map[t.sp]) u.voice = map[t.sp];
+      if (t.sp && speakers.length > 1 && voices.length < speakers.length) u.pitch = 1 + ((speakers.indexOf(t.sp) % 3) - 1) * 0.18;
+      u.onend = () => { if (!stopRef.current) setTimeout(next, 320); };
+      u.onerror = onError;
+      synth.speak(u);
+    };
+    next();
+  });
+}
+
+function ExamClock({ seconds, onExpire, label }) {
+  const { left } = useCountdown(seconds, true, onExpire);
+  return <span className="exam-count" style={{ color: left <= 60 ? "#C0392B" : undefined }}>{label} · {fmt(left)}</span>;
+}
+
+function MockReading({ info, quiz, onFinish }) {
+  const [ans, setAns] = useState({});
+  const done = useRef(false);
+  const finish = () => {
+    if (done.current) return;
+    done.current = true;
+    onFinish({ score: quiz.questions.filter((q, i) => ans[i] === q.correct).length, total: quiz.questions.length });
+  };
+  return (
+    <div className="exam">
+      <div className="exam-top">
+        <span className="exam-brand">CELPIP · {info.label}</span>
+        <ExamClock seconds={info.min * 60} onExpire={finish} label="Time left" />
+      </div>
+      <p className="exam-q">{quiz.title}</p>
+      <p className="exam-hint" style={{ color: "#17233B", whiteSpace: "pre-wrap" }}>{quiz.passage}</p>
+      {quiz.questions.map((q, i) => (
+        <div key={i} style={{ marginTop: 18 }}>
+          <p className="exam-q">{i + 1}. {q.question}</p>
+          {q.options.map((o, j) => (
+            <button key={j} className="radio" data-on={ans[i] === j ? "1" : "0"} onClick={() => setAns((a) => ({ ...a, [i]: j }))}>
+              <span className="rdot" /><span>{o}</span>
+            </button>
+          ))}
+        </div>
+      ))}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+        <button className="exam-next" onClick={finish}>FINISH</button>
+      </div>
+    </div>
+  );
+}
+
+function MockListening({ info, quiz, color, onFinish }) {
+  const [phase, setPhase] = useState("audio");
+  const [notes, setNotes] = useState("");
+  const [warn, setWarn] = useState(false);
+  const stopRef = useRef(false);
+  const audioRef = useRef(null);
+  useEffect(() => {
+    playScriptOnce(quiz.script, {
+      stopRef, audioRef,
+      onEnd: () => setPhase("questions"),
+      onError: () => { setWarn(true); },
+    });
+    return () => {
+      stopRef.current = true;
+      if (audioRef.current) audioRef.current.pause();
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+  }, []);
+  if (phase === "questions") {
+    return <ExamRunner quiz={quiz} part={info.ref} color={color} hideReview
+      onDone={(score, total) => onFinish({ score, total })} onNewPractice={() => {}} />;
+  }
+  return (
+    <>
+      <div className="exam">
+        <div className="exam-top">
+          <span className="exam-brand">CELPIP · {info.label}</span>
+          <span className="exam-count">{warn ? "Audio unavailable" : "Playing…"}</span>
+        </div>
+        <p className="exam-q">{quiz.title}</p>
+        <div className="exam-bar"><i className="exam-pulse" /></div>
+        <p className="exam-hint">You will hear the audio only once. Take notes below. The questions appear when the audio ends.</p>
+        {warn && (
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+            <button className="exam-next" onClick={() => { stopRef.current = true; setPhase("questions"); }}>CONTINUE</button>
+          </div>
+        )}
+      </div>
+      <textarea rows={5} placeholder="Notas: who · what · when · where" value={notes} onChange={(e) => setNotes(e.target.value)} />
+    </>
+  );
+}
+
+function MockWriting({ info, content, onFinish }) {
+  const [text, setText] = useState("");
+  const done = useRef(false);
+  const finish = () => {
+    if (done.current) return;
+    done.current = true;
+    onFinish({ text, prompt: content.prompt });
+  };
+  const words = countWords(text);
+  return (
+    <div className="exam">
+      <div className="exam-top">
+        <span className="exam-brand">CELPIP · {info.label}</span>
+        <ExamClock seconds={info.min * 60} onExpire={finish} label="Time left" />
+      </div>
+      <p className="exam-q">{content.prompt}</p>
+      <textarea rows={12} value={text} onChange={(e) => setText(e.target.value)} placeholder="Type your response here…"
+        style={{ background: "#fff", color: "#17233B", border: "1px solid #C9D3E0" }} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
+        <span className="exam-count">{words} words (150–200)</span>
+        <button className="exam-next" onClick={finish}>FINISH</button>
+      </div>
+    </div>
+  );
+}
+
+function MockSpeaking({ info, content, onFinish }) {
+  const t = info.ref;
+  const [phase, setPhase] = useState("prep");
+  const cap = useSpeakCapture();
+  const trRef = useRef(""); trRef.current = cap.transcript;
+  const urlRef = useRef(null); urlRef.current = cap.audioUrl;
+  const done = useRef(false);
+  useEffect(() => { if (phase === "talk") cap.begin(); }, [phase]);
+  const finish = () => {
+    if (done.current) return;
+    done.current = true;
+    const secs = cap.end();
+    setPhase("closing");
+    setTimeout(() => onFinish({ prompt: content.prompt, transcript: trRef.current, secs, audioUrl: urlRef.current }), 900);
+  };
+  return (
+    <div className="exam">
+      <div className="exam-top">
+        <span className="exam-brand">CELPIP · {info.label}</span>
+        {phase === "prep" && <ExamClock key="prep" seconds={t.prep} onExpire={() => setPhase("talk")} label="Preparation" />}
+        {phase === "talk" && <ExamClock key="talk" seconds={t.talk} onExpire={finish} label="Speaking" />}
+        {phase === "closing" && <span className="exam-count">Saving…</span>}
+      </div>
+      <p className="exam-q">{content.prompt}</p>
+      {phase === "prep" && <>
+        <p className="exam-hint">Prepare your answer. Recording starts automatically when the preparation time ends.</p>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+          <button className="exam-next" onClick={() => setPhase("talk")}>SKIP</button>
+        </div>
+      </>}
+      {phase === "talk" && <>
+        <div className="exam-bar"><i className="exam-pulse" /></div>
+        <p className="exam-hint">{cap.recording ? "Recording… speak now." : "Microphone unavailable: the answer will be graded from the transcript only."}</p>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+          <button className="exam-next" onClick={finish}>FINISH</button>
+        </div>
+      </>}
+    </div>
+  );
+}
+
+function MockExam({ back, update }) {
+  const [phase, setPhase] = useState("config"); // config | loading | ready | run | grading | report | error
+  const [modeKey, setModeKey] = useState("express");
+  const [steps, setSteps] = useState([]);
+  const [idx, setIdx] = useState(0);
+  const [content, setContent] = useState(null);
+  const [items, setItems] = useState([]);
+  const [err, setErr] = useState("");
+  const [gradeMsg, setGradeMsg] = useState("");
+  const gens = useRef({});
+  const stepsRef = useRef([]);
+  const itemsRef = useRef([]);
+
+  const ensure = (i) => {
+    if (i >= stepsRef.current.length) return null;
+    if (!gens.current[i]) {
+      gens.current[i] = makeMockContent(stepsRef.current[i]);
+      gens.current[i].catch(() => { delete gens.current[i]; });
+    }
+    return gens.current[i];
+  };
+
+  const load = async (i) => {
+    setPhase("loading"); setErr("");
+    try {
+      const c = await ensure(i);
+      ensure(i + 1); // precarga la siguiente parte mientras practicas esta
+      setContent(c); setIdx(i); setPhase("ready");
+    } catch (e) { setErr(e.message); setPhase("error"); setIdx(i); }
+  };
+
+  const begin = () => {
+    const st = MOCK_MODES[modeKey].steps.map(stepInfo);
+    stepsRef.current = st; setSteps(st); gens.current = {}; itemsRef.current = []; setItems([]);
+    load(0);
+  };
+
+  const gradeOne = async (it) => {
+    if (it.skill === "writing") {
+      const ev = await evalWriting(it.info.ref, it.prompt, it.text);
+      return { ...it, ev, share: templateShare(it.text, it.info.ref.templates), err: null };
+    }
+    const m = speechMetrics(it.transcript, it.secs || it.info.ref.talk, it.info.ref.talk);
+    const ev = await evalSpeaking(it.info.ref, it.prompt, it.transcript, m);
+    return { ...it, ev, m, share: templateShare(it.transcript, [it.info.ref.tpl]), err: null };
+  };
+
+  const gradeAll = async (list) => {
+    setPhase("grading");
+    const out = list.slice();
+    const todo = out.map((it, i) => i).filter((i) => out[i].skill === "writing" || out[i].skill === "speaking");
+    for (let k = 0; k < todo.length; k++) {
+      const i = todo[k];
+      setGradeMsg(`Evaluando ${k + 1} de ${todo.length}: ${out[i].info.label}`);
+      const wc = out[i].skill === "writing" ? countWords(out[i].text) : countWords(out[i].transcript);
+      if (wc < 5) { out[i] = { ...out[i], err: "Sin respuesta suficiente para evaluar." }; continue; }
+      try { out[i] = await gradeOne(out[i]); }
+      catch (e) { out[i] = { ...out[i], err: e.message }; }
+    }
+    itemsRef.current = out; setItems(out);
+    const part = (sk) => out.filter((x) => x.skill === sk);
+    const sc = (sk) => { const a = part(sk); return a.length ? `${a.reduce((s, x) => s + x.score, 0)}/${a.reduce((s, x) => s + x.total, 0)}` : null; };
+    const lv = (sk) => { const a = part(sk).filter((x) => x.ev); return a.length ? a.map((x) => x.ev.level).join(" · ") : null; };
+    const bits = [sc("reading") && `Reading ${sc("reading")}`, sc("listening") && `Listening ${sc("listening")}`, lv("writing") && `Writing ${lv("writing")}`, lv("speaking") && `Speaking ${lv("speaking")}`].filter(Boolean);
+    update((s) => ({
+      ...s,
+      history: [...s.history, { date: todayKey(), section: "Simulacro", detail: `${MOCK_MODES[modeKey].label}: ${bits.join(" · ")}` }],
+      errors: [...(s.errors || []), ...out.flatMap((x) => ((x.ev && x.ev.fixes) || []).map((f) => ({ date: todayKey(), section: x.skill === "writing" ? "Writing" : "Speaking", text: f, box: 0, due: todayKey() })))],
+    }));
+    setPhase("report");
+  };
+
+  const advance = (res) => {
+    const info = stepsRef.current[idx];
+    const list = [...itemsRef.current, { skill: info.skill, info, ...res }];
+    itemsRef.current = list; setItems(list);
+    if (idx + 1 < stepsRef.current.length) load(idx + 1);
+    else gradeAll(list);
+  };
+
+  const leave = () => {
+    if (phase === "config" || phase === "report" || window.confirm("¿Salir del simulacro? Se perderá el avance.")) back();
+  };
+
+  const info = steps[idx];
+  const S = info ? SKILLS[info.skill] : SKILLS.reading;
+
+  if (phase === "config") return (
+    <div className="screen">
+      <TopBar title="Simulacro Completo" sub="Condiciones reales" onBack={back} />
+      <div className="card">
+        <p style={{ fontSize: 14, lineHeight: "23px" }}>
+          Reading, Listening, Writing y Speaking seguidos, con los tiempos de cada parte. Sin pausas, sin volver atrás, sin transcripciones ni correcciones hasta el final. El audio suena una sola vez y el micrófono graba tu Speaking.
+        </p>
+        <p className="dimtx" style={{ marginTop: 8 }}>
+          Las partes generadas por IA tienen menos preguntas que el examen real (máximo 8 por lectura): úsalo para entrenar tiempos y resistencia, no como predicción de nota.
+        </p>
+      </div>
+      <div className="chiprow">
+        {Object.entries(MOCK_MODES).map(([k, m]) => (
+          <button key={k} className="chip" data-on={modeKey === k ? "1" : "0"} style={{ "--acc": "#EDF1F8" }} onClick={() => setModeKey(k)}>{m.label}</button>
+        ))}
+      </div>
+      <p className="dimtx" style={{ marginTop: 10 }}>{MOCK_MODES[modeKey].note} · {MOCK_MODES[modeKey].steps.length} partes</p>
+      <button className="btn" onClick={begin}>Empezar simulacro <Play size={16} /></button>
+      <p className="dimtx" style={{ marginTop: 12 }}>Busca un lugar silencioso, usa auriculares y concede el permiso de micrófono cuando el navegador lo pida.</p>
+    </div>
+  );
+
+  if (phase === "loading") return (
+    <div className="screen">
+      <TopBar title="Preparando" sub={info ? `Parte ${idx + 1} de ${steps.length}` : ""} onBack={leave} />
+      <Skeletons />
+    </div>
+  );
+
+  if (phase === "error") return (
+    <div className="screen">
+      <TopBar title="No Se Pudo Preparar" sub={`Parte ${idx + 1} de ${steps.length}`} onBack={leave} />
+      <p className="dimtx" style={{ color: "#FF9E9E" }}>{err}</p>
+      <button className="btn" onClick={() => { delete gens.current[idx]; load(idx); }}>Reintentar</button>
+    </div>
+  );
+
+  if (phase === "ready") return (
+    <div className="screen" style={{ "--acc": S.color }}>
+      <TopBar title={info.label} sub={`Parte ${idx + 1} de ${steps.length}`} onBack={leave} />
+      <div className="card center" style={{ padding: 26 }}>
+        <span className="disp" style={{ fontSize: 38, fontWeight: 700, color: S.color }}>{info.min} min</span>
+        <p className="dimtx" style={{ marginTop: 6 }}>El tiempo corre desde que pulses el botón. No se puede pausar.</p>
+      </div>
+      <button className="btn" style={{ "--acc": S.color }} onClick={() => setPhase("run")}>Empezar parte <Play size={16} /></button>
+    </div>
+  );
+
+  if (phase === "run") return (
+    <div className="screen" style={{ "--acc": S.color }}>
+      <div className="dimtx" style={{ marginTop: 6 }}>Parte {idx + 1} de {steps.length}</div>
+      {info.skill === "reading" && <MockReading key={idx} info={info} quiz={content} onFinish={advance} />}
+      {info.skill === "listening" && <MockListening key={idx} info={info} quiz={content} color={S.color} onFinish={advance} />}
+      {info.skill === "writing" && <MockWriting key={idx} info={info} content={content} onFinish={advance} />}
+      {info.skill === "speaking" && <MockSpeaking key={idx} info={info} content={content} onFinish={advance} />}
+    </div>
+  );
+
+  if (phase === "grading") return (
+    <div className="screen">
+      <TopBar title="Evaluando" sub="Casi listo" />
+      <Skeletons />
+      <p className="dimtx center" style={{ marginTop: 12 }}>{gradeMsg}</p>
+    </div>
+  );
+
+  // report
+  const retry = async (i) => {
+    const list = itemsRef.current.slice();
+    try { list[i] = await gradeOne(list[i]); } catch (e) { list[i] = { ...list[i], err: e.message }; }
+    itemsRef.current = list; setItems(list);
+  };
+  const quizItems = (sk) => items.filter((x) => x.skill === sk);
+  return (
+    <div className="screen">
+      <TopBar title="Resultado Del Simulacro" sub={MOCK_MODES[modeKey].label} onBack={back} />
+      {["reading", "listening"].map((sk) => quizItems(sk).length > 0 && (
+        <div className="card" key={sk}>
+          <span className="kicker" style={{ color: SKILLS[sk].color }}>{SKILLS[sk].label}</span>
+          {quizItems(sk).map((x, k) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", marginTop: 10, fontSize: 14 }}>
+              <span>{x.info.label}</span><span className="pill">{x.score}/{x.total}</span>
+            </div>
+          ))}
+        </div>
+      ))}
+      {items.map((x, i) => (x.skill === "writing" || x.skill === "speaking") && (
+        <div className="card" key={i}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
+            <span className="kicker" style={{ color: SKILLS[x.skill].color }}>{x.info.label}</span>
+            {x.ev && <span className="disp" style={{ fontSize: 22, fontWeight: 700, color: SKILLS[x.skill].color }}>{x.ev.level}</span>}
+          </div>
+          {x.err && <>
+            <p className="dimtx" style={{ color: "#FF9E9E", marginTop: 8 }}>{x.err}</p>
+            {countWords(x.skill === "writing" ? x.text : x.transcript) >= 5 &&
+              <button className="btn btn--ghost btn--sm" onClick={() => retry(i)}>Reintentar evaluación</button>}
+          </>}
+          {x.ev && (x.ev.criteria || []).map((c, k) => (
+            <div key={k} style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontSize: 13.5 }}>
+              <span>{c.name}</span><span className="pill">{c.score}/12</span>
+            </div>
+          ))}
+          {x.share && <p className="dimtx" style={{ marginTop: 8 }}>Uso del template: {x.share.pct}%{x.share.pct > 40 ? " · demasiado alto" : ""}</p>}
+          {x.m && <p className="dimtx" style={{ marginTop: 4 }}>{x.m.wpm || "–"} palabras/min · {x.m.fillers} muletillas · {x.m.usePct}% del tiempo</p>}
+          {x.audioUrl && <audio controls src={x.audioUrl} style={{ width: "100%", marginTop: 10 }} />}
+          {x.ev && x.ev.checks && x.ev.checks.map((c, k) => (
+            <p key={k} style={{ fontSize: 13, marginTop: 6, color: c.ok ? "#7FE0B2" : "#FF9E9E" }}>{c.ok ? "✓" : "✗"} {c.label}</p>
+          ))}
+        </div>
+      ))}
+      <p className="dimtx">Las correcciones de Writing y Speaking ya están en tu banco de errores. Los niveles de la IA son orientativos.</p>
+      <button className="btn" onClick={() => { setPhase("config"); setItems([]); }}>Nuevo simulacro</button>
     </div>
   );
 }
@@ -1921,8 +2577,75 @@ function RitualCard({ id, tpl, data, update, color }) {
   );
 }
 
-function ReviewScreen({ state, update }) {
-  const [view, setView] = useState("ritual");
+const BANK_STEPS = [1, 3, 7, 14]; // días hasta el siguiente repaso por caja
+const isDue = (e) => !e.due || e.due <= todayKey();
+
+function ErrorBank({ state, update }) {
+  const errors = state.errors || [];
+  const due = errors.map((e, i) => ({ e, i })).filter((x) => isDue(x.e));
+  const [typed, setTyped] = useState("");
+  const [shown, setShown] = useState(false);
+  const [round, setRound] = useState(0);
+  const cur = due[0];
+
+  const split = (t) => {
+    const parts = t.split(/→|->/);
+    return parts.length > 1 ? { wrong: parts[0].trim(), right: parts.slice(1).join("→").trim() } : { wrong: t, right: "" };
+  };
+
+  const rate = (knew) => {
+    const idx = cur.i;
+    update((s) => {
+      const list = (s.errors || []).slice();
+      const e = list[idx];
+      if (!e) return s;
+      const box = knew ? (e.box || 0) + 1 : 0;
+      if (knew && box >= BANK_STEPS.length) list.splice(idx, 1); // dominado: sale del banco
+      else list[idx] = { ...e, box, due: addDays(knew ? BANK_STEPS[box - 1] : 0) };
+      return { ...s, errors: list, bankDone: (s.bankDone || 0) + (knew ? 1 : 0) };
+    });
+    setTyped(""); setShown(false); setRound((r) => r + 1);
+  };
+
+  if (errors.length === 0) {
+    return <div className="card"><p className="dimtx">Cada evaluación de Writing y Speaking guarda aquí tus correcciones. Después las repasas con tarjetas espaciadas hasta dominarlas.</p></div>;
+  }
+  if (!cur) {
+    const next = errors.map((e) => e.due).filter(Boolean).sort()[0];
+    return (
+      <div className="card center" style={{ padding: 24 }}>
+        <Check size={26} color="#7FE0B2" />
+        <p style={{ fontWeight: 600, marginTop: 8 }}>Nada pendiente hoy</p>
+        <p className="dimtx">Tienes {errors.length} errores en el banco{next ? `; el próximo repaso es el ${next}` : ""}.</p>
+      </div>
+    );
+  }
+  const { wrong, right } = split(cur.e.text);
+  return (
+    <div key={round}>
+      <p className="dimtx" style={{ marginTop: 12 }}>{due.length} por repasar hoy · caja {(cur.e.box || 0) + 1} de {BANK_STEPS.length + 1}</p>
+      <div className="card">
+        <span className="kicker">{cur.e.section} · Corrige Esta Frase</span>
+        <p style={{ marginTop: 10, fontSize: 16, lineHeight: "25px", color: "#FF9E9E" }}>{right ? wrong : cur.e.text}</p>
+        {!shown && <>
+          <textarea rows={2} value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Escríbela bien, de memoria…" />
+          <button className="btn" onClick={() => setShown(true)}>Ver corrección</button>
+        </>}
+        {shown && <>
+          {typed.trim() && <p className="dimtx" style={{ marginTop: 10 }}>Tu versión: {typed}</p>}
+          <p style={{ marginTop: 10, fontSize: 16, lineHeight: "25px", color: "#7FE0B2" }}>{right || "Revisa la corrección en la evaluación original."}</p>
+          <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+            <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => rate(false)}>Todavía no</button>
+            <button className="btn btn--sm" style={{ flex: 1 }} onClick={() => rate(true)}>Lo sabía</button>
+          </div>
+        </>}
+      </div>
+    </div>
+  );
+}
+
+function ReviewScreen({ state, update, preset }) {
+  const [view, setView] = useState((preset && preset.view) || "ritual");
   const ids = Object.keys(TEMPLATES);
   const done = ids.filter((id) => {
     const r = state.ritual[id];
@@ -1939,11 +2662,14 @@ function ReviewScreen({ state, update }) {
           onClick={() => setView("ritual")}>3·2·1 · {done}/{ids.length}</button>
         <button className="chip" data-on={view === "conn" ? "1" : "0"} style={{ "--acc": "#EDF1F8" }}
           onClick={() => setView("conn")}>Conectores</button>
+        <button className="chip" data-on={view === "bank" ? "1" : "0"} style={{ "--acc": "#EDF1F8" }}
+          onClick={() => setView("bank")}>Banco · {(state.errors || []).filter(isDue).length} Hoy</button>
         <button className="chip" data-on={view === "errors" ? "1" : "0"} style={{ "--acc": "#EDF1F8" }}
           onClick={() => setView("errors")}>Errores · {(state.errors || []).length}</button>
       </div>
 
       {view === "conn" && <ConnectorsTrainer state={state} update={update} />}
+      {view === "bank" && <ErrorBank state={state} update={update} />}
 
       {view === "ritual" && <>
         <p className="dimtx" style={{ marginTop: 12 }}>Leer 3 veces · repetir en voz alta 2 veces · escribirlo 1 vez de memoria.</p>
@@ -2109,7 +2835,7 @@ export default function CelpipTrainer() {
     window.scrollTo(0, 0);
   };
 
-  const screens = { reading: ReadingScreen, listening: ListeningScreen, writing: WritingScreen, speaking: SpeakingScreen };
+  const screens = { mock: MockExam, reading: ReadingScreen, listening: ListeningScreen, writing: WritingScreen, speaking: SpeakingScreen };
   const SkillScreen = skill ? screens[skill] : null;
 
   return (
@@ -2122,7 +2848,7 @@ export default function CelpipTrainer() {
           {tab === "train" && SkillScreen && (
             <SkillScreen key={skill + JSON.stringify(preset)} back={() => launch("train")} preset={preset} update={update} />
           )}
-          {tab === "review" && <ReviewScreen state={state} update={update} />}
+          {tab === "review" && <ReviewScreen key={JSON.stringify(preset)} state={state} update={update} preset={preset} />}
           {tab === "progress" && <ProgressScreen state={state} update={update} />}
           {tab === "settings" && <SettingsScreen back={() => launch("home")} />}
         </>}
