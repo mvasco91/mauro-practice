@@ -674,10 +674,12 @@ function withVoices(cb) {
   const synth = window.speechSynthesis;
   if (!synth) return;
   if (synth.getVoices().length) return cb();
-  let ran = false;
-  const run = () => { if (!ran) { ran = true; cb(); } };
-  synth.onvoiceschanged = run;
-  setTimeout(run, 400);
+  // Chrome carga las voces de forma asíncrona: esperar hasta 2 s antes de rendirse
+  // (si no, arranca con la voz básica del sistema, que suena robótica).
+  let ran = false, tries = 0;
+  const run = () => { if (!ran) { ran = true; clearInterval(iv); cb(); } };
+  synth.onvoiceschanged = () => { if (synth.getVoices().length) run(); };
+  const iv = setInterval(() => { tries++; if (synth.getVoices().length || tries >= 20) run(); }, 100);
 }
 
 // Audio real con OpenAI TTS: una voz distinta por hablante del diálogo.
@@ -2136,6 +2138,7 @@ function MockExam({ back, update }) {
   const [err, setErr] = useState("");
   const [gradeMsg, setGradeMsg] = useState("");
   const gens = useRef({});
+  useEffect(() => { if (window.speechSynthesis) window.speechSynthesis.getVoices(); }, []); // precarga las voces
   const stepsRef = useRef([]);
   const itemsRef = useRef([]);
 
