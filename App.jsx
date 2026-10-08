@@ -201,7 +201,7 @@ const LISTEN_SPECS = {
 
 const WRITING_TASKS = [
   { id: "w1", name: "Email", min: 27, brief: "Correo de 150–200 palabras respondiendo a la situación.",
-    templates: ["email-formal", "email-informal", "email-semi"] },
+    templates: ["email-formal", "email-informal"] },
   { id: "w2", name: "Survey", min: 26, brief: "Elige la opción A o B y defiéndela en 150–200 palabras.",
     templates: ["survey"] },
 ];
@@ -219,13 +219,16 @@ const SPEAKING_TASKS = [
 
 const TEMPLATES = {
   "email-formal": { title: "Email Formal", group: "Writing",
+    note: "Responde cada punto del enunciado con su propio párrafo y detalles concretos.",
     body: `Dear (name),
 I am writing to express my concern / interest / dissatisfaction regarding the recent issue that took place at...
-First and foremost, it is important to highlight that (qué pasó).
-Furthermore, this situation has caused inconvenience / delays because (por qué me afecta).
+First of all, (responde aquí el primer punto del enunciado, con detalles concretos).
+Secondly, (responde el segundo punto: nombres, lugares, fechas). This has caused inconvenience / delays because (por qué me afecta).
+Finally, (responde el tercer punto del enunciado).
 In light of this, I would like to suggest that (la solución).
 I sincerely appreciate your time and attention to this matter. I look forward to your prompt response.
-Best regards,` },
+Best regards,
+If it is a store or a service, soften the tone: I was a bit disappointed because... / Is there any way you could (send me a replacement / give me a refund)?` },
   "email-informal": { title: "Email Informal", group: "Writing",
     body: `Hi / Hey (name),
 I hope you are doing great. It has been a while since we last caught up.
@@ -233,22 +236,16 @@ The reason I am reaching out is that (el plan o el problema).
 I was thinking that maybe (sugerir algo relajado).
 Let me know what you think / I cannot wait to see you soon. Looking forward to hearing from you soon.
 Take care, Cheers, Best,` },
-  "email-semi": { title: "Email Semi-Formal", group: "Writing",
-    body: `Hello (store name) Team, / Hi there,
-I am writing to ask about a recent order I placed. / I was wondering if you could help me with...
-To be honest, I was a bit disappointed because... (queja suave)
-Is there any way you could (send me a replacement / give me a refund)?
-Thanks in advance for your help.
-Regards / Sincerely,` },
   survey: { title: "Survey A/B", group: "Writing",
-    body: `Thank you for considering my opinion regarding the upcoming decision. From my perspective, I strongly believe that Option A/B is the most favourable and practical choice for everyone involved.
-One compelling reason is that it would significantly enhance (el beneficio).
-While I acknowledge that option A/B has some potential benefits, it might also lead to (aspecto negativo). Therefore, option A/B remains a more sustainable solution.
-All things considered, I am convinced that choosing option A/B will result in a more positive outcome for the community in the long run.
-Ultimately, I am happy to support whichever decision is made and I will be ready to help in any way possible.` },
+    note: "Para CLB 10 necesitas dos razones bien desarrolladas. Cierra firme, sin ceder la postura.",
+    body: `Thank you for considering my opinion. I strongly believe Option A/B is the better choice.
+First, it would (beneficio 1), for example (detalle concreto).
+Second, (beneficio 2), which matters because (razón).
+While Option A/B may (ventaja de la otra opción), it could also (desventaja).
+For these reasons, I am convinced that Option A/B is the most practical choice.` },
   "sp-advice": { title: "Task 1 · Giving Advice", group: "Speaking",
     body: `Hi (name)! I heard you're thinking about (tema).
-If I were in your shoes, I would definitely go for it.
+If I were in your shoes, I would (consejo: hacerlo / no hacerlo / elegir la opción X).
 First of all... You will probably...
 On top of that... My advice is...
 I hope this helps! Let me know what you decide.` },
@@ -258,25 +255,32 @@ At that time, I was with (my family / my son / my coworkers). We decided to (go 
 Suddenly, we realized that... / To my surprise, everything went better than expected, because...
 In the end, I felt (extremely happy / relieved / proud). It was truly an unforgettable day and I learned that (patience / planning) is very important.` },
   "sp-scene": { title: "Task 3 · Describing A Scene", group: "Speaking",
-    body: `What I can see here is a vibrant scene of a (park / street / office). There are several people engaging in different activities.
-Right in the middle, I can see a (man / woman) who is (sitting / talking). He/She looks quite (happy / busy).
-To the left there is a group of people (eating / walking / talking). Meanwhile, on the right side, I notice a...
-In the background, there are some (trees / buildings / clouds) that make the place look pleasant.
-At the top of the image, I can see a couple of birds flying across the clear sky.
-Overall, it seems like a very peaceful and enjoyable day at the park.` },
+    note: "Describe SOLO lo que realmente ves: la estructura es fija, el contenido es tuyo.",
+    body: `What I can see here is a (park / kitchen / office / street). (Una frase con lo más llamativo de la imagen.)
+Right in the middle, there is a (persona/objeto) who is (acción). He/She looks (emoción visible).
+To the left, I can see (qué hay). Meanwhile, on the right side, there is (qué hay).
+In the foreground, (qué hay cerca). In the background, (qué hay al fondo).
+Overall, it looks like (cierre basado en lo que describiste).` },
   "sp-predict": { title: "Task 4 · Making Predictions", group: "Speaking",
-    body: `Looking at what is happening in the picture, I think several things are going to change in the next few minutes.
-First of all, the (man / girl) who is (action) will probably finish (his / her) task and leave the area.
-Furthermore, I imagine that the kids playing in the corner are going to move towards the...
-I wouldn't be surprised if a rainstorm starts, causing everyone to look for shelter.
-In short, I believe the scene will become even more active in the next few minutes.` },
+    note: "Cada predicción debe apoyarse en algo visible en la imagen.",
+    body: `Looking at the picture, I think a few things are going to happen in the next few minutes.
+First of all, since (detalle visible: the boy is reaching for the ball), he will probably (predicción).
+Furthermore, because (otro detalle visible), (persona/grupo) is going to (predicción).
+I wouldn't be surprised if (predicción razonable, ligada a la escena).
+In short, I believe (cierre breve sobre cómo cambiará la escena).` },
   "sp-compare": { title: "Task 5 · Comparing & Persuading", group: "Speaking",
     body: `Hi (name), I've been looking at both options, and while I understand why you like your choice, I strongly believe that option (A/B) is more suitable for us.
 One of the main reasons is the (price / location). Even though your option is (cheaper / larger / closer), my choice offers (better quality / more activities), which is crucial because...
-Also, choosing this option will definitely bring us better results. In the long run, it is a smarter investment for everyone.
-All things considered, I am convinced that option (A/B) is the way to go; at the end of the day we need to save some money. Don't you agree?` },
+Also, choosing this option will bring us better results. In the long run, it is a smarter investment for everyone.
+All things considered, I really think option (A/B) gives us more value for what we pay. What do you think?` },
   "sp-difficult": { title: "Task 6 · Difficult Situation", group: "Speaking",
-    body: `Hi (name), I'm calling because I have some bad news. I am afraid I won't be able to (make it to your party / finish the report on time).
+    note: "Lee la consigna: si pide elegir entre dos opciones usa la primera parte; si pide resolver un problema, la segunda.",
+    body: `If the task asks you to choose:
+Hi (name), I've thought about it carefully, and I've decided to (opción), because (razón 1). Also, (razón 2).
+I know (la otra opción) has its advantages, but (por qué la tuya pesa más).
+
+If the task asks you to deal with a problem:
+Hi (name), I'm calling because I have some bad news. I am afraid I won't be able to (make it to your party / finish the report on time).
 The reason is that something unexpected just came up. (My son has a fever / my car broke down). Because of this, it's impossible for me to be there.
 To make it up to you, I was wondering if we could (reschedule for next weekend / I can send the file by email tonight). Is that ok?
 I sincerely apologize. Please let me know if there's anything else I can do.` },
@@ -714,15 +718,23 @@ function Skeletons() {
   return <div className="card"><div className="skel" style={{ width: "55%" }} /><div className="skel" /><div className="skel" /><div className="skel" style={{ width: "80%" }} /></div>;
 }
 
+function TplNote({ note }) {
+  return note ? <p className="dimtx" style={{ marginTop: 10 }}>{note}</p> : null;
+}
+
 function DiffWords({ target, attempt, minLen = 1 }) {
   const mine = new Set((String(attempt).toLowerCase().match(/[a-z']+/g) || []));
   const parts = String(target).split(/(\s+)/);
+  let depth = 0; // palabras dentro de (paréntesis) son huecos a completar: no se califican
   return (
     <div className="paper">
       {parts.map((p, i) => {
+        const wasIn = depth > 0;
+        depth += (p.match(/\(/g) || []).length - (p.match(/\)/g) || []).length;
+        if (depth < 0) depth = 0;
         const m = p.toLowerCase().match(/[a-z']+/);
         const w = m && m[0];
-        const isMiss = w && w.length >= minLen && !mine.has(w);
+        const isMiss = !wasIn && !/^\(/.test(p) && w && w.length >= minLen && !mine.has(w);
         return isMiss ? <mark key={i} className="miss">{p}</mark> : <span key={i}>{p}</span>;
       })}
     </div>
@@ -1497,7 +1509,7 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español, ejemplos en inglés.`
       </button>
       {showTpl && task.templates.map((id) => (
         <div key={id} className="paper">
-          <strong>{TEMPLATES[id].title}</strong>{"\n"}{TEMPLATES[id].body}
+          <strong>{TEMPLATES[id].title}</strong>{"\n"}{TEMPLATES[id].note ? TEMPLATES[id].note + "\n\n" : ""}{TEMPLATES[id].body}
         </div>
       ))}
 
@@ -1601,9 +1613,10 @@ Máximo 4 fixes y 4 upgrades. Comentarios en español. Verifica el tiempo verbal
         <div className="card">
           <span className="kicker">{task.name} · Tiempo {task.tense}</span>
         </div>
+        <TplNote note={TEMPLATES[task.tpl].note} />
         <div className="paper">{TEMPLATES[task.tpl].body}</div>
         <p className="dimtx" style={{ marginTop: 12 }}>
-          Fluidez sobre perfección. Si te pierdes: "What I mean is…" y repites la idea.
+          Fluidez sobre perfección. Si te pierdes: "What I mean is…" y repites la idea. El template debe ser como mucho el 30–40% de tu respuesta: el resto, detalles concretos de la consigna.
         </p>
         <button className="btn" style={{ "--acc": S.color }} onClick={start} disabled={busy}>
           {busy ? "Generando consigna…" : "Empezar task"} <Play size={16} />
@@ -1831,7 +1844,7 @@ function RitualCard({ id, tpl, data, update, color }) {
   const complete = st.read >= 3 && st.spoken >= 2 && st.written != null;
 
   const coverage = () => {
-    const key = [...new Set(tpl.body.toLowerCase().match(/[a-z']{5,}/g) || [])];
+    const key = [...new Set(tpl.body.replace(/\([^)]*\)/g, " ").toLowerCase().match(/[a-z']{5,}/g) || [])];
     const mine = new Set(draft.toLowerCase().match(/[a-z']{5,}/g) || []);
     return Math.round((key.filter((w) => mine.has(w)).length / Math.max(key.length, 1)) * 100);
   };
@@ -1894,7 +1907,7 @@ function RitualCard({ id, tpl, data, update, color }) {
                   {showMine ? "Tu versión, tal como la escribiste." : "En rojo: las palabras clave que faltaron en tu versión."}
                 </p>
               </>
-            : <div className="paper">{tpl.body}</div>}
+            : <><TplNote note={tpl.note} /><div className="paper">{tpl.body}</div></>}
         </>}
       </>}
     </div>
