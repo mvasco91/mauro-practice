@@ -248,7 +248,7 @@ All things considered, I am convinced that choosing option A/B will result in a 
 Ultimately, I am happy to support whichever decision is made and I will be ready to help in any way possible.` },
   "sp-advice": { title: "Task 1 · Giving Advice", group: "Speaking",
     body: `Hi (name)! I heard you're thinking about (tema).
-If I were in your shoes, I would definitely go for it.
+If I were in your shoes, I would (go for it / think twice before doing it / choose the option that...).
 First of all... You will probably...
 On top of that... My advice is...
 I hope this helps! Let me know what you decide.` },
@@ -260,26 +260,26 @@ In the end, I felt (extremely happy / relieved / proud). It was truly an unforge
   "sp-scene": { title: "Task 3 · Describing A Scene", group: "Speaking",
     body: `What I can see here is a vibrant scene of a (park / street / office). There are several people engaging in different activities.
 Right in the middle, I can see a (man / woman) who is (sitting / talking). He/She looks quite (happy / busy).
-To the left there is a group of people (eating / walking / talking). Meanwhile, on the right side, I notice a...
-In the background, there are some (trees / buildings / clouds) that make the place look pleasant.
-At the top of the image, I can see a couple of birds flying across the clear sky.
-Overall, it seems like a very peaceful and enjoyable day at the park.` },
+To the left there is (a group of people / an object / a person) (doing something / in some place). Meanwhile, on the right side, I notice a...
+In the background, there are some (trees / buildings / shelves) that make the place look (pleasant / busy / organized).
+Overall, it seems like a very (peaceful / lively / busy) moment at the (place).` },
   "sp-predict": { title: "Task 4 · Making Predictions", group: "Speaking",
     body: `Looking at what is happening in the picture, I think several things are going to change in the next few minutes.
 First of all, the (man / girl) who is (action) will probably finish (his / her) task and leave the area.
-Furthermore, I imagine that the kids playing in the corner are going to move towards the...
-I wouldn't be surprised if a rainstorm starts, causing everyone to look for shelter.
-In short, I believe the scene will become even more active in the next few minutes.` },
+Furthermore, I imagine that the (other person / group in the picture) is going to move towards the...
+I wouldn't be surprised if (something that follows from the scene), causing everyone to (react).
+In short, I believe the situation will (change / improve / get busier) in the next few minutes.` },
   "sp-compare": { title: "Task 5 · Comparing & Persuading", group: "Speaking",
     body: `Hi (name), I've been looking at both options, and while I understand why you like your choice, I strongly believe that option (A/B) is more suitable for us.
 One of the main reasons is the (price / location). Even though your option is (cheaper / larger / closer), my choice offers (better quality / more activities), which is crucial because...
 Also, choosing this option will definitely bring us better results. In the long run, it is a smarter investment for everyone.
-All things considered, I am convinced that option (A/B) is the way to go; at the end of the day we need to save some money. Don't you agree?` },
+All things considered, I am convinced that option (A/B) is the way to go; at the end of the day, it gives us more value for what we invest. What do you think?` },
   "sp-difficult": { title: "Task 6 · Difficult Situation", group: "Speaking",
     body: `Hi (name), I'm calling because I have some bad news. I am afraid I won't be able to (make it to your party / finish the report on time).
 The reason is that something unexpected just came up. (My son has a fever / my car broke down). Because of this, it's impossible for me to be there.
 To make it up to you, I was wondering if we could (reschedule for next weekend / I can send the file by email tonight). Is that ok?
-I sincerely apologize. Please let me know if there's anything else I can do.` },
+I sincerely apologize. Please let me know if there's anything else I can do.
+(If the task asks you to choose between two options, start instead with: I've thought about it carefully, and I've decided to (my choice), because (reason 1). Also, (reason 2).)` },
   "sp-opinion": { title: "Task 7 · Expressing Opinions", group: "Speaking",
     body: `This is a controversial topic, but from my perspective, I am a firm believer that (mi opinión).
 First of all, one of the primary benefits of this is (health / economy / safety). For instance, in many cities like London, we have seen that (example), which is beneficial for (everybody / the environment).
