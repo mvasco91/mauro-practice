@@ -1288,6 +1288,28 @@ function HumanAudio({ color, rate, update }) {
   );
 }
 
+// Banco de audios pregrabados con voz neuronal (public/audio/listen/bank.json).
+let listenBankPromise = null;
+const loadListenBank = () => {
+  if (!listenBankPromise) {
+    listenBankPromise = fetch("audio/listen/bank.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+  }
+  return listenBankPromise;
+};
+const SEEN_KEY = "celpip:listen:seen";
+// Elige uno que no hayas oído; si ya oíste todos, vuelve a empezar la ronda.
+function pickBankItem(bank, partN) {
+  const list = bank[String(partN)] || [];
+  if (!list.length) return null;
+  let seen = [];
+  try { seen = JSON.parse(localStorage.getItem(SEEN_KEY) || "[]"); } catch (e) { /* vacío */ }
+  let pool = list.filter((x) => !seen.includes(x.id));
+  if (!pool.length) { seen = seen.filter((id) => !list.some((x) => x.id === id)); pool = list; }
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  try { localStorage.setItem(SEEN_KEY, JSON.stringify([...seen, pick.id])); } catch (e) { /* sin espacio */ }
+  return pick;
+}
+
 const EXAM_Q_SECONDS = 30;
 
 function ExamRunner({ quiz, part, color, onDone, onNewPractice, hideReview = false }) {
@@ -1404,6 +1426,8 @@ function ListeningScreen({ back, preset, update }) {
   const [showScript, setShowScript] = useState(false);
   const [examPhase, setExamPhase] = useState("intro");
 
+  const [bank, setBank] = useState({});
+  useEffect(() => { loadListenBank().then(setBank); }, []);
   useEffect(() => () => window.speechSynthesis && window.speechSynthesis.cancel(), []);
   useEffect(() => { if (played) setExamPhase("questions"); }, [played]);
 
@@ -1499,9 +1523,28 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
     }
   };
 
+  const playFile = (src) => {
+    setErr(""); stopRef.current = false; setPlaying(true);
+    const a = new Audio(src);
+    a.playbackRate = rate; audioRef.current = a;
+    a.onended = () => { setPlaying(false); if (!stopRef.current) setPlayed(true); };
+    a.onerror = () => { setPlaying(false); setErr("No se pudo cargar el audio pregrabado."); };
+    a.play().catch(() => { setPlaying(false); setErr("No se pudo reproducir el audio. Toca de nuevo para iniciar."); });
+  };
+
   const play = () => {
+    if (quiz && quiz.audio) { playFile(quiz.audio); return; }
     const { openai } = getKeys();
     if (openai) playOpenAI(openai); else playSystem();
+  };
+
+  const loadBank = () => {
+    const item = pickBankItem(bank, part.n);
+    if (!item) return;
+    setErr(""); setPlayed(false); setNotes("");
+    setQuizDone(false); setShowScript(false); setExamPhase("intro");
+    setCols({ a: "", b: "", c: "", favor: "", contra: "" });
+    setQuiz({ title: item.title, script: item.script, questions: item.questions, audio: item.audio });
   };
   const stop = () => {
     stopRef.current = true;
@@ -1556,8 +1599,13 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
         </div>
         {busy ? <Skeletons /> : (
           <>
-            <button className="btn" style={{ "--acc": S.color }} onClick={generate}>
-              Generar audio <Sparkles size={16} />
+            {(bank[String(part.n)] || []).length > 0 && (
+              <button className="btn" style={{ "--acc": S.color }} onClick={loadBank}>
+                Audio con voz neuronal · {(bank[String(part.n)] || []).length} disponibles <Play size={16} />
+              </button>
+            )}
+            <button className={(bank[String(part.n)] || []).length > 0 ? "btn btn--ghost" : "btn"} style={{ "--acc": S.color }} onClick={generate}>
+              Generar audio nuevo (voz del navegador) <Sparkles size={16} />
             </button>
             {cacheList(`celpip:cache:listen:${part.n}`).length > 0 && (
               <button className="btn btn--ghost" onClick={loadCached}>
@@ -1904,6 +1952,8 @@ Exactamente ${n} preguntas. Usa sinónimos y paráfrasis como el examen real. Te
     );
   }
   if (info.skill === "listening") {
+    const item = pickBankItem(await loadListenBank(), r.n);
+    if (item) return { title: item.title, script: item.script, questions: item.questions, audio: item.audio };
     return askClaudeJSON(
       "Eres un guionista de audios de práctica para el examen CELPIP General, sección Listening. Escribes inglés canadiense HABLADO, no leído.",
       `Genera una práctica de CELPIP Listening Part ${r.n}: ${r.name}.
@@ -1924,7 +1974,15 @@ Exactamente 4 preguntas sobre who, what, when, where u opiniones de los hablante
 }
 
 // Reproduce un guion UNA sola vez (sin pausa ni repetición), como en el examen.
-function playScriptOnce(script, { stopRef, audioRef, onEnd, onError }) {
+function playScriptOnce(script, { stopRef, audioRef, onEnd, onError, src }) {
+  if (src) {
+    const a = new Audio(src);
+    audioRef.current = a;
+    a.onended = () => { if (!stopRef.current) onEnd(); };
+    a.onerror = onError;
+    a.play().catch(onError);
+    return;
+  }
   const { openai } = getKeys();
   const { turns, speakers } = parseScript(script);
   if (openai) {
@@ -2022,7 +2080,7 @@ function MockListening({ info, quiz, color, onFinish }) {
   const audioRef = useRef(null);
   useEffect(() => {
     playScriptOnce(quiz.script, {
-      stopRef, audioRef,
+      stopRef, audioRef, src: quiz.audio,
       onEnd: () => setPhase("questions"),
       onError: () => { setWarn(true); },
     });
