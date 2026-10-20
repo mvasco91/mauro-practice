@@ -2330,6 +2330,19 @@ function MockExam({ back, update }) {
 
 /* ---------------------- Conectores ---------------------- */
 
+// Pronuncia un texto en inglés con la mejor voz disponible (o la que elegiste en Ajustes).
+function speakEn(text) {
+  const synth = typeof window !== "undefined" && window.speechSynthesis;
+  if (!synth) return;
+  withVoices(() => {
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(String(text).replace(/\([^)]*\)/g, " ").replace(/\s*\/\s*/g, ", ").replace(/\.\.\./g, ""));
+    u.lang = "en-CA"; u.rate = 0.9;
+    const v = bestEnglishVoices()[0]; if (v) u.voice = v;
+    synth.speak(u);
+  });
+}
+
 function MatchGame({ items, color, onResult, onNewRound }) {
   const [left] = useState(() => shuffle(items));
   const [right] = useState(() => shuffle([...items]));
@@ -2366,7 +2379,7 @@ function MatchGame({ items, color, onResult, onNewRound }) {
         <div className="mcol">
           {left.map((c) => (
             <button key={c.id} className="mbtn" data-sel={sel === c.id ? "1" : "0"} data-done={done[c.id] ? "1" : "0"}
-              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => setSel(c.id)}>{c.en}</button>
+              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => { setSel(c.id); speakEn(c.en); }}>{c.en}</button>
           ))}
         </div>
         <div className="mcol">
@@ -2395,7 +2408,7 @@ function ClozeGame({ items, color, onResult, onNewRound }) {
   const pick = (c) => {
     if (picked) return;
     const ok = c.id === item.id;
-    setPicked(c.id); onResult(item.id, ok);
+    setPicked(c.id); onResult(item.id, ok); speakEn(item.en);
     if (ok) setScore((s) => s + 1);
   };
   const next = () => {
