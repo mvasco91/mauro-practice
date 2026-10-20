@@ -2330,17 +2330,29 @@ function MockExam({ back, update }) {
 
 /* ---------------------- Conectores ---------------------- */
 
-// Pronuncia un texto en inglés con la mejor voz disponible (o la que elegiste en Ajustes).
-function speakEn(text) {
-  const synth = typeof window !== "undefined" && window.speechSynthesis;
-  if (!synth) return;
-  withVoices(() => {
-    synth.cancel();
-    const u = new SpeechSynthesisUtterance(String(text).replace(/\([^)]*\)/g, " ").replace(/\s*\/\s*/g, ", ").replace(/\.\.\./g, ""));
-    u.lang = "en-CA"; u.rate = 0.9;
-    const v = bestEnglishVoices()[0]; if (v) u.voice = v;
-    synth.speak(u);
-  });
+// Pronuncia en inglés. Si hay audio neuronal pregrabado (src) lo usa; si falla,
+// cae a la mejor voz del navegador (o la que elegiste en Ajustes).
+let speakAudio = null;
+function speakEn(text, src) {
+  if (typeof window === "undefined") return;
+  if (speakAudio) { speakAudio.pause(); speakAudio = null; }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  const fallback = () => {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    withVoices(() => {
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(String(text).replace(/\([^)]*\)/g, " ").replace(/\s*\/\s*/g, ", ").replace(/\.\.\./g, ""));
+      u.lang = "en-CA"; u.rate = 0.9;
+      const v = bestEnglishVoices()[0]; if (v) u.voice = v;
+      synth.speak(u);
+    });
+  };
+  if (!src) { fallback(); return; }
+  const a = new Audio(src);
+  speakAudio = a;
+  a.onerror = fallback;
+  a.play().catch(fallback);
 }
 
 function MatchGame({ items, color, onResult, onNewRound }) {
@@ -2379,7 +2391,7 @@ function MatchGame({ items, color, onResult, onNewRound }) {
         <div className="mcol">
           {left.map((c) => (
             <button key={c.id} className="mbtn" data-sel={sel === c.id ? "1" : "0"} data-done={done[c.id] ? "1" : "0"}
-              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => { setSel(c.id); speakEn(c.en); }}>{c.en}</button>
+              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => { setSel(c.id); speakEn(c.en, `audio/conn/${c.id}.mp3`); }}>{c.en}</button>
           ))}
         </div>
         <div className="mcol">
@@ -2408,7 +2420,7 @@ function ClozeGame({ items, color, onResult, onNewRound }) {
   const pick = (c) => {
     if (picked) return;
     const ok = c.id === item.id;
-    setPicked(c.id); onResult(item.id, ok); speakEn(item.en);
+    setPicked(c.id); onResult(item.id, ok); speakEn(item.en, `audio/conn/${item.id}.mp3`);
     if (ok) setScore((s) => s + 1);
   };
   const next = () => {
@@ -2551,6 +2563,9 @@ function RitualCard({ id, tpl, data, update, color }) {
             onClick={() => { set({ read: 0, spoken: 0, written: null }); setLastDraft(""); setDraft(""); setWriting(false); }}>
             <RotateCw size={13} /> Reiniciar este template
           </button>
+        )}
+        {!writing && (
+          <audio controls preload="none" src={`audio/tpl/${id}.mp3`} style={{ width: "100%", marginTop: 12 }} aria-label="Escuchar el template" />
         )}
         {writing ? <>
           <p className="dimtx" style={{ marginTop: 10 }}>Template oculto: escríbelo de memoria.</p>
