@@ -268,7 +268,7 @@ Overall, it seems like a very (peaceful / lively / busy) moment at the (place).`
 First of all, the (man / girl) who is (action) will probably finish (his / her) task and leave the area.
 Furthermore, I imagine that the (other person / group in the picture) is going to move towards the...
 I wouldn't be surprised if (something that follows from the scene), causing everyone to (react).
-In short, I believe the situation will (change / improve / get busier) very soon.` },
+All in all, judging by what I can see, it is highly likely that the situation will (change / improve / become more hectic) before long, which means (a brief consequence for the people involved).` },
   "sp-compare": { title: "Task 5 · Comparing & Persuading", group: "Speaking",
     body: `Hi (name), I've been looking at both options, and while I understand why you like your choice, I strongly believe that option (A/B) is more suitable for us.
 One of the main reasons is the (price / location). Even though your option is (cheaper / larger / closer), my choice offers (better quality / more activities), which is crucial because...
