@@ -535,7 +535,7 @@ function templateShare(text, tplIds) {
   if (words.length < 10) return null;
   const covered = new Array(words.length).fill(false);
   for (const id of tplIds) {
-    const tw = tok(TEMPLATES[id].body.replace(/\([^)]*\)/g, " | "));
+    const tw = tok(stripParens(TEMPLATES[id].body));
     const grams = new Set();
     for (let i = 0; i + 3 <= tw.length; i++) grams.add(tw.slice(i, i + 3).join(" "));
     for (let i = 0; i + 3 <= words.length; i++) {
@@ -858,8 +858,19 @@ function TplNote({ note }) {
   return note ? <p className="dimtx" style={{ marginTop: 10 }}>{note}</p> : null;
 }
 
+// Quita todo lo que va entre paréntesis (también anidado): son huecos o instrucciones, no cuentan para la nota.
+function stripParens(t) {
+  let depth = 0, out = "";
+  for (const ch of String(t)) {
+    if (ch === "(") { depth++; out += " "; continue; }
+    if (ch === ")") { if (depth > 0) depth--; out += " "; continue; }
+    out += depth > 0 ? " " : ch;
+  }
+  return out;
+}
+
 function DiffWords({ target, attempt, minLen = 1 }) {
-  const mine = new Set((String(attempt).toLowerCase().match(/[a-z']+/g) || []));
+  const mine = new Set((stripParens(attempt).toLowerCase().match(/[a-z']+/g) || []));
   const parts = String(target).split(/(\s+)/);
   let depth = 0; // palabras dentro de (paréntesis) son huecos a completar: no se califican
   return (
@@ -2589,8 +2600,8 @@ function RitualCard({ id, tpl, data, update, color }) {
   const complete = st.read >= 3 && st.spoken >= 2 && st.written != null;
 
   const coverage = () => {
-    const key = [...new Set(tpl.body.replace(/\([^)]*\)/g, " ").toLowerCase().match(/[a-z']{5,}/g) || [])];
-    const mine = new Set(draft.toLowerCase().match(/[a-z']{5,}/g) || []);
+    const key = [...new Set(stripParens(tpl.body).toLowerCase().match(/[a-z']{5,}/g) || [])];
+    const mine = new Set(stripParens(draft).toLowerCase().match(/[a-z']{5,}/g) || []);
     return Math.round((key.filter((w) => mine.has(w)).length / Math.max(key.length, 1)) * 100);
   };
 
