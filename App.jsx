@@ -104,6 +104,8 @@ textarea:focus,input:focus,select:focus,.chip:focus-visible,.btn:focus-visible,.
   background-size:200% 100%;animation:shine 1.2s linear infinite}
 @keyframes shine{to{background-position:-200% 0}}
 
+body.kbd .navbar{display:none}
+body.kbd #root{padding-bottom:45vh}
 .navbar{position:fixed;bottom:0;left:0;right:0;background:rgba(13,19,32,.92);backdrop-filter:blur(14px);
   border-top:1px solid var(--line);z-index:40}
 .navin{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(10px + env(safe-area-inset-bottom))}
@@ -2828,6 +2830,13 @@ function ClozeGame({ items, color, onResult, onNewRound, pool = CONNECTORS, audi
       </>}
     </>
   );
+}
+
+if (typeof document !== "undefined" && !window.__kbdHook) {
+  window.__kbdHook = true;
+  const isField = (el) => el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
+  document.addEventListener("focusin", (e) => { if (isField(e.target)) document.body.classList.add("kbd"); });
+  document.addEventListener("focusout", () => { setTimeout(() => { if (!isField(document.activeElement)) document.body.classList.remove("kbd"); }, 50); });
 }
 
 function TypeGame({ items, color, onResult, onNewRound, audioDir = "pv" }) {
