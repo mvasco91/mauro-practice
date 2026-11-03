@@ -2885,7 +2885,8 @@ function TypeGame({ items, color, onResult, onNewRound, audioDir = "pv" }) {
       </div>
       {!res && <>
         <input value={val} onChange={(e) => setVal(e.target.value)} autoCapitalize="none" autoCorrect="off" spellCheck={false}
-          placeholder="Escribe el phrasal verb…" aria-label="Phrasal verb"
+          placeholder="Escribe el phrasal verb…" aria-label="Phrasal verb" style={{ fontSize: 16, scrollMarginBottom: 140 }}
+          onFocus={(e) => { const el = e.currentTarget; [150, 450].forEach((t) => setTimeout(() => el.scrollIntoView({ block: "center", behavior: "smooth" }), t)); }}
           onKeyDown={(e) => { if (e.key === "Enter") check(); }} />
         <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
           <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => setHint(true)} disabled={hint}>Pista</button>
