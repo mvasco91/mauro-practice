@@ -337,7 +337,8 @@ const PHRASALS = [
   "es": "Investigar, revisar un asunto",
   "g": "Quejas Y Problemas",
   "sit": "Pides que revisen un problema con tu factura.",
-  "cz": "I would appreciate it if you could ___ this matter as soon as possible."
+  "cz": "I would appreciate it if you could ___ this matter as soon as possible.",
+  "use": "Email formal (pedir que revisen un problema) · Task 6"
  },
  {
   "id": "sort-out",
@@ -345,7 +346,8 @@ const PHRASALS = [
   "es": "Resolver, arreglar",
   "g": "Quejas Y Problemas",
   "sit": "Tienes un malentendido con una reservación.",
-  "cz": "I hope we can ___ this misunderstanding quickly."
+  "cz": "I hope we can ___ this misunderstanding quickly.",
+  "use": "Email formal o semi-formal (resolver un problema) · Task 6"
  },
  {
   "id": "put-up-with",
@@ -353,7 +355,8 @@ const PHRASALS = [
   "es": "Aguantar, tolerar",
   "g": "Quejas Y Problemas",
   "sit": "Tu vecino hace ruido todas las noches.",
-  "cz": "I can't ___ the noise from upstairs any longer."
+  "cz": "I can't ___ the noise from upstairs any longer.",
+  "use": "Email formal (queja) · Task 7 (opinión) · Task 8"
  },
  {
   "id": "let-down",
@@ -361,7 +364,8 @@ const PHRASALS = [
   "es": "Decepcionar, fallarle a alguien",
   "g": "Quejas Y Problemas",
   "sit": "Un compañero no cumplió lo que prometió.",
-  "cz": "I really didn't want to ___ my team, but I couldn't finish on time."
+  "cz": "I really didn't want to ___ my team, but I couldn't finish on time.",
+  "use": "Email formal (queja) · Task 2 (experiencia) · Task 6"
  },
  {
   "id": "call-off",
@@ -369,7 +373,8 @@ const PHRASALS = [
   "es": "Cancelar",
   "g": "Quejas Y Problemas",
   "sit": "Una tormenta fuerte arruina el plan al aire libre.",
-  "cz": "Because of the storm, they decided to ___ the picnic."
+  "cz": "Because of the storm, they decided to ___ the picnic.",
+  "use": "Task 2 (un evento cancelado) · Task 6 (cancelar un plan) · Email informal"
  },
  {
   "id": "run-out-of",
@@ -377,7 +382,8 @@ const PHRASALS = [
   "es": "Quedarse sin, acabarse",
   "g": "Quejas Y Problemas",
   "sit": "Te preocupa que falte comida en una fiesta.",
-  "cz": "I'm afraid we are going to ___ coffee before the party ends."
+  "cz": "I'm afraid we are going to ___ coffee before the party ends.",
+  "use": "Email semi-formal (producto agotado) · Task 6 · Task 8"
  },
  {
   "id": "turn-down",
@@ -385,7 +391,8 @@ const PHRASALS = [
   "es": "Rechazar",
   "g": "Quejas Y Problemas",
   "sit": "Te ofrecieron un trabajo con mal sueldo.",
-  "cz": "I had to ___ the offer because the salary was too low."
+  "cz": "I had to ___ the offer because the salary was too low.",
+  "use": "Task 6 (rechazar una oferta) · Task 5 (persuadir) · Email formal"
  },
  {
   "id": "break-down",
@@ -393,7 +400,8 @@ const PHRASALS = [
   "es": "Averiarse",
   "g": "Quejas Y Problemas",
   "sit": "Llegas tarde al trabajo por una falla de tu carro.",
-  "cz": "My car decided to ___ on the highway this morning."
+  "cz": "My car decided to ___ on the highway this morning.",
+  "use": "Email formal (queja por un equipo dañado) · Task 2 · Task 6"
  },
  {
   "id": "figure-out",
@@ -401,7 +409,8 @@ const PHRASALS = [
   "es": "Resolver, entender",
   "g": "Planes Y Decisiones",
   "sit": "No sabes cómo funciona un programa nuevo.",
-  "cz": "It took me an hour to ___ how the new software works."
+  "cz": "It took me an hour to ___ how the new software works.",
+  "use": "Task 1 (consejo) · Task 7 (opinión) · Email informal"
  },
  {
   "id": "find-out",
@@ -409,7 +418,8 @@ const PHRASALS = [
   "es": "Averiguar, descubrir",
   "g": "Planes Y Decisiones",
   "sit": "Quieres saber el horario de una tienda.",
-  "cz": "Could you please ___ what time the store opens?"
+  "cz": "Could you please ___ what time the store opens?",
+  "use": "Email semi-formal (preguntar) · Task 2 · Task 8"
  },
  {
   "id": "carry-out",
@@ -417,7 +427,8 @@ const PHRASALS = [
   "es": "Llevar a cabo",
   "g": "Planes Y Decisiones",
   "sit": "Hablas de un proyecto de tu ciudad.",
-  "cz": "The city plans to ___ the project next spring."
+  "cz": "The city plans to ___ the project next spring.",
+  "use": "Task 7 (proyectos de la ciudad) · Survey · Email formal"
  },
  {
   "id": "put-off",
@@ -425,7 +436,8 @@ const PHRASALS = [
   "es": "Posponer",
   "g": "Planes Y Decisiones",
   "sit": "Dejas una tarea que no te gusta para después.",
-  "cz": "I tend to ___ my chores until the weekend."
+  "cz": "I tend to ___ my chores until the weekend.",
+  "use": "Task 1 (consejo: no lo pospongas) · Task 6 · Task 7"
  },
  {
   "id": "sign-up",
@@ -433,7 +445,8 @@ const PHRASALS = [
   "es": "Inscribirse",
   "g": "Planes Y Decisiones",
   "sit": "Te anotas a un curso.",
-  "cz": "I decided to ___ for a swimming course."
+  "cz": "I decided to ___ for a swimming course.",
+  "use": "Task 1 (consejo) · Email semi-formal (inscripción) · Survey"
  },
  {
   "id": "work-out",
@@ -441,7 +454,8 @@ const PHRASALS = [
   "es": "Resultar, salir bien",
   "g": "Planes Y Decisiones",
   "sit": "Esperas que todo termine bien.",
-  "cz": "I'm confident everything will ___ in the end."
+  "cz": "I'm confident everything will ___ in the end.",
+  "use": "Task 1 (consejo) · Task 4 (predicciones) · cierre de Email formal"
  },
  {
   "id": "bring-up",
@@ -449,7 +463,8 @@ const PHRASALS = [
   "es": "Plantear, mencionar un tema",
   "g": "Planes Y Decisiones",
   "sit": "Quieres tocar un tema en una reunión.",
-  "cz": "I would like to ___ an important issue at the meeting."
+  "cz": "I would like to ___ an important issue at the meeting.",
+  "use": "Email formal (plantear un tema) · Survey · Task 7 (opinión)"
  },
  {
   "id": "point-out",
@@ -457,7 +472,8 @@ const PHRASALS = [
   "es": "Señalar, destacar",
   "g": "Planes Y Decisiones",
   "sit": "Notas un detalle importante.",
-  "cz": "I must ___ that the price includes delivery."
+  "cz": "I must ___ that the price includes delivery.",
+  "use": "Survey · Task 5 (persuadir) · Task 7 · Email formal"
  },
  {
   "id": "look-forward-to",
@@ -465,7 +481,8 @@ const PHRASALS = [
   "es": "Esperar con ganas",
   "g": "Planes Y Decisiones",
   "sit": "Cierras un correo con cortesía.",
-  "cz": "I really ___ hearing from you soon."
+  "cz": "I really ___ hearing from you soon.",
+  "use": "Cierre de cualquier Email · Task 1 · Task 6"
  },
  {
   "id": "get-along-with",
@@ -473,7 +490,8 @@ const PHRASALS = [
   "es": "Llevarse bien con",
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de tus compañeros de trabajo.",
-  "cz": "I really ___ my coworkers; we are like a family."
+  "cz": "I really ___ my coworkers; we are like a family.",
+  "use": "Task 2 (experiencia) · Task 1 (consejo) · Email informal"
  },
  {
   "id": "count-on",
@@ -481,7 +499,8 @@ const PHRASALS = [
   "es": "Contar con",
   "g": "Relaciones Y Emociones",
   "sit": "Le aseguras apoyo a un amigo.",
-  "cz": "You can always ___ me if you need help."
+  "cz": "You can always ___ me if you need help.",
+  "use": "Task 1 (consejo) · Task 5 (persuadir) · Email informal"
  },
  {
   "id": "look-up-to",
@@ -489,7 +508,8 @@ const PHRASALS = [
   "es": "Admirar",
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de la gente que admiras.",
-  "cz": "I tend to ___ people who work hard."
+  "cz": "I tend to ___ people who work hard.",
+  "use": "Task 2 (experiencia) · Task 7 (opinión)"
  },
  {
   "id": "cheer-up",
@@ -497,7 +517,8 @@ const PHRASALS = [
   "es": "Animar",
   "g": "Relaciones Y Emociones",
   "sit": "Tu amigo está triste.",
-  "cz": "I brought some cookies to ___ my friend."
+  "cz": "I brought some cookies to ___ my friend.",
+  "use": "Task 1 (consejo a un amigo) · Task 2 · Email informal"
  },
  {
   "id": "hang-out",
@@ -505,7 +526,8 @@ const PHRASALS = [
   "es": "Pasar el rato",
   "g": "Relaciones Y Emociones",
   "sit": "Planeas ver a tus amigos.",
-  "cz": "We usually ___ at the park on Sundays."
+  "cz": "We usually ___ at the park on Sundays.",
+  "use": "Task 2 (experiencia) · Email informal · Task 3 (escena)"
  },
  {
   "id": "get-over",
@@ -513,7 +535,8 @@ const PHRASALS = [
   "es": "Superar, recuperarse",
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de recuperarte de una gripe.",
-  "cz": "It took me two weeks to ___ the flu."
+  "cz": "It took me two weeks to ___ the flu.",
+  "use": "Task 1 (consejo) · Task 2 (experiencia) · Task 7"
  },
  {
   "id": "give-up",
@@ -521,7 +544,8 @@ const PHRASALS = [
   "es": "Rendirse",
   "g": "Relaciones Y Emociones",
   "sit": "Animas a alguien ante un reto difícil.",
-  "cz": "Don't ___ on your dreams, no matter how hard it gets."
+  "cz": "Don't ___ on your dreams, no matter how hard it gets.",
+  "use": "Task 1 (consejo) · Task 6 · Task 7"
  },
  {
   "id": "end-up",
@@ -529,7 +553,8 @@ const PHRASALS = [
   "es": "Terminar en, acabar",
   "g": "Experiencias Y Rutina",
   "sit": "Cuentas cómo salió mal un viaje.",
-  "cz": "I was afraid we would ___ in the wrong city."
+  "cz": "I was afraid we would ___ in the wrong city.",
+  "use": "Task 2 (cómo terminó una experiencia) · Task 4 (predicciones) · Task 8"
  },
  {
   "id": "come-across",
@@ -537,7 +562,8 @@ const PHRASALS = [
   "es": "Toparse con, encontrar por casualidad",
   "g": "Experiencias Y Rutina",
   "sit": "Encuentras algo mientras limpias.",
-  "cz": "While cleaning, I happened to ___ an old photo album."
+  "cz": "While cleaning, I happened to ___ an old photo album.",
+  "use": "Task 2 (experiencia) · Task 8 (situación inusual) · Task 3 (escena)"
  },
  {
   "id": "pick-up",
@@ -545,7 +571,8 @@ const PHRASALS = [
   "es": "Recoger a alguien o algo",
   "g": "Experiencias Y Rutina",
   "sit": "Recoges a tu hija del colegio.",
-  "cz": "Could you ___ my daughter from school at three?"
+  "cz": "Could you ___ my daughter from school at three?",
+  "use": "Task 6 · Task 3 (escena) · Email informal (planes)"
  },
  {
   "id": "fill-out",
@@ -553,7 +580,8 @@ const PHRASALS = [
   "es": "Completar un formulario",
   "g": "Trabajo Y Estudio",
   "sit": "Te piden llenar un documento.",
-  "cz": "Please ___ this form and bring it back tomorrow."
+  "cz": "Please ___ this form and bring it back tomorrow.",
+  "use": "Email semi-formal (formularios) · Task 6 (trámites)"
  },
  {
   "id": "keep-up-with",
@@ -561,7 +589,8 @@ const PHRASALS = [
   "es": "Mantenerse al día con, seguir el ritmo",
   "g": "Trabajo Y Estudio",
   "sit": "El trabajo nuevo es muy exigente.",
-  "cz": "It is hard to ___ the pace of the new job."
+  "cz": "It is hard to ___ the pace of the new job.",
+  "use": "Task 7 (trabajo y tecnología) · Task 1 (consejo)"
  },
  {
   "id": "take-on",
@@ -569,7 +598,8 @@ const PHRASALS = [
   "es": "Asumir, hacerse cargo",
   "g": "Trabajo Y Estudio",
   "sit": "Quieres demostrar compromiso en el trabajo.",
-  "cz": "I am willing to ___ more responsibilities."
+  "cz": "I am willing to ___ more responsibilities.",
+  "use": "Task 6 · Task 7 · Survey (asumir responsabilidades)"
  }
 ];
 const PV_GROUPS = ["Quejas Y Problemas", "Planes Y Decisiones", "Relaciones Y Emociones", "Experiencias Y Rutina", "Trabajo Y Estudio"];
@@ -2780,9 +2810,80 @@ function ClozeGame({ items, color, onResult, onNewRound, pool = CONNECTORS, audi
       })}
       {picked && <>
         <p className="dimtx" style={{ marginTop: 10 }}>{item.en} = {item.es.toLowerCase()}</p>
+        {item.use && <p className="dimtx" style={{ marginTop: 4, color: "#9ED8FF" }}>Sirve en: {item.use}</p>}
         <button className="btn" style={{ "--acc": color }} onClick={next}>
           {i + 1 === items.length ? "Ver resultado" : "Siguiente"}
         </button>
+      </>}
+    </>
+  );
+}
+
+function TypeGame({ items, color, onResult, onNewRound, audioDir = "pv" }) {
+  const [i, setI] = useState(0);
+  const [val, setVal] = useState("");
+  const [res, setRes] = useState(null); // null | "ok" | "near" | "bad"
+  const [hint, setHint] = useState(false);
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const item = items[i];
+  const norm = (t) => t.toLowerCase().replace(/[^a-z' ]/g, " ").replace(/\s+/g, " ").trim();
+  const lev = (a, b) => {
+    const d = Array.from({ length: a.length + 1 }, (_, x) => [x, ...new Array(b.length).fill(0)]);
+    for (let y = 1; y <= b.length; y++) d[0][y] = y;
+    for (let x = 1; x <= a.length; x++) for (let y = 1; y <= b.length; y++)
+      d[x][y] = Math.min(d[x - 1][y] + 1, d[x][y - 1] + 1, d[x - 1][y - 1] + (a[x - 1] === b[y - 1] ? 0 : 1));
+    return d[a.length][b.length];
+  };
+
+  const check = () => {
+    if (res || !val.trim()) return;
+    const a = norm(val), t = norm(item.en);
+    const r = a === t ? "ok" : lev(a, t) <= 1 ? "near" : "bad";
+    setRes(r); onResult(item.id, r === "ok");
+    if (r === "ok") setScore((x) => x + 1);
+    speakEn(item.en, `audio/${audioDir}/${item.id}.mp3`);
+  };
+  const next = () => {
+    if (i + 1 === items.length) { setFinished(true); return; }
+    setI(i + 1); setVal(""); setRes(null); setHint(false);
+  };
+
+  if (finished) return (
+    <div className="card center" style={{ padding: 24 }}>
+      <span className="disp" style={{ fontSize: 40, fontWeight: 700, color }}>{score}/{items.length}</span>
+      <span className="dimtx">escritos correctamente</span>
+      <button className="btn" style={{ "--acc": color }} onClick={onNewRound}>Otra ronda</button>
+    </div>
+  );
+
+  const parts = item.cz.split("___");
+  return (
+    <>
+      <p className="dimtx" style={{ marginTop: 12 }}>Frase {i + 1} de {items.length} · escribe el phrasal verb que falta, completo.</p>
+      <div className="card">
+        {item.sit && <p className="dimtx" style={{ marginBottom: 8 }}>{item.sit}</p>}
+        <p style={{ fontSize: 15, lineHeight: 26 }}>
+          {parts[0]}<span className="hlmark" style={{ "--acc": res === "ok" ? "#7FE0B2" : res ? "#FF9E9E" : color }}>{res ? item.en : "______"}</span>{parts[1]}
+        </p>
+        {hint && !res && <p className="dimtx" style={{ marginTop: 8 }}>Significa: {item.es.toLowerCase()} · empieza con “{item.en[0]}”</p>}
+      </div>
+      {!res && <>
+        <input value={val} onChange={(e) => setVal(e.target.value)} autoCapitalize="none" autoCorrect="off" spellCheck={false}
+          placeholder="Escribe el phrasal verb…" aria-label="Phrasal verb"
+          onKeyDown={(e) => { if (e.key === "Enter") check(); }} />
+        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+          <button className="btn btn--ghost btn--sm" style={{ flex: 1 }} onClick={() => setHint(true)} disabled={hint}>Pista</button>
+          <button className="btn btn--sm" style={{ flex: 2, "--acc": color }} onClick={check} disabled={!val.trim()}>Comprobar</button>
+        </div>
+      </>}
+      {res && <>
+        <p style={{ marginTop: 10, fontSize: 14, color: res === "ok" ? "#7FE0B2" : "#FF9E9E" }}>
+          {res === "ok" ? "✓ Correcto" : res === "near" ? `Casi: revisa la ortografía. Es “${item.en}”.` : `✗ Era “${item.en}”.`}
+        </p>
+        <p className="dimtx" style={{ marginTop: 4 }}>{item.en} = {item.es.toLowerCase()}</p>
+        {item.use && <p className="dimtx" style={{ marginTop: 4, color: "#9ED8FF" }}>Sirve en: {item.use}</p>}
+        <button className="btn" style={{ "--acc": color }} onClick={next}>{i + 1 === items.length ? "Ver resultado" : "Siguiente"}</button>
       </>}
     </>
   );
@@ -2818,19 +2919,24 @@ function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connec
           onClick={() => { setMode("match"); newRound(); }}>Parejas</button>
         <button className="chip" data-on={mode === "cloze" ? "1" : "0"} style={{ "--acc": color }}
           onClick={() => { setMode("cloze"); newRound(); }}>En contexto</button>
+        {pool[0] && pool[0].sit && (
+          <button className="chip" data-on={mode === "type" ? "1" : "0"} style={{ "--acc": color }}
+            onClick={() => { setMode("type"); newRound(); }}>Writing The Correct Phrasal</button>
+        )}
         <button className="chip" data-on={mode === "list" ? "1" : "0"} style={{ "--acc": color }}
           onClick={() => setMode("list")}>Lista</button>
       </div>
 
       {mode === "match" && <MatchGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} audioDir={audioDir} />}
       {mode === "cloze" && <ClozeGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} pool={pool} audioDir={audioDir} />}
+      {mode === "type" && <TypeGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} audioDir={audioDir} />}
       {mode === "list" && groups.map((g) => (
         <div key={g}>
           <p className="kicker" style={{ marginTop: 18 }}>{g}</p>
           <div className="card" style={{ paddingTop: 4, paddingBottom: 4, marginTop: 8 }}>
             {pool.filter((c) => c.g === g).map((c) => (
               <div className="errrow" key={c.id}>
-                <span style={{ flex: 1 }}><strong>{c.en}</strong><br /><span className="dimtx">{c.es.toLowerCase()}</span>{c.cz && <><br /><span className="dimtx" style={{ fontStyle: "italic" }}>{c.cz.replace("___", c.en)}</span></>}</span>
+                <span style={{ flex: 1 }}><strong>{c.en}</strong><br /><span className="dimtx">{c.es.toLowerCase()}</span>{c.cz && <><br /><span className="dimtx" style={{ fontStyle: "italic" }}>{c.cz.replace("___", c.en)}</span></>}{c.use && <><br /><span className="dimtx" style={{ color: "#9ED8FF" }}>Sirve en: {c.use}</span></>}</span>
                 <button className="iconbtn" style={{ width: 38, height: 38, borderRadius: 11 }} aria-label={`Escuchar ${c.en}`} onClick={() => speakEn(c.en, `audio/${audioDir}/${c.id}.mp3`)}><Volume2 size={15} /></button>
                 <span className="dot" data-on={isMastered(c) ? "1" : "0"} style={{ "--acc": color, cursor: "default" }}><Check size={15} /></span>
               </div>
@@ -2893,7 +2999,7 @@ function PhrasalScreen({ back, state, update }) {
     <div className="screen" style={{ "--acc": color }}>
       <TopBar title="Phrasal Verbs" sub={`${PHRASALS.length} Más Útiles Para El Examen`} onBack={back} />
       <p className="dimtx" style={{ marginTop: 8 }}>
-        Úsalos 2 o 3 por respuesta, de forma natural. Aprende primero los significados en Parejas y luego escoge el correcto en una situación real en Contexto.
+        Úsalos 2 o 3 por respuesta, de forma natural. Aprende los significados en Parejas, escoge el correcto en Contexto y afiánzalos escribiéndolos tú en Writing The Correct Phrasal.
       </p>
       <ConnectorsTrainer state={state} update={update} pool={PHRASALS} statKey="phrasals" groups={PV_GROUPS} color={color} audioDir="pv" />
     </div>
