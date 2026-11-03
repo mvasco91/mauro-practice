@@ -329,6 +329,252 @@ const CONNECTORS = [
 ];
 const CONN_GROUPS = ["Ordenar Y Agregar", "Contrastar", "Concluir", "Relajados", "Frases Útiles", "Verbos De Opinión"];
 
+/* Phrasal verbs útiles para Speaking y Writing, tomados de tus hojas. */
+const PHRASALS = [
+ {
+  "id": "look-into",
+  "en": "look into",
+  "es": "Investigar, revisar un asunto",
+  "g": "Quejas Y Problemas",
+  "sit": "Pides que revisen un problema con tu factura.",
+  "cz": "I would appreciate it if you could ___ this matter as soon as possible."
+ },
+ {
+  "id": "sort-out",
+  "en": "sort out",
+  "es": "Resolver, arreglar",
+  "g": "Quejas Y Problemas",
+  "sit": "Tienes un malentendido con una reservación.",
+  "cz": "I hope we can ___ this misunderstanding quickly."
+ },
+ {
+  "id": "put-up-with",
+  "en": "put up with",
+  "es": "Aguantar, tolerar",
+  "g": "Quejas Y Problemas",
+  "sit": "Tu vecino hace ruido todas las noches.",
+  "cz": "I can't ___ the noise from upstairs any longer."
+ },
+ {
+  "id": "let-down",
+  "en": "let down",
+  "es": "Decepcionar, fallarle a alguien",
+  "g": "Quejas Y Problemas",
+  "sit": "Un compañero no cumplió lo que prometió.",
+  "cz": "I really didn't want to ___ my team, but I couldn't finish on time."
+ },
+ {
+  "id": "call-off",
+  "en": "call off",
+  "es": "Cancelar",
+  "g": "Quejas Y Problemas",
+  "sit": "Una tormenta fuerte arruina el plan al aire libre.",
+  "cz": "Because of the storm, they decided to ___ the picnic."
+ },
+ {
+  "id": "run-out-of",
+  "en": "run out of",
+  "es": "Quedarse sin, acabarse",
+  "g": "Quejas Y Problemas",
+  "sit": "Te preocupa que falte comida en una fiesta.",
+  "cz": "I'm afraid we are going to ___ coffee before the party ends."
+ },
+ {
+  "id": "turn-down",
+  "en": "turn down",
+  "es": "Rechazar",
+  "g": "Quejas Y Problemas",
+  "sit": "Te ofrecieron un trabajo con mal sueldo.",
+  "cz": "I had to ___ the offer because the salary was too low."
+ },
+ {
+  "id": "break-down",
+  "en": "break down",
+  "es": "Averiarse",
+  "g": "Quejas Y Problemas",
+  "sit": "Llegas tarde al trabajo por una falla de tu carro.",
+  "cz": "My car decided to ___ on the highway this morning."
+ },
+ {
+  "id": "figure-out",
+  "en": "figure out",
+  "es": "Resolver, entender",
+  "g": "Planes Y Decisiones",
+  "sit": "No sabes cómo funciona un programa nuevo.",
+  "cz": "It took me an hour to ___ how the new software works."
+ },
+ {
+  "id": "find-out",
+  "en": "find out",
+  "es": "Averiguar, descubrir",
+  "g": "Planes Y Decisiones",
+  "sit": "Quieres saber el horario de una tienda.",
+  "cz": "Could you please ___ what time the store opens?"
+ },
+ {
+  "id": "carry-out",
+  "en": "carry out",
+  "es": "Llevar a cabo",
+  "g": "Planes Y Decisiones",
+  "sit": "Hablas de un proyecto de tu ciudad.",
+  "cz": "The city plans to ___ the project next spring."
+ },
+ {
+  "id": "put-off",
+  "en": "put off",
+  "es": "Posponer",
+  "g": "Planes Y Decisiones",
+  "sit": "Dejas una tarea que no te gusta para después.",
+  "cz": "I tend to ___ my chores until the weekend."
+ },
+ {
+  "id": "sign-up",
+  "en": "sign up",
+  "es": "Inscribirse",
+  "g": "Planes Y Decisiones",
+  "sit": "Te anotas a un curso.",
+  "cz": "I decided to ___ for a swimming course."
+ },
+ {
+  "id": "work-out",
+  "en": "work out",
+  "es": "Resultar, salir bien",
+  "g": "Planes Y Decisiones",
+  "sit": "Esperas que todo termine bien.",
+  "cz": "I'm confident everything will ___ in the end."
+ },
+ {
+  "id": "bring-up",
+  "en": "bring up",
+  "es": "Plantear, mencionar un tema",
+  "g": "Planes Y Decisiones",
+  "sit": "Quieres tocar un tema en una reunión.",
+  "cz": "I would like to ___ an important issue at the meeting."
+ },
+ {
+  "id": "point-out",
+  "en": "point out",
+  "es": "Señalar, destacar",
+  "g": "Planes Y Decisiones",
+  "sit": "Notas un detalle importante.",
+  "cz": "I must ___ that the price includes delivery."
+ },
+ {
+  "id": "look-forward-to",
+  "en": "look forward to",
+  "es": "Esperar con ganas",
+  "g": "Planes Y Decisiones",
+  "sit": "Cierras un correo con cortesía.",
+  "cz": "I really ___ hearing from you soon."
+ },
+ {
+  "id": "get-along-with",
+  "en": "get along with",
+  "es": "Llevarse bien con",
+  "g": "Relaciones Y Emociones",
+  "sit": "Hablas de tus compañeros de trabajo.",
+  "cz": "I really ___ my coworkers; we are like a family."
+ },
+ {
+  "id": "count-on",
+  "en": "count on",
+  "es": "Contar con",
+  "g": "Relaciones Y Emociones",
+  "sit": "Le aseguras apoyo a un amigo.",
+  "cz": "You can always ___ me if you need help."
+ },
+ {
+  "id": "look-up-to",
+  "en": "look up to",
+  "es": "Admirar",
+  "g": "Relaciones Y Emociones",
+  "sit": "Hablas de la gente que admiras.",
+  "cz": "I tend to ___ people who work hard."
+ },
+ {
+  "id": "cheer-up",
+  "en": "cheer up",
+  "es": "Animar",
+  "g": "Relaciones Y Emociones",
+  "sit": "Tu amigo está triste.",
+  "cz": "I brought some cookies to ___ my friend."
+ },
+ {
+  "id": "hang-out",
+  "en": "hang out",
+  "es": "Pasar el rato",
+  "g": "Relaciones Y Emociones",
+  "sit": "Planeas ver a tus amigos.",
+  "cz": "We usually ___ at the park on Sundays."
+ },
+ {
+  "id": "get-over",
+  "en": "get over",
+  "es": "Superar, recuperarse",
+  "g": "Relaciones Y Emociones",
+  "sit": "Hablas de recuperarte de una gripe.",
+  "cz": "It took me two weeks to ___ the flu."
+ },
+ {
+  "id": "give-up",
+  "en": "give up",
+  "es": "Rendirse",
+  "g": "Relaciones Y Emociones",
+  "sit": "Animas a alguien ante un reto difícil.",
+  "cz": "Don't ___ on your dreams, no matter how hard it gets."
+ },
+ {
+  "id": "end-up",
+  "en": "end up",
+  "es": "Terminar en, acabar",
+  "g": "Experiencias Y Rutina",
+  "sit": "Cuentas cómo salió mal un viaje.",
+  "cz": "I was afraid we would ___ in the wrong city."
+ },
+ {
+  "id": "come-across",
+  "en": "come across",
+  "es": "Toparse con, encontrar por casualidad",
+  "g": "Experiencias Y Rutina",
+  "sit": "Encuentras algo mientras limpias.",
+  "cz": "While cleaning, I happened to ___ an old photo album."
+ },
+ {
+  "id": "pick-up",
+  "en": "pick up",
+  "es": "Recoger a alguien o algo",
+  "g": "Experiencias Y Rutina",
+  "sit": "Recoges a tu hija del colegio.",
+  "cz": "Could you ___ my daughter from school at three?"
+ },
+ {
+  "id": "fill-out",
+  "en": "fill out",
+  "es": "Completar un formulario",
+  "g": "Trabajo Y Estudio",
+  "sit": "Te piden llenar un documento.",
+  "cz": "Please ___ this form and bring it back tomorrow."
+ },
+ {
+  "id": "keep-up-with",
+  "en": "keep up with",
+  "es": "Mantenerse al día con, seguir el ritmo",
+  "g": "Trabajo Y Estudio",
+  "sit": "El trabajo nuevo es muy exigente.",
+  "cz": "It is hard to ___ the pace of the new job."
+ },
+ {
+  "id": "take-on",
+  "en": "take on",
+  "es": "Asumir, hacerse cargo",
+  "g": "Trabajo Y Estudio",
+  "sit": "Quieres demostrar compromiso en el trabajo.",
+  "cz": "I am willing to ___ more responsibilities."
+ }
+];
+const PV_GROUPS = ["Quejas Y Problemas", "Planes Y Decisiones", "Relaciones Y Emociones", "Experiencias Y Rutina", "Trabajo Y Estudio"];
+
+
 const shuffle = (a) => a.map((x) => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map((p) => p[1]);
 
 function weightedPick(pool, stats, n) {
@@ -1117,6 +1363,14 @@ function TrainGrid({ open }) {
     <div className="screen">
       <div className="kicker">Entrenamiento</div>
       <h1 className="disp h1">¿Qué practicamos?</h1>
+      <button className="skill" onClick={() => open("phrasal")}>
+        <span className="ic" style={{ background: "#9ED8FF" }}><Sparkles size={22} /></span>
+        <span style={{ flex: 1 }}>
+          <span className="disp" style={{ fontWeight: 600, fontSize: 16, display: "block" }}>Phrasal Verbs</span>
+          <span className="dimtx">Parejas y situaciones reales · {PHRASALS.length} expresiones</span>
+        </span>
+        <ArrowRight size={18} color="var(--dim)" />
+      </button>
       <button className="skill" onClick={() => open("mock")}>
         <span className="ic" style={{ background: "#EDF1F8" }}><Sparkles size={22} /></span>
         <span style={{ flex: 1 }}>
@@ -1740,7 +1994,7 @@ function WritingScreen({ back, preset, update }) {
   if (result) return (
     <div style={{ "--acc": S.color }}>
       <TopBar title="Resultado" sub={task.name} onBack={() => setResult(null)} />
-      <ScorePanel result={result} color={S.color} extra={<ShareCard share={share} />} />
+      <ScorePanel result={result} color={S.color} extra={<><ShareCard share={share} /><PhrasalCard text={text} color={S.color} /></>} />
       <button className="btn btn--ghost" onClick={() => { setResult(null); setText(""); setPrompt(""); }}>Nueva práctica</button>
     </div>
   );
@@ -1844,7 +2098,7 @@ function SpeakingScreen({ back, preset, update }) {
     <div style={{ "--acc": S.color }}>
       <TopBar title="Resultado" sub={`Task ${task.n} · ${task.name}`} onBack={() => setResult(null)} />
       <ScorePanel result={result} color={S.color}
-        extra={<>{metrics && <MetricsCard m={metrics} color={S.color} audioUrl={cap.audioUrl} />}<ShareCard share={share} /></>} />
+        extra={<>{metrics && <MetricsCard m={metrics} color={S.color} audioUrl={cap.audioUrl} />}<ShareCard share={share} /><PhrasalCard text={transcript} color={S.color} /></>} />
       <button className="btn btn--ghost" onClick={() => pick(task)}>Repetir task</button>
     </div>
   );
@@ -2424,7 +2678,7 @@ function speakEn(text, src) {
   a.play().catch(fallback);
 }
 
-function MatchGame({ items, color, onResult, onNewRound }) {
+function MatchGame({ items, color, onResult, onNewRound, audioDir = "conn" }) {
   const [left] = useState(() => shuffle(items));
   const [right] = useState(() => shuffle([...items]));
   const [sel, setSel] = useState(null);
@@ -2455,12 +2709,12 @@ function MatchGame({ items, color, onResult, onNewRound }) {
 
   return (
     <>
-      <p className="dimtx" style={{ marginTop: 12 }}>Toca el conector en inglés y luego su pareja en español.</p>
+      <p className="dimtx" style={{ marginTop: 12 }}>Toca la expresión en inglés y luego su pareja en español.</p>
       <div className="mgrid">
         <div className="mcol">
           {left.map((c) => (
             <button key={c.id} className="mbtn" data-sel={sel === c.id ? "1" : "0"} data-done={done[c.id] ? "1" : "0"}
-              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => { setSel(c.id); speakEn(c.en, `audio/conn/${c.id}.mp3`); }}>{c.en}</button>
+              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => { setSel(c.id); speakEn(c.en, `audio/${audioDir}/${c.id}.mp3`); }}>{c.en}</button>
           ))}
         </div>
         <div className="mcol">
@@ -2474,9 +2728,9 @@ function MatchGame({ items, color, onResult, onNewRound }) {
   );
 }
 
-function ClozeGame({ items, color, onResult, onNewRound }) {
+function ClozeGame({ items, color, onResult, onNewRound, pool = CONNECTORS, audioDir = "conn" }) {
   const makeOpts = (it) => {
-    const others = shuffle(CONNECTORS.filter((c) => c.g !== it.g && c.id !== it.id)).slice(0, 2);
+    const others = shuffle(pool.filter((c) => c.g !== it.g && c.id !== it.id)).slice(0, 2);
     return shuffle([it, ...others]);
   };
   const [i, setI] = useState(0);
@@ -2489,7 +2743,7 @@ function ClozeGame({ items, color, onResult, onNewRound }) {
   const pick = (c) => {
     if (picked) return;
     const ok = c.id === item.id;
-    setPicked(c.id); onResult(item.id, ok); speakEn(item.en, `audio/conn/${item.id}.mp3`);
+    setPicked(c.id); onResult(item.id, ok); speakEn(item.en, `audio/${audioDir}/${item.id}.mp3`);
     if (ok) setScore((s) => s + 1);
   };
   const next = () => {
@@ -2508,8 +2762,9 @@ function ClozeGame({ items, color, onResult, onNewRound }) {
   const parts = item.cz.split("___");
   return (
     <>
-      <p className="dimtx" style={{ marginTop: 12 }}>Frase {i + 1} de {items.length} · elige el conector que encaja.</p>
+      <p className="dimtx" style={{ marginTop: 12 }}>Frase {i + 1} de {items.length} · elige la expresión que encaja.</p>
       <div className="card">
+        {item.sit && <p className="dimtx" style={{ marginBottom: 8 }}>{item.sit}</p>}
         <p style={{ fontSize: 15, lineHeight: 26 }}>
           {parts[0]}<span className="hlmark" style={{ "--acc": color }}>______</span>{parts[1]}
         </p>
@@ -2533,31 +2788,30 @@ function ClozeGame({ items, color, onResult, onNewRound }) {
   );
 }
 
-function ConnectorsTrainer({ state, update }) {
-  const color = "#FFD666";
-  const stats = state.connectors || {};
+function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connectors", groups = CONN_GROUPS, color = "#FFD666", audioDir = "conn" }) {
+  const stats = state[statKey] || {};
   const [mode, setMode] = useState("match");
   const [roundKey, setRoundKey] = useState(0);
-  const [round, setRound] = useState(() => weightedPick(CONNECTORS, state.connectors || {}, 5));
+  const [round, setRound] = useState(() => weightedPick(pool, state[statKey] || {}, 5));
 
   const record = (id, ok) => update((s) => {
-    const cs = { ...(s.connectors || {}) };
+    const cs = { ...(s[statKey] || {}) };
     const cur = cs[id] || { h: 0, m: 0 };
     cs[id] = ok ? { ...cur, h: cur.h + 1 } : { ...cur, m: cur.m + 1 };
-    return { ...s, connectors: cs };
+    return { ...s, [statKey]: cs };
   });
-  const newRound = () => { setRound(weightedPick(CONNECTORS, stats, 5)); setRoundKey((k) => k + 1); };
+  const newRound = () => { setRound(weightedPick(pool, stats, 5)); setRoundKey((k) => k + 1); };
   const isMastered = (c) => { const s = stats[c.id]; return s && s.h - s.m >= 3; };
-  const mastered = CONNECTORS.filter(isMastered).length;
+  const mastered = pool.filter(isMastered).length;
 
   return (
     <>
       <div className="card" style={{ padding: 14 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <span className="kicker">Dominados</span>
-          <span className="pill pill--acc" style={{ "--acc": color }}>{mastered}/{CONNECTORS.length}</span>
+          <span className="pill pill--acc" style={{ "--acc": color }}>{mastered}/{pool.length}</span>
         </div>
-        <div className="meter" style={{ "--acc": color }}><i style={{ width: `${(mastered / CONNECTORS.length) * 100}%` }} /></div>
+        <div className="meter" style={{ "--acc": color }}><i style={{ width: `${(mastered / pool.length) * 100}%` }} /></div>
       </div>
       <div className="chiprow">
         <button className="chip" data-on={mode === "match" ? "1" : "0"} style={{ "--acc": color }}
@@ -2568,15 +2822,16 @@ function ConnectorsTrainer({ state, update }) {
           onClick={() => setMode("list")}>Lista</button>
       </div>
 
-      {mode === "match" && <MatchGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} />}
-      {mode === "cloze" && <ClozeGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} />}
-      {mode === "list" && CONN_GROUPS.map((g) => (
+      {mode === "match" && <MatchGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} audioDir={audioDir} />}
+      {mode === "cloze" && <ClozeGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} pool={pool} audioDir={audioDir} />}
+      {mode === "list" && groups.map((g) => (
         <div key={g}>
           <p className="kicker" style={{ marginTop: 18 }}>{g}</p>
           <div className="card" style={{ paddingTop: 4, paddingBottom: 4, marginTop: 8 }}>
-            {CONNECTORS.filter((c) => c.g === g).map((c) => (
+            {pool.filter((c) => c.g === g).map((c) => (
               <div className="errrow" key={c.id}>
-                <span style={{ flex: 1 }}><strong>{c.en}</strong><br /><span className="dimtx">{c.es.toLowerCase()}</span></span>
+                <span style={{ flex: 1 }}><strong>{c.en}</strong><br /><span className="dimtx">{c.es.toLowerCase()}</span>{c.cz && <><br /><span className="dimtx" style={{ fontStyle: "italic" }}>{c.cz.replace("___", c.en)}</span></>}</span>
+                <button className="iconbtn" style={{ width: 38, height: 38, borderRadius: 11 }} aria-label={`Escuchar ${c.en}`} onClick={() => speakEn(c.en, `audio/${audioDir}/${c.id}.mp3`)}><Volume2 size={15} /></button>
                 <span className="dot" data-on={isMastered(c) ? "1" : "0"} style={{ "--acc": color, cursor: "default" }}><Check size={15} /></span>
               </div>
             ))}
@@ -2588,6 +2843,62 @@ function ConnectorsTrainer({ state, update }) {
 }
 
 /* ---------------------- Repaso: 3·2·1 y banco de errores ---------------------- */
+
+/* ---------------------- Phrasal Verbs ---------------------- */
+
+const IRREG = {
+  bring: ["brought", "bringing"], break: ["broke", "breaking"], let: ["letting"], put: ["putting"], run: ["ran", "running"],
+  send: ["sent", "sending"], pay: ["paid", "paying"], carry: ["carried", "carrying"], set: ["setting"], stick: ["stuck", "sticking"],
+  find: ["found", "finding"], get: ["got", "getting", "gotten"], give: ["gave", "giving", "given"], hang: ["hung", "hanging"],
+  make: ["made", "making"], come: ["came", "coming"], grow: ["grew", "growing", "grown"], show: ["showed", "showing", "shown"],
+  take: ["took", "taking", "taken"], wake: ["woke", "waking"], throw: ["threw", "throwing", "thrown"], keep: ["kept", "keeping"],
+  catch: ["caught", "catching"], burn: ["burned", "burnt", "burning"], cut: ["cutting"], go: ["goes", "went", "going", "gone"],
+  hold: ["held", "holding"], drop: ["dropped", "dropping"], chip: ["chipped", "chipping"], rip: ["ripped", "ripping"],
+  figure: ["figured", "figuring"], move: ["moved", "moving"], care: ["cared", "caring"], hand: ["handed", "handing"],
+  sign: ["signed", "signing"], try: ["tried", "trying"], back: ["backed", "backing"], mess: ["messed", "messing"],
+  fill: ["filled", "filling"], call: ["called", "calling"], roll: ["rolled", "rolling"], cheer: ["cheered", "cheering"],
+  count: ["counted", "counting"], turn: ["turned", "turning"], look: ["looked", "looking"], sort: ["sorted", "sorting"],
+  point: ["pointed", "pointing"], work: ["worked", "working"], pick: ["picked", "picking"], end: ["ended", "ending"],
+};
+const PV_REGEXES = PHRASALS.map((p) => {
+  const [first, ...rest] = p.en.split(" ");
+  const forms = [first, first + "s", first + "ed", first + "ing", ...(first.endsWith("e") ? [first + "d", first.slice(0, -1) + "ing"] : []), ...(IRREG[first] || [])];
+  return { p, re: new RegExp(`\\b(${forms.join("|")})\\s+${rest.join("\\s+")}\\b`, "i") };
+});
+// Phrasal verbs de tu lista que aparecen en el texto.
+const usedPhrasals = (text) => PV_REGEXES.filter(({ re }) => re.test(stripParens(text))).map(({ p }) => p);
+
+function PhrasalCard({ text, color }) {
+  const used = usedPhrasals(text);
+  const ideas = PHRASALS.filter((p) => !used.includes(p)).sort(() => Math.random() - 0.5).slice(0, 3);
+  return (
+    <div className="card">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <span className="kicker">Phrasal Verbs Usados</span>
+        <span className="disp" style={{ fontSize: 26, fontWeight: 700, color }}>{used.length}</span>
+      </div>
+      {used.length > 0
+        ? <div className="chiprow" style={{ flexWrap: "wrap" }}>{used.map((p) => <span key={p.id} className="pill pill--acc" style={{ "--acc": color }}>{p.en}</span>)}</div>
+        : <p className="dimtx" style={{ marginTop: 8 }}>Ninguno de tu lista. Usar 2 o 3 de forma natural suma vocabulario y naturalidad.</p>}
+      {used.length < 3 && (
+        <p className="dimtx" style={{ marginTop: 8 }}>Prueba con: {ideas.map((p) => p.en).join(", ")}.</p>
+      )}
+    </div>
+  );
+}
+
+function PhrasalScreen({ back, state, update }) {
+  const color = "#9ED8FF";
+  return (
+    <div className="screen" style={{ "--acc": color }}>
+      <TopBar title="Phrasal Verbs" sub={`${PHRASALS.length} Más Útiles Para El Examen`} onBack={back} />
+      <p className="dimtx" style={{ marginTop: 8 }}>
+        Úsalos 2 o 3 por respuesta, de forma natural. Aprende primero los significados en Parejas y luego escoge el correcto en una situación real en Contexto.
+      </p>
+      <ConnectorsTrainer state={state} update={update} pool={PHRASALS} statKey="phrasals" groups={PV_GROUPS} color={color} audioDir="pv" />
+    </div>
+  );
+}
 
 function RitualCard({ id, tpl, data, update, color }) {
   const st = data || { read: 0, spoken: 0, written: null };
@@ -2978,7 +3289,7 @@ export default function CelpipTrainer() {
     window.scrollTo(0, 0);
   };
 
-  const screens = { mock: MockExam, reading: ReadingScreen, listening: ListeningScreen, writing: WritingScreen, speaking: SpeakingScreen };
+  const screens = { phrasal: PhrasalScreen, mock: MockExam, reading: ReadingScreen, listening: ListeningScreen, writing: WritingScreen, speaking: SpeakingScreen };
   const SkillScreen = skill ? screens[skill] : null;
 
   return (
@@ -2989,7 +3300,7 @@ export default function CelpipTrainer() {
           {tab === "home" && <HomeScreen state={state} update={update} launch={launch} />}
           {tab === "train" && !skill && <TrainGrid open={(id) => launch("train", id)} />}
           {tab === "train" && SkillScreen && (
-            <SkillScreen key={skill + JSON.stringify(preset)} back={() => launch("train")} preset={preset} update={update} />
+            <SkillScreen key={skill + JSON.stringify(preset)} back={() => launch("train")} preset={preset} update={update} state={state} />
           )}
           {tab === "review" && <ReviewScreen key={JSON.stringify(preset)} state={state} update={update} preset={preset} />}
           {tab === "progress" && <ProgressScreen state={state} update={update} />}
