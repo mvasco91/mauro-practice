@@ -1282,13 +1282,13 @@ function ScorePanel({ result, color, extra }) {
       {result.fixes && result.fixes.length > 0 && (
         <div className="card">
           <span className="kicker">Correcciones · guardadas en tu banco de errores</span>
-          {result.fixes.map((f, k) => <p key={k} style={{ fontSize: 13.5, lineHeight: 21, marginTop: 8 }}>{f}</p>)}
+          {result.fixes.map((f, k) => <p key={k} style={{ fontSize: 13.5, lineHeight: "21px", marginTop: 8 }}>{f}</p>)}
         </div>
       )}
       {result.upgrades && result.upgrades.length > 0 && (
         <div className="card">
           <span className="kicker">Para subir el score</span>
-          {result.upgrades.map((f, k) => <p key={k} style={{ fontSize: 13.5, lineHeight: 21, marginTop: 8 }}>{f}</p>)}
+          {result.upgrades.map((f, k) => <p key={k} style={{ fontSize: 13.5, lineHeight: "21px", marginTop: 8 }}>{f}</p>)}
         </div>
       )}
     </div>
@@ -1481,7 +1481,7 @@ Exactamente 4 preguntas. Usa sinónimos y paráfrasis como el examen real. Tema 
         <>
           <div className="card">
             <span className="kicker">{quiz.title}</span>
-            <p style={{ marginTop: 8, fontSize: 14.5, lineHeight: 25, whiteSpace: "pre-wrap" }}>{quiz.passage}</p>
+            <p style={{ marginTop: 8, fontSize: 14.5, lineHeight: "25px", whiteSpace: "pre-wrap" }}>{quiz.passage}</p>
           </div>
           <QuizRunner quiz={quiz} color={S.color} onFinish={(s, t) => update((st) => ({
             ...st, history: [...st.history, { date: todayKey(), section: "Reading", detail: `Part ${part.n}: ${s}/${t}` }],
@@ -2048,7 +2048,7 @@ function WritingScreen({ back, preset, update }) {
           </button>
         </div>
         {prompt
-          ? <p style={{ marginTop: 8, fontSize: 14, lineHeight: 23 }}>{prompt}</p>
+          ? <p style={{ marginTop: 8, fontSize: 14, lineHeight: "23px" }}>{prompt}</p>
           : <p className="dimtx" style={{ marginTop: 8 }}>Genera una consigna para practicar en condiciones reales.</p>}
       </div>
 
@@ -2161,7 +2161,7 @@ function SpeakingScreen({ back, preset, update }) {
       {(phase === "prep" || phase === "talk") && (
         <>
           <div className="card"><span className="kicker">Consigna</span>
-            <p style={{ marginTop: 8, fontSize: 14, lineHeight: 23 }}>{prompt}</p>
+            <p style={{ marginTop: 8, fontSize: 14, lineHeight: "23px" }}>{prompt}</p>
           </div>
           {phase === "prep" && <>
             <BigTimer total={task.prep} color={S.color} label="Preparación" autoStart onDone={() => setPhase("talk")} />
@@ -2185,7 +2185,7 @@ function SpeakingScreen({ back, preset, update }) {
 
       {phase === "review" && <>
         <div className="card"><span className="kicker">Consigna</span>
-          <p style={{ marginTop: 8, fontSize: 14, lineHeight: 23 }}>{prompt}</p>
+          <p style={{ marginTop: 8, fontSize: 14, lineHeight: "23px" }}>{prompt}</p>
         </div>
         {cap.audioUrl && (
           <div className="card">
@@ -2806,7 +2806,7 @@ function ClozeGame({ items, color, onResult, onNewRound, pool = CONNECTORS, audi
       <p className="dimtx" style={{ marginTop: 12 }}>Frase {i + 1} de {items.length} · elige la expresión que encaja.</p>
       <div className="card">
         {item.sit && <p className="dimtx" style={{ marginBottom: 8 }}>{item.sit}</p>}
-        <p style={{ fontSize: 15, lineHeight: 26 }}>
+        <p style={{ fontSize: 15, lineHeight: "26px" }}>
           {parts[0]}<span className="hlmark" style={{ "--acc": color }}>______</span>{parts[1]}
         </p>
       </div>
@@ -2878,7 +2878,7 @@ function TypeGame({ items, color, onResult, onNewRound, audioDir = "pv" }) {
       <p className="dimtx" style={{ marginTop: 12 }}>Frase {i + 1} de {items.length} · escribe el phrasal verb que falta, completo.</p>
       <div className="card">
         {item.sit && <p className="dimtx" style={{ marginBottom: 8 }}>{item.sit}</p>}
-        <p style={{ fontSize: 15, lineHeight: 26 }}>
+        <p style={{ fontSize: 15, lineHeight: "26px" }}>
           {parts[0]}<span className="hlmark" style={{ "--acc": res === "ok" ? "#7FE0B2" : res ? "#FF9E9E" : color }}>{res ? item.en : "______"}</span>{parts[1]}
         </p>
         {hint && !res && <p className="dimtx" style={{ marginTop: 8 }}>Significa: {item.es.toLowerCase()} · empieza con “{item.en[0]}”</p>}
