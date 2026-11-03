@@ -2715,6 +2715,7 @@ function MatchGame({ items, color, onResult, onNewRound, audioDir = "conn" }) {
   const [done, setDone] = useState({});
   const [bad, setBad] = useState(null);
   const [misses, setMisses] = useState(0);
+  const [info, setInfo] = useState(null); // última expresión tocada: muestra dónde sirve
   const finished = Object.keys(done).length === items.length;
 
   const tapRight = (id) => {
@@ -2740,11 +2741,19 @@ function MatchGame({ items, color, onResult, onNewRound, audioDir = "conn" }) {
   return (
     <>
       <p className="dimtx" style={{ marginTop: 12 }}>Toca la expresión en inglés y luego su pareja en español.</p>
+      {items[0] && items[0].use && (
+        <div className="card card--flat" style={{ minHeight: 64, padding: "10px 14px" }}>
+          {info
+            ? <><strong style={{ fontSize: 14 }}>{info.en}</strong>
+                <p className="dimtx" style={{ marginTop: 4, color: "#9ED8FF" }}>Sirve en: {info.use}</p></>
+            : <p className="dimtx">Toca un phrasal verb para ver en qué escenario del CELPIP sirve.</p>}
+        </div>
+      )}
       <div className="mgrid">
         <div className="mcol">
           {left.map((c) => (
             <button key={c.id} className="mbtn" data-sel={sel === c.id ? "1" : "0"} data-done={done[c.id] ? "1" : "0"}
-              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => { setSel(c.id); speakEn(c.en, `audio/${audioDir}/${c.id}.mp3`); }}>{c.en}</button>
+              style={{ "--acc": color }} disabled={!!done[c.id]} onClick={() => { setSel(c.id); setInfo(c); speakEn(c.en, `audio/${audioDir}/${c.id}.mp3`); }}>{c.en}</button>
           ))}
         </div>
         <div className="mcol">
