@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Home, LayoutGrid, RotateCcw, TrendingUp, ChevronLeft, Play, Pause,
   RotateCw, Check, Mic, Volume2, Square, Flame, ArrowRight, BookOpen,
@@ -2708,7 +2708,7 @@ function speakEn(text, src) {
   a.play().catch(fallback);
 }
 
-function MatchGame({ items, color, onResult, onNewRound, audioDir = "conn" }) {
+function MatchGame({ items, color, onResult, onNewRound, audioDir = "conn", continueLabel, onContinue }) {
   const [left] = useState(() => shuffle(items));
   const [right] = useState(() => shuffle([...items]));
   const [sel, setSel] = useState(null);
@@ -2734,7 +2734,9 @@ function MatchGame({ items, color, onResult, onNewRound, audioDir = "conn" }) {
         {misses === 0 ? "Perfecto" : `${misses} ${misses === 1 ? "fallo" : "fallos"}`}
       </span>
       <span className="dimtx">los que fallaste volverán más seguido</span>
-      <button className="btn" style={{ "--acc": color }} onClick={onNewRound}>Otra ronda</button>
+      {onContinue
+        ? <button className="btn" style={{ "--acc": color }} onClick={onContinue}>{continueLabel}</button>
+        : <button className="btn" style={{ "--acc": color }} onClick={onNewRound}>Otra ronda</button>}
     </div>
   );
 
@@ -2860,8 +2862,12 @@ function TypeGame({ items, color, onResult, onNewRound, audioDir = "pv" }) {
 
   if (finished) return (
     <div className="card center" style={{ padding: 24 }}>
-      <span className="disp" style={{ fontSize: 40, fontWeight: 700, color }}>{score}/{items.length}</span>
-      <span className="dimtx">escritos correctamente</span>
+      <span className="disp" style={{ fontSize: 40, fontWeight: 700, color: score === items.length ? "#7FE0B2" : color }}>
+        {score === items.length ? "Perfecto" : `${score}/${items.length}`}
+      </span>
+      <span className="dimtx">
+        {score === items.length ? `escribiste los ${items.length} phrasal verbs sin errores` : "escritos correctamente: los que fallaste volverán más seguido"}
+      </span>
       <button className="btn" style={{ "--acc": color }} onClick={onNewRound}>Otra ronda</button>
     </div>
   );
@@ -2903,6 +2909,7 @@ function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connec
   const [mode, setMode] = useState("match");
   const [roundKey, setRoundKey] = useState(0);
   const [round, setRound] = useState(() => weightedPick(pool, state[statKey] || {}, 5));
+  const comboItems = useMemo(() => shuffle(round), [round, roundKey]);
 
   const record = (id, ok) => update((s) => {
     const cs = { ...(s[statKey] || {}) };
@@ -2924,8 +2931,8 @@ function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connec
         <div className="meter" style={{ "--acc": color }}><i style={{ width: `${(mastered / pool.length) * 100}%` }} /></div>
       </div>
       <div className="chiprow">
-        <button className="chip" data-on={mode === "match" ? "1" : "0"} style={{ "--acc": color }}
-          onClick={() => { setMode("match"); newRound(); }}>Parejas</button>
+        <button className="chip" data-on={mode === "match" || mode === "combo" ? "1" : "0"} style={{ "--acc": color }}
+          onClick={() => { setMode("match"); newRound(); }}>{pool[0] && pool[0].sit ? "Parejas + Escritura" : "Parejas"}</button>
         <button className="chip" data-on={mode === "cloze" ? "1" : "0"} style={{ "--acc": color }}
           onClick={() => { setMode("cloze"); newRound(); }}>En contexto</button>
         {pool[0] && pool[0].sit && (
@@ -2936,7 +2943,15 @@ function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connec
           onClick={() => setMode("list")}>Lista</button>
       </div>
 
-      {mode === "match" && <MatchGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} audioDir={audioDir} />}
+      {mode === "match" && <MatchGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} audioDir={audioDir}
+        continueLabel="Ahora escríbelos" onContinue={pool[0] && pool[0].sit ? () => setMode("combo") : undefined} />}
+      {mode === "combo" && (
+        <>
+          <p className="dimtx" style={{ marginTop: 12 }}>Segunda parte: escribe los mismos phrasal verbs que acabas de emparejar.</p>
+          <TypeGame key={roundKey + "c"} items={comboItems} color={color} onResult={record}
+            onNewRound={() => { setMode("match"); newRound(); }} audioDir={audioDir} />
+        </>
+      )}
       {mode === "cloze" && <ClozeGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} pool={pool} audioDir={audioDir} />}
       {mode === "type" && <TypeGame key={roundKey} items={round} color={color} onResult={record} onNewRound={newRound} audioDir={audioDir} />}
       {mode === "list" && groups.map((g) => (
@@ -3008,7 +3023,7 @@ function PhrasalScreen({ back, state, update }) {
     <div className="screen" style={{ "--acc": color }}>
       <TopBar title="Phrasal Verbs" sub={`${PHRASALS.length} Más Útiles Para El Examen`} onBack={back} />
       <p className="dimtx" style={{ marginTop: 8 }}>
-        Úsalos 2 o 3 por respuesta, de forma natural. Aprende los significados en Parejas, escoge el correcto en Contexto y afiánzalos escribiéndolos tú en Writing The Correct Phrasal.
+        Úsalos 2 o 3 por respuesta, de forma natural. En Parejas + Escritura emparejas 5 y luego los escribes tú; si los escribes todos bien, ves Perfecto. En Contexto eliges el correcto en una situación, y en Writing The Correct Phrasal practicas solo la escritura.
       </p>
       <ConnectorsTrainer state={state} update={update} pool={PHRASALS} statKey="phrasals" groups={PV_GROUPS} color={color} audioDir="pv" />
     </div>
