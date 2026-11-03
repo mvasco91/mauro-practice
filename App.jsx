@@ -338,7 +338,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Pides que revisen un problema con tu factura.",
   "cz": "I would appreciate it if you could ___ this matter as soon as possible.",
-  "use": "Email formal (pedir que revisen un problema) · Task 6"
+  "use": "Email formal (pedir que revisen un problema) · Difficult Situation"
  },
  {
   "id": "sort-out",
@@ -347,7 +347,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Tienes un malentendido con una reservación.",
   "cz": "I hope we can ___ this misunderstanding quickly.",
-  "use": "Email formal o semi-formal (resolver un problema) · Task 6"
+  "use": "Email formal o semi-formal (resolver un problema) · Difficult Situation"
  },
  {
   "id": "put-up-with",
@@ -356,7 +356,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Tu vecino hace ruido todas las noches.",
   "cz": "I can't ___ the noise from upstairs any longer.",
-  "use": "Email formal (queja) · Task 7 (opinión) · Task 8"
+  "use": "Email formal (queja) · Expressing Opinions · Unusual Situation"
  },
  {
   "id": "let-down",
@@ -365,7 +365,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Un compañero no cumplió lo que prometió.",
   "cz": "I really didn't want to ___ my team, but I couldn't finish on time.",
-  "use": "Email formal (queja) · Task 2 (experiencia) · Task 6"
+  "use": "Email formal (queja) · Personal Experience · Difficult Situation"
  },
  {
   "id": "call-off",
@@ -374,7 +374,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Una tormenta fuerte arruina el plan al aire libre.",
   "cz": "Because of the storm, they decided to ___ the picnic.",
-  "use": "Task 2 (un evento cancelado) · Task 6 (cancelar un plan) · Email informal"
+  "use": "Personal Experience (un evento cancelado) · Difficult Situation (cancelar un plan) · Email informal"
  },
  {
   "id": "run-out-of",
@@ -383,7 +383,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Te preocupa que falte comida en una fiesta.",
   "cz": "I'm afraid we are going to ___ coffee before the party ends.",
-  "use": "Email semi-formal (producto agotado) · Task 6 · Task 8"
+  "use": "Email semi-formal (producto agotado) · Difficult Situation · Unusual Situation"
  },
  {
   "id": "turn-down",
@@ -392,7 +392,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Te ofrecieron un trabajo con mal sueldo.",
   "cz": "I had to ___ the offer because the salary was too low.",
-  "use": "Task 6 (rechazar una oferta) · Task 5 (persuadir) · Email formal"
+  "use": "Difficult Situation (rechazar una oferta) · Comparing & Persuading · Email formal"
  },
  {
   "id": "break-down",
@@ -401,7 +401,7 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Llegas tarde al trabajo por una falla de tu carro.",
   "cz": "My car decided to ___ on the highway this morning.",
-  "use": "Email formal (queja por un equipo dañado) · Task 2 · Task 6"
+  "use": "Email formal (queja por un equipo dañado) · Personal Experience · Difficult Situation"
  },
  {
   "id": "figure-out",
@@ -410,7 +410,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "No sabes cómo funciona un programa nuevo.",
   "cz": "It took me an hour to ___ how the new software works.",
-  "use": "Task 1 (consejo) · Task 7 (opinión) · Email informal"
+  "use": "Giving Advice · Expressing Opinions · Email informal"
  },
  {
   "id": "find-out",
@@ -419,7 +419,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Quieres saber el horario de una tienda.",
   "cz": "Could you please ___ what time the store opens?",
-  "use": "Email semi-formal (preguntar) · Task 2 · Task 8"
+  "use": "Email semi-formal (preguntar) · Personal Experience · Unusual Situation"
  },
  {
   "id": "carry-out",
@@ -428,7 +428,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Hablas de un proyecto de tu ciudad.",
   "cz": "The city plans to ___ the project next spring.",
-  "use": "Task 7 (proyectos de la ciudad) · Survey · Email formal"
+  "use": "Expressing Opinions (proyectos de la ciudad) · Survey · Email formal"
  },
  {
   "id": "put-off",
@@ -437,7 +437,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Dejas una tarea que no te gusta para después.",
   "cz": "I tend to ___ my chores until the weekend.",
-  "use": "Task 1 (consejo: no lo pospongas) · Task 6 · Task 7"
+  "use": "Giving Advice (consejo: no lo pospongas) · Difficult Situation · Expressing Opinions"
  },
  {
   "id": "sign-up",
@@ -446,7 +446,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Te anotas a un curso.",
   "cz": "I decided to ___ for a swimming course.",
-  "use": "Task 1 (consejo) · Email semi-formal (inscripción) · Survey"
+  "use": "Giving Advice · Email semi-formal (inscripción) · Survey"
  },
  {
   "id": "work-out",
@@ -455,7 +455,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Esperas que todo termine bien.",
   "cz": "I'm confident everything will ___ in the end.",
-  "use": "Task 1 (consejo) · Task 4 (predicciones) · cierre de Email formal"
+  "use": "Giving Advice · Making Predictions · cierre de Email formal"
  },
  {
   "id": "bring-up",
@@ -464,7 +464,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Quieres tocar un tema en una reunión.",
   "cz": "I would like to ___ an important issue at the meeting.",
-  "use": "Email formal (plantear un tema) · Survey · Task 7 (opinión)"
+  "use": "Email formal (plantear un tema) · Survey · Expressing Opinions"
  },
  {
   "id": "point-out",
@@ -473,7 +473,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Notas un detalle importante.",
   "cz": "I must ___ that the price includes delivery.",
-  "use": "Survey · Task 5 (persuadir) · Task 7 · Email formal"
+  "use": "Survey · Comparing & Persuading · Expressing Opinions · Email formal"
  },
  {
   "id": "look-forward-to",
@@ -482,7 +482,7 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Cierras un correo con cortesía.",
   "cz": "I really ___ hearing from you soon.",
-  "use": "Cierre de cualquier Email · Task 1 · Task 6"
+  "use": "Cierre de cualquier Email · Giving Advice · Difficult Situation"
  },
  {
   "id": "get-along-with",
@@ -491,7 +491,7 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de tus compañeros de trabajo.",
   "cz": "I really ___ my coworkers; we are like a family.",
-  "use": "Task 2 (experiencia) · Task 1 (consejo) · Email informal"
+  "use": "Personal Experience · Giving Advice · Email informal"
  },
  {
   "id": "count-on",
@@ -500,7 +500,7 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Le aseguras apoyo a un amigo.",
   "cz": "You can always ___ me if you need help.",
-  "use": "Task 1 (consejo) · Task 5 (persuadir) · Email informal"
+  "use": "Giving Advice · Comparing & Persuading · Email informal"
  },
  {
   "id": "look-up-to",
@@ -509,7 +509,7 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de la gente que admiras.",
   "cz": "I tend to ___ people who work hard.",
-  "use": "Task 2 (experiencia) · Task 7 (opinión)"
+  "use": "Personal Experience · Expressing Opinions"
  },
  {
   "id": "cheer-up",
@@ -518,7 +518,7 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Tu amigo está triste.",
   "cz": "I brought some cookies to ___ my friend.",
-  "use": "Task 1 (consejo a un amigo) · Task 2 · Email informal"
+  "use": "Giving Advice (consejo a un amigo) · Personal Experience · Email informal"
  },
  {
   "id": "hang-out",
@@ -527,7 +527,7 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Planeas ver a tus amigos.",
   "cz": "We usually ___ at the park on Sundays.",
-  "use": "Task 2 (experiencia) · Email informal · Task 3 (escena)"
+  "use": "Personal Experience · Email informal · Describing a Scene"
  },
  {
   "id": "get-over",
@@ -536,7 +536,7 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de recuperarte de una gripe.",
   "cz": "It took me two weeks to ___ the flu.",
-  "use": "Task 1 (consejo) · Task 2 (experiencia) · Task 7"
+  "use": "Giving Advice · Personal Experience · Expressing Opinions"
  },
  {
   "id": "give-up",
@@ -545,7 +545,7 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Animas a alguien ante un reto difícil.",
   "cz": "Don't ___ on your dreams, no matter how hard it gets.",
-  "use": "Task 1 (consejo) · Task 6 · Task 7"
+  "use": "Giving Advice · Difficult Situation · Expressing Opinions"
  },
  {
   "id": "end-up",
@@ -554,7 +554,7 @@ const PHRASALS = [
   "g": "Experiencias Y Rutina",
   "sit": "Cuentas cómo salió mal un viaje.",
   "cz": "I was afraid we would ___ in the wrong city.",
-  "use": "Task 2 (cómo terminó una experiencia) · Task 4 (predicciones) · Task 8"
+  "use": "Personal Experience (cómo terminó una experiencia) · Making Predictions · Unusual Situation"
  },
  {
   "id": "come-across",
@@ -563,7 +563,7 @@ const PHRASALS = [
   "g": "Experiencias Y Rutina",
   "sit": "Encuentras algo mientras limpias.",
   "cz": "While cleaning, I happened to ___ an old photo album.",
-  "use": "Task 2 (experiencia) · Task 8 (situación inusual) · Task 3 (escena)"
+  "use": "Personal Experience · Unusual Situation · Describing a Scene"
  },
  {
   "id": "pick-up",
@@ -572,7 +572,7 @@ const PHRASALS = [
   "g": "Experiencias Y Rutina",
   "sit": "Recoges a tu hija del colegio.",
   "cz": "Could you ___ my daughter from school at three?",
-  "use": "Task 6 · Task 3 (escena) · Email informal (planes)"
+  "use": "Difficult Situation · Describing a Scene · Email informal (planes)"
  },
  {
   "id": "fill-out",
@@ -581,7 +581,7 @@ const PHRASALS = [
   "g": "Trabajo Y Estudio",
   "sit": "Te piden llenar un documento.",
   "cz": "Please ___ this form and bring it back tomorrow.",
-  "use": "Email semi-formal (formularios) · Task 6 (trámites)"
+  "use": "Email semi-formal (formularios) · Difficult Situation (trámites)"
  },
  {
   "id": "keep-up-with",
@@ -590,7 +590,7 @@ const PHRASALS = [
   "g": "Trabajo Y Estudio",
   "sit": "El trabajo nuevo es muy exigente.",
   "cz": "It is hard to ___ the pace of the new job.",
-  "use": "Task 7 (trabajo y tecnología) · Task 1 (consejo)"
+  "use": "Expressing Opinions (trabajo y tecnología) · Giving Advice"
  },
  {
   "id": "take-on",
@@ -599,7 +599,7 @@ const PHRASALS = [
   "g": "Trabajo Y Estudio",
   "sit": "Quieres demostrar compromiso en el trabajo.",
   "cz": "I am willing to ___ more responsibilities.",
-  "use": "Task 6 · Task 7 · Survey (asumir responsabilidades)"
+  "use": "Difficult Situation · Expressing Opinions · Survey (asumir responsabilidades)"
  }
 ];
 const PV_GROUPS = ["Quejas Y Problemas", "Planes Y Decisiones", "Relaciones Y Emociones", "Experiencias Y Rutina", "Trabajo Y Estudio"];
