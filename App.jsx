@@ -340,7 +340,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Pides que revisen un problema con tu factura.",
   "cz": "I would appreciate it if you could ___ this matter as soon as possible.",
-  "use": "Email formal (pedir que revisen un problema) · Difficult Situation"
+  "use": "Email formal (pedir que revisen un problema) · Difficult Situation",
+  "alt": [
+   {
+    "sit": "Pides a tu casero que revise una gotera.",
+    "cz": "Could you please ___ the leak in my bathroom ceiling?"
+   },
+   {
+    "sit": "Un jefe promete investigar una queja de un empleado.",
+    "cz": "I will ___ your complaint and get back to you by Friday."
+   },
+   {
+    "sit": "Escribes al banco por un cargo que no reconoces.",
+    "cz": "I would like the bank to ___ this unexpected charge on my account."
+   }
+  ]
  },
  {
   "id": "sort-out",
@@ -349,7 +363,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Tienes un malentendido con una reservación.",
   "cz": "I hope we can ___ this misunderstanding quickly.",
-  "use": "Email formal o semi-formal (resolver un problema) · Difficult Situation"
+  "use": "Email formal o semi-formal (resolver un problema) · Difficult Situation",
+  "alt": [
+   {
+    "sit": "Hay un error en tu horario de trabajo.",
+    "cz": "Let's meet tomorrow to ___ the problem with my schedule."
+   },
+   {
+    "sit": "Tu vecino y tú tienen un conflicto por el estacionamiento.",
+    "cz": "I'm sure we can ___ the parking issue without involving the landlord."
+   },
+   {
+    "sit": "Necesitas arreglar un pedido que llegó incompleto.",
+    "cz": "The store promised to ___ my order by the end of the week."
+   }
+  ]
  },
  {
   "id": "put-up-with",
@@ -358,7 +386,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Tu vecino hace ruido todas las noches.",
   "cz": "I can't ___ the noise from upstairs any longer.",
-  "use": "Email formal (queja) · Expressing Opinions · Unusual Situation"
+  "use": "Email formal (queja) · Expressing Opinions · Unusual Situation",
+  "alt": [
+   {
+    "sit": "Tu compañero de cuarto deja todo sucio.",
+    "cz": "I'm tired of having to ___ the mess in the kitchen every day."
+   },
+   {
+    "sit": "Describes un trabajo con un jefe difícil.",
+    "cz": "I couldn't ___ my old boss's temper, so I started looking for a new job."
+   },
+   {
+    "sit": "Hablas del clima canadiense en invierno.",
+    "cz": "You have to ___ the cold if you want to live in Winnipeg."
+   }
+  ]
  },
  {
   "id": "let-down",
@@ -367,7 +409,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Un compañero no cumplió lo que prometió.",
   "cz": "I really didn't want to ___ my team, but I couldn't finish on time.",
-  "use": "Email formal (queja) · Personal Experience · Difficult Situation"
+  "use": "Email formal (queja) · Personal Experience · Difficult Situation",
+  "alt": [
+   {
+    "sit": "Un amigo canceló a último minuto tu viaje.",
+    "cz": "I felt completely ___ when my best friend cancelled our trip."
+   },
+   {
+    "sit": "Prometiste ayudar en una mudanza y no puedes ir.",
+    "cz": "I'm sorry to ___ you, but I can't help you move on Saturday."
+   },
+   {
+    "sit": "Un restaurante famoso no cumplió tus expectativas.",
+    "cz": "I hope the new restaurant doesn't ___ us like the last one, with cold food and slow service."
+   }
+  ]
  },
  {
   "id": "call-off",
@@ -376,7 +432,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Una tormenta fuerte arruina el plan al aire libre.",
   "cz": "Because of the storm, they decided to ___ the picnic.",
-  "use": "Personal Experience (un evento cancelado) · Difficult Situation (cancelar un plan) · Email informal"
+  "use": "Personal Experience (un evento cancelado) · Difficult Situation (cancelar un plan) · Email informal",
+  "alt": [
+   {
+    "sit": "Escribes para cancelar una reunión.",
+    "cz": "Unfortunately, we have to ___ tomorrow's meeting because the manager is sick."
+   },
+   {
+    "sit": "Un partido se suspende por la lluvia.",
+    "cz": "They decided to ___ the soccer game because of the heavy rain."
+   },
+   {
+    "sit": "Cancelas una cita con el dentista.",
+    "cz": "I need to ___ my appointment, since I have an urgent family matter."
+   }
+  ]
  },
  {
   "id": "run-out-of",
@@ -385,7 +455,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Te preocupa que falte comida en una fiesta.",
   "cz": "I'm afraid we are going to ___ coffee before the party ends.",
-  "use": "Email semi-formal (producto agotado) · Difficult Situation · Unusual Situation"
+  "use": "Email semi-formal (producto agotado) · Difficult Situation · Unusual Situation",
+  "alt": [
+   {
+    "sit": "Estás cocinando para invitados y falta algo.",
+    "cz": "We are about to ___ milk, so could you stop by the store?"
+   },
+   {
+    "sit": "Tu celular se queda sin batería en un viaje.",
+    "cz": "Sorry if I don't answer; my phone is about to ___ battery."
+   },
+   {
+    "sit": "La oficina se queda sin papel para imprimir.",
+    "cz": "Please order more paper before we ___ it completely."
+   }
+  ]
  },
  {
   "id": "turn-down",
@@ -394,7 +478,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Te ofrecieron un trabajo con mal sueldo.",
   "cz": "I had to ___ the offer because the salary was too low.",
-  "use": "Difficult Situation (rechazar una oferta) · Comparing & Persuading · Email formal"
+  "use": "Difficult Situation (rechazar una oferta) · Comparing & Persuading · Email formal",
+  "alt": [
+   {
+    "sit": "Rechazas una invitación a una fiesta.",
+    "cz": "I had to ___ the invitation because I had to work that night."
+   },
+   {
+    "sit": "Rechazas una oferta de trabajo con mal horario.",
+    "cz": "She decided to ___ the job offer since the schedule was too demanding."
+   },
+   {
+    "sit": "Rechazas educadamente una propuesta de un cliente.",
+    "cz": "We regret to inform you that we must ___ your proposal this time."
+   }
+  ]
  },
  {
   "id": "break-down",
@@ -403,7 +501,21 @@ const PHRASALS = [
   "g": "Quejas Y Problemas",
   "sit": "Llegas tarde al trabajo por una falla de tu carro.",
   "cz": "My car decided to ___ on the highway this morning.",
-  "use": "Email formal (queja por un equipo dañado) · Personal Experience · Difficult Situation"
+  "use": "Email formal (queja por un equipo dañado) · Personal Experience · Difficult Situation",
+  "alt": [
+   {
+    "sit": "El ascensor de tu edificio falla.",
+    "cz": "The elevator in my building seems to ___ every other week."
+   },
+   {
+    "sit": "Tu computadora falla antes de una entrega.",
+    "cz": "My laptop decided to ___ the night before my deadline."
+   },
+   {
+    "sit": "El autobús se avería y llegas tarde.",
+    "cz": "I was late because the bus had to ___ halfway to downtown."
+   }
+  ]
  },
  {
   "id": "figure-out",
@@ -412,7 +524,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "No sabes cómo funciona un programa nuevo.",
   "cz": "It took me an hour to ___ how the new software works.",
-  "use": "Giving Advice · Expressing Opinions · Email informal"
+  "use": "Giving Advice · Expressing Opinions · Email informal",
+  "alt": [
+   {
+    "sit": "Intentas entender cómo funciona una app del banco.",
+    "cz": "I'm still trying to ___ how to use this banking app."
+   },
+   {
+    "sit": "Resuelves un problema de matemáticas con tu hijo.",
+    "cz": "It took us an hour to ___ the answer to that homework question."
+   },
+   {
+    "sit": "Descubres por qué falla el internet.",
+    "cz": "Can you help me ___ why the Wi-Fi keeps disconnecting?"
+   }
+  ]
  },
  {
   "id": "find-out",
@@ -421,7 +547,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Quieres saber el horario de una tienda.",
   "cz": "Could you please ___ what time the store opens?",
-  "use": "Email semi-formal (preguntar) · Personal Experience · Unusual Situation"
+  "use": "Email semi-formal (preguntar) · Personal Experience · Unusual Situation",
+  "alt": [
+   {
+    "sit": "Preguntas por horarios de un servicio.",
+    "cz": "I'm writing to ___ whether the gym is open on holidays."
+   },
+   {
+    "sit": "Quieres saber el resultado de un examen.",
+    "cz": "I can't wait to ___ my test results next week."
+   },
+   {
+    "sit": "Te enteras de una noticia sobre tu barrio.",
+    "cz": "We were surprised to ___ that the library will close for renovations."
+   }
+  ]
  },
  {
   "id": "carry-out",
@@ -430,7 +570,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Hablas de un proyecto de tu ciudad.",
   "cz": "The city plans to ___ the project next spring.",
-  "use": "Expressing Opinions (proyectos de la ciudad) · Survey · Email formal"
+  "use": "Expressing Opinions (proyectos de la ciudad) · Survey · Email formal",
+  "alt": [
+   {
+    "sit": "Describes un experimento escolar.",
+    "cz": "The students will ___ a science experiment in class tomorrow."
+   },
+   {
+    "sit": "Hablas de un plan de la empresa.",
+    "cz": "The company plans to ___ a survey among its customers next month."
+   },
+   {
+    "sit": "Un inspector revisa un edificio.",
+    "cz": "An inspector will ___ a safety check of the building on Monday."
+   }
+  ]
  },
  {
   "id": "put-off",
@@ -439,7 +593,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Dejas una tarea que no te gusta para después.",
   "cz": "I tend to ___ my chores until the weekend.",
-  "use": "Giving Advice (consejo: no lo pospongas) · Difficult Situation · Expressing Opinions"
+  "use": "Giving Advice (consejo: no lo pospongas) · Difficult Situation · Expressing Opinions",
+  "alt": [
+   {
+    "sit": "Pospones una cita médica.",
+    "cz": "I keep trying to ___ my doctor's appointment because I'm so busy."
+   },
+   {
+    "sit": "Reprogramas una reunión.",
+    "cz": "Could we ___ our meeting until next Tuesday, please?"
+   },
+   {
+    "sit": "Hablas de postergar tareas difíciles.",
+    "cz": "Don't ___ your tax return until the last day of April."
+   }
+  ]
  },
  {
   "id": "sign-up",
@@ -448,7 +616,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Te anotas a un curso.",
   "cz": "I decided to ___ for a swimming course.",
-  "use": "Giving Advice · Email semi-formal (inscripción) · Survey"
+  "use": "Giving Advice · Email semi-formal (inscripción) · Survey",
+  "alt": [
+   {
+    "sit": "Te inscribes en un curso nocturno.",
+    "cz": "I'd like to ___ for the evening photography class."
+   },
+   {
+    "sit": "Te registras en un gimnasio.",
+    "cz": "You can ___ at the front desk and get a free trial week."
+   },
+   {
+    "sit": "Te apuntas como voluntario en tu comunidad.",
+    "cz": "I decided to ___ as a volunteer at the local food bank."
+   }
+  ]
  },
  {
   "id": "work-out",
@@ -457,7 +639,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Esperas que todo termine bien.",
   "cz": "I'm confident everything will ___ in the end.",
-  "use": "Giving Advice · Making Predictions · cierre de Email formal"
+  "use": "Giving Advice · Making Predictions · cierre de Email formal",
+  "alt": [
+   {
+    "sit": "Esperas que un plan funcione bien.",
+    "cz": "I hope the new schedule will ___ for everyone on the team."
+   },
+   {
+    "sit": "Haces ejercicio por las mañanas.",
+    "cz": "I try to ___ at the gym three times a week."
+   },
+   {
+    "sit": "Un problema con tu casero se resuelve.",
+    "cz": "Don't worry, things will ___ with your landlord eventually."
+   }
+  ]
  },
  {
   "id": "bring-up",
@@ -466,7 +662,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Quieres tocar un tema en una reunión.",
   "cz": "I would like to ___ an important issue at the meeting.",
-  "use": "Email formal (plantear un tema) · Survey · Expressing Opinions"
+  "use": "Email formal (plantear un tema) · Survey · Expressing Opinions",
+  "alt": [
+   {
+    "sit": "Quieres mencionar un tema en una reunión.",
+    "cz": "I'd like to ___ the budget issue at tomorrow's meeting."
+   },
+   {
+    "sit": "Evitas un tema delicado en una cena.",
+    "cz": "Please don't ___ politics at dinner tonight."
+   },
+   {
+    "sit": "Criar a tus hijos en otro país.",
+    "cz": "It is not easy to ___ children far away from their grandparents."
+   }
+  ]
  },
  {
   "id": "point-out",
@@ -475,7 +685,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Notas un detalle importante.",
   "cz": "I must ___ that the price includes delivery.",
-  "use": "Survey · Comparing & Persuading · Expressing Opinions · Email formal"
+  "use": "Survey · Comparing & Persuading · Expressing Opinions · Email formal",
+  "alt": [
+   {
+    "sit": "Señalas un error en una factura.",
+    "cz": "I would like to ___ that the invoice includes an extra fee."
+   },
+   {
+    "sit": "Un guía muestra un lugar en un tour.",
+    "cz": "The guide will ___ the historic buildings on our left."
+   },
+   {
+    "sit": "Das una opinión en un debate.",
+    "cz": "I must ___ that the proposal does not solve the real problem."
+   }
+  ]
  },
  {
   "id": "look-forward-to",
@@ -484,7 +708,21 @@ const PHRASALS = [
   "g": "Planes Y Decisiones",
   "sit": "Cierras un correo con cortesía.",
   "cz": "I really ___ hearing from you soon.",
-  "use": "Cierre de cualquier Email · Giving Advice · Difficult Situation"
+  "use": "Cierre de cualquier Email · Giving Advice · Difficult Situation",
+  "alt": [
+   {
+    "sit": "Terminas un email formal.",
+    "cz": "I ___ your reply at your earliest convenience."
+   },
+   {
+    "sit": "Hablas de tus vacaciones.",
+    "cz": "We really ___ our trip to Banff this summer."
+   },
+   {
+    "sit": "Te emocionas por una visita familiar.",
+    "cz": "My kids ___ seeing their cousins during the holidays."
+   }
+  ]
  },
  {
   "id": "get-along-with",
@@ -493,7 +731,21 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de tus compañeros de trabajo.",
   "cz": "I really ___ my coworkers; we are like a family.",
-  "use": "Personal Experience · Giving Advice · Email informal"
+  "use": "Personal Experience · Giving Advice · Email informal",
+  "alt": [
+   {
+    "sit": "Hablas de tu nuevo equipo.",
+    "cz": "I'm happy to say that I ___ everyone in my new team."
+   },
+   {
+    "sit": "Describes a tu compañero de apartamento.",
+    "cz": "Luckily, I ___ my roommate; we share the chores fairly."
+   },
+   {
+    "sit": "Hablas de tu jefe.",
+    "cz": "It's easy to ___ my manager because she is so understanding."
+   }
+  ]
  },
  {
   "id": "count-on",
@@ -502,7 +754,21 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Le aseguras apoyo a un amigo.",
   "cz": "You can always ___ me if you need help.",
-  "use": "Giving Advice · Comparing & Persuading · Email informal"
+  "use": "Giving Advice · Comparing & Persuading · Email informal",
+  "alt": [
+   {
+    "sit": "Dices a un vecino que puede confiar en ti.",
+    "cz": "If you need help moving, you can ___ me."
+   },
+   {
+    "sit": "Confías en un compañero de proyecto.",
+    "cz": "I know I can ___ Sarah to finish her part on time."
+   },
+   {
+    "sit": "Una empresa promete cumplir.",
+    "cz": "Our customers can ___ us to deliver every order on schedule."
+   }
+  ]
  },
  {
   "id": "look-up-to",
@@ -511,7 +777,21 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de la gente que admiras.",
   "cz": "I tend to ___ people who work hard.",
-  "use": "Personal Experience · Expressing Opinions"
+  "use": "Personal Experience · Expressing Opinions",
+  "alt": [
+   {
+    "sit": "Hablas de alguien que admiras.",
+    "cz": "I really ___ my grandmother because she raised five kids alone."
+   },
+   {
+    "sit": "Describes a un mentor.",
+    "cz": "Many young players ___ the team captain."
+   },
+   {
+    "sit": "Hablas de un maestro inspirador.",
+    "cz": "Students tend to ___ teachers who treat them with respect."
+   }
+  ]
  },
  {
   "id": "cheer-up",
@@ -520,7 +800,21 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Tu amigo está triste.",
   "cz": "I brought some cookies to ___ my friend.",
-  "use": "Giving Advice (consejo a un amigo) · Personal Experience · Email informal"
+  "use": "Giving Advice (consejo a un amigo) · Personal Experience · Email informal",
+  "alt": [
+   {
+    "sit": "Animas a un amigo que perdió su empleo.",
+    "cz": "I invited him for coffee to ___ him after he lost his job."
+   },
+   {
+    "sit": "Llevas un detalle a una compañera enferma.",
+    "cz": "We sent flowers to ___ our coworker in the hospital."
+   },
+   {
+    "sit": "Animas a tu hijo después de un mal día.",
+    "cz": "A walk in the park always helps to ___ my daughter."
+   }
+  ]
  },
  {
   "id": "hang-out",
@@ -529,7 +823,21 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Planeas ver a tus amigos.",
   "cz": "We usually ___ at the park on Sundays.",
-  "use": "Personal Experience · Email informal · Describing a Scene"
+  "use": "Personal Experience · Email informal · Describing a Scene",
+  "alt": [
+   {
+    "sit": "Cuentas qué haces con amigos.",
+    "cz": "My friends and I like to ___ at the mall after school."
+   },
+   {
+    "sit": "Describes un plan sencillo de fin de semana.",
+    "cz": "Do you want to ___ at my place this Friday?"
+   },
+   {
+    "sit": "Hablas de convivir con colegas.",
+    "cz": "After work, we usually ___ at a nearby café."
+   }
+  ]
  },
  {
   "id": "get-over",
@@ -538,7 +846,21 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Hablas de recuperarte de una gripe.",
   "cz": "It took me two weeks to ___ the flu.",
-  "use": "Giving Advice · Personal Experience · Expressing Opinions"
+  "use": "Giving Advice · Personal Experience · Expressing Opinions",
+  "alt": [
+   {
+    "sit": "Te recuperas de una gripe.",
+    "cz": "I'm still trying to ___ this terrible cold."
+   },
+   {
+    "sit": "Superas una decepción.",
+    "cz": "It took her months to ___ the disappointment of losing the contest."
+   },
+   {
+    "sit": "Superas el miedo a hablar en público.",
+    "cz": "I finally managed to ___ my fear of public speaking."
+   }
+  ]
  },
  {
   "id": "give-up",
@@ -547,7 +869,21 @@ const PHRASALS = [
   "g": "Relaciones Y Emociones",
   "sit": "Animas a alguien ante un reto difícil.",
   "cz": "Don't ___ on your dreams, no matter how hard it gets.",
-  "use": "Giving Advice · Difficult Situation · Expressing Opinions"
+  "use": "Giving Advice · Difficult Situation · Expressing Opinions",
+  "alt": [
+   {
+    "sit": "Animas a alguien a no rendirse.",
+    "cz": "Please don't ___ now; you are so close to finishing."
+   },
+   {
+    "sit": "Dejas un mal hábito.",
+    "cz": "I decided to ___ drinking soda for my health."
+   },
+   {
+    "sit": "Hablas de aprender un idioma.",
+    "cz": "Learning English is hard, but I will never ___."
+   }
+  ]
  },
  {
   "id": "end-up",
@@ -556,7 +892,21 @@ const PHRASALS = [
   "g": "Experiencias Y Rutina",
   "sit": "Cuentas cómo salió mal un viaje.",
   "cz": "I was afraid we would ___ in the wrong city.",
-  "use": "Personal Experience (cómo terminó una experiencia) · Making Predictions · Unusual Situation"
+  "use": "Personal Experience (cómo terminó una experiencia) · Making Predictions · Unusual Situation",
+  "alt": [
+   {
+    "sit": "Cuentas un viaje con mal plan.",
+    "cz": "If we take the wrong train, we will ___ in a small town."
+   },
+   {
+    "sit": "Un plan sale distinto a lo esperado.",
+    "cz": "I never imagined I would ___ working in Canada."
+   },
+   {
+    "sit": "Evitas un resultado no deseado.",
+    "cz": "If we don't plan the budget, we will ___ spending too much."
+   }
+  ]
  },
  {
   "id": "come-across",
@@ -565,7 +915,21 @@ const PHRASALS = [
   "g": "Experiencias Y Rutina",
   "sit": "Encuentras algo mientras limpias.",
   "cz": "While cleaning, I happened to ___ an old photo album.",
-  "use": "Personal Experience · Unusual Situation · Describing a Scene"
+  "use": "Personal Experience · Unusual Situation · Describing a Scene",
+  "alt": [
+   {
+    "sit": "Encuentras algo por casualidad en internet.",
+    "cz": "I happened to ___ a great job posting while browsing online."
+   },
+   {
+    "sit": "Encuentras un objeto en una mudanza.",
+    "cz": "While moving, I happened to ___ my old school notebooks."
+   },
+   {
+    "sit": "Te topas con un amigo en la calle.",
+    "cz": "I didn't expect to ___ my old classmate at the airport."
+   }
+  ]
  },
  {
   "id": "pick-up",
@@ -574,7 +938,21 @@ const PHRASALS = [
   "g": "Experiencias Y Rutina",
   "sit": "Recoges a tu hija del colegio.",
   "cz": "Could you ___ my daughter from school at three?",
-  "use": "Difficult Situation · Describing a Scene · Email informal (planes)"
+  "use": "Difficult Situation · Describing a Scene · Email informal (planes)",
+  "alt": [
+   {
+    "sit": "Recoges a alguien en el aeropuerto.",
+    "cz": "Could you ___ my parents from the airport on Sunday?"
+   },
+   {
+    "sit": "Recoges un paquete en correos.",
+    "cz": "I have to ___ a package at the post office before it closes."
+   },
+   {
+    "sit": "Aprendes algo nuevo rápido.",
+    "cz": "Kids ___ new languages very quickly."
+   }
+  ]
  },
  {
   "id": "fill-out",
@@ -583,7 +961,21 @@ const PHRASALS = [
   "g": "Trabajo Y Estudio",
   "sit": "Te piden llenar un documento.",
   "cz": "Please ___ this form and bring it back tomorrow.",
-  "use": "Email semi-formal (formularios) · Difficult Situation (trámites)"
+  "use": "Email semi-formal (formularios) · Difficult Situation (trámites)",
+  "alt": [
+   {
+    "sit": "Llenas un formulario de inmigración.",
+    "cz": "You need to ___ this application form and sign it."
+   },
+   {
+    "sit": "Llenas una encuesta de servicio.",
+    "cz": "Please take a minute to ___ our customer satisfaction survey."
+   },
+   {
+    "sit": "Llenas los datos de una cita médica.",
+    "cz": "The receptionist asked me to ___ a form before the appointment."
+   }
+  ]
  },
  {
   "id": "keep-up-with",
@@ -592,7 +984,21 @@ const PHRASALS = [
   "g": "Trabajo Y Estudio",
   "sit": "El trabajo nuevo es muy exigente.",
   "cz": "It is hard to ___ the pace of the new job.",
-  "use": "Expressing Opinions (trabajo y tecnología) · Giving Advice"
+  "use": "Expressing Opinions (trabajo y tecnología) · Giving Advice",
+  "alt": [
+   {
+    "sit": "Te cuesta seguir el ritmo de un curso.",
+    "cz": "It's hard to ___ the homework in this course."
+   },
+   {
+    "sit": "Mantenerte al día con las noticias.",
+    "cz": "I try to ___ the news by reading the paper every morning."
+   },
+   {
+    "sit": "Seguir el ritmo de los precios.",
+    "cz": "Many families can't ___ the rising cost of rent."
+   }
+  ]
  },
  {
   "id": "take-on",
@@ -601,7 +1007,21 @@ const PHRASALS = [
   "g": "Trabajo Y Estudio",
   "sit": "Quieres demostrar compromiso en el trabajo.",
   "cz": "I am willing to ___ more responsibilities.",
-  "use": "Difficult Situation · Expressing Opinions · Survey (asumir responsabilidades)"
+  "use": "Difficult Situation · Expressing Opinions · Survey (asumir responsabilidades)",
+  "alt": [
+   {
+    "sit": "Aceptas más responsabilidades en el trabajo.",
+    "cz": "I'm happy to ___ the new project if you need me to."
+   },
+   {
+    "sit": "Aceptas un reto personal.",
+    "cz": "She decided to ___ the challenge of running a marathon."
+   },
+   {
+    "sit": "Una empresa contrata a más empleados.",
+    "cz": "The company plans to ___ ten new employees this spring."
+   }
+  ]
  }
 ];
 const PV_GROUPS = ["Quejas Y Problemas", "Planes Y Decisiones", "Relaciones Y Emociones", "Experiencias Y Rutina", "Trabajo Y Estudio"];
@@ -2786,7 +3206,7 @@ function ClozeGame({ items, color, onResult, onNewRound, pool = CONNECTORS, audi
   const pick = (c) => {
     if (picked) return;
     const ok = c.id === item.id;
-    setPicked(c.id); onResult(item.id, ok); speakEn(item.en, `audio/${audioDir}/${item.id}.mp3`);
+    setPicked(c.id); onResult(item.id, ok); speakEn(item.en, item.src || `audio/${audioDir}/${item.id}.mp3`);
     if (ok) setScore((s) => s + 1);
   };
   const next = () => {
@@ -2832,6 +3252,16 @@ function ClozeGame({ items, color, onResult, onNewRound, pool = CONNECTORS, audi
   );
 }
 
+const _lastVar = {};
+function withVariant(it) {
+  if (!it.alt || !it.alt.length) return it;
+  const opts = [{ sit: it.sit, cz: it.cz, n: 0 }, ...it.alt.map((v, k) => ({ ...v, n: k + 1 }))];
+  const prev = _lastVar[it.id];
+  const pool = opts.filter((o) => o.n !== prev);
+  const v = pool[Math.floor(Math.random() * pool.length)];
+  _lastVar[it.id] = v.n;
+  return { ...it, sit: v.sit, cz: v.cz, src: v.n ? `audio/pv/${it.id}-${v.n}.mp3` : undefined };
+}
 if (typeof document !== "undefined" && !window.__kbdHook) {
   window.__kbdHook = true;
   const isField = (el) => el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA");
@@ -2862,7 +3292,7 @@ function TypeGame({ items, color, onResult, onNewRound, audioDir = "pv" }) {
     const r = a === t ? "ok" : lev(a, t) <= 1 ? "near" : "bad";
     setRes(r); onResult(item.id, r === "ok");
     if (r === "ok") setScore((x) => x + 1);
-    speakEn(item.en, `audio/${audioDir}/${item.id}.mp3`);
+    speakEn(item.en, item.src || `audio/${audioDir}/${item.id}.mp3`);
   };
   const next = () => {
     if (i + 1 === items.length) { setFinished(true); return; }
@@ -2918,8 +3348,8 @@ function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connec
   const stats = state[statKey] || {};
   const [mode, setMode] = useState("match");
   const [roundKey, setRoundKey] = useState(0);
-  const [round, setRound] = useState(() => weightedPick(pool, state[statKey] || {}, 5));
-  const comboItems = useMemo(() => shuffle(round), [round, roundKey]);
+  const [round, setRound] = useState(() => weightedPick(pool, state[statKey] || {}, 5).map(withVariant));
+  const comboItems = useMemo(() => shuffle(round).map(withVariant), [round, roundKey]);
 
   const record = (id, ok) => update((s) => {
     const cs = { ...(s[statKey] || {}) };
@@ -2927,7 +3357,7 @@ function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connec
     cs[id] = ok ? { ...cur, h: cur.h + 1 } : { ...cur, m: cur.m + 1 };
     return { ...s, [statKey]: cs };
   });
-  const newRound = () => { setRound(weightedPick(pool, stats, 5)); setRoundKey((k) => k + 1); };
+  const newRound = () => { setRound(weightedPick(pool, stats, 5).map(withVariant)); setRoundKey((k) => k + 1); };
   const isMastered = (c) => { const s = stats[c.id]; return s && s.h - s.m >= 3; };
   const mastered = pool.filter(isMastered).length;
 
