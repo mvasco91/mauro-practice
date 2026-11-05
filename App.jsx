@@ -3252,15 +3252,20 @@ function ClozeGame({ items, color, onResult, onNewRound, pool = CONNECTORS, audi
   );
 }
 
-const _lastVar = {};
+const VAR_KEY = "celpip:varseen";
 function withVariant(it) {
   if (!it.alt || !it.alt.length) return it;
-  const opts = [{ sit: it.sit, cz: it.cz, n: 0 }, ...it.alt.map((v, k) => ({ ...v, n: k + 1 }))];
-  const prev = _lastVar[it.id];
-  const pool = opts.filter((o) => o.n !== prev);
-  const v = pool[Math.floor(Math.random() * pool.length)];
-  _lastVar[it.id] = v.n;
-  return { ...it, sit: v.sit, cz: v.cz, src: v.n ? `audio/pv/${it.id}-${v.n}.mp3` : undefined };
+  let seen = {};
+  try { seen = JSON.parse(localStorage.getItem(VAR_KEY) || "{}"); } catch (e) { seen = {}; }
+  const all = [0, ...it.alt.map((_, k) => k + 1)];
+  let used = seen[it.id] || [];
+  let left = all.filter((n) => !used.includes(n));
+  if (!left.length) { const last = used[used.length - 1]; used = []; left = all.filter((n) => n !== last); }
+  const n = left[Math.floor(Math.random() * left.length)];
+  seen[it.id] = [...used, n];
+  try { localStorage.setItem(VAR_KEY, JSON.stringify(seen)); } catch (e) { /* sin almacenamiento */ }
+  const v = n ? it.alt[n - 1] : it;
+  return { ...it, sit: v.sit, cz: v.cz, src: n ? `audio/pv/${it.id}-${n}.mp3` : undefined };
 }
 if (typeof document !== "undefined" && !window.__kbdHook) {
   window.__kbdHook = true;
@@ -3357,7 +3362,10 @@ function ConnectorsTrainer({ state, update, pool = CONNECTORS, statKey = "connec
     cs[id] = ok ? { ...cur, h: cur.h + 1 } : { ...cur, m: cur.m + 1 };
     return { ...s, [statKey]: cs };
   });
-  const newRound = () => { setRound(weightedPick(pool, stats, 5).map(withVariant)); setRoundKey((k) => k + 1); };
+  const newRound = () => {
+    const prev = new Set(round.map((r) => r.id));
+    const fresh = pool.length >= 12 ? pool.filter((c) => !prev.has(c.id)) : pool;
+    setRound(weightedPick(fresh, stats, 5).map(withVariant)); setRoundKey((k) => k + 1); };
   const isMastered = (c) => { const s = stats[c.id]; return s && s.h - s.m >= 3; };
   const mastered = pool.filter(isMastered).length;
 
