@@ -249,11 +249,10 @@ While I acknowledge that option A/B has some potential benefits, it might also l
 All things considered, I am convinced that choosing option A/B will result in a more positive outcome for the community in the long run.
 Ultimately, I am happy to support whichever decision is made and I will be ready to help in any way possible.` },
   "sp-advice": { title: "Task 1 · Giving Advice", group: "Speaking",
-    body: `Hi (name)! I heard you're thinking about (tema).
-If I were in your shoes, I would (go for it / think twice before doing it / choose the option that...).
-First of all... You will probably...
-On top of that... My advice is...
-I hope this helps! Let me know what you decide.` },
+    body: `Hey (name), it's so great to hear from you! I heard you are thinking about (tema: e.g., moving to a new city / buying a used car / taking up photography). If I were in your shoes, I would definitely go for it, and I'd love to offer a couple of suggestions based on my own experience.
+First and foremost, you might want to start by (acción 1: e.g., doing thorough research / testing a couple of options first). This is crucial because it allows you to (beneficio: e.g., understand what fits your actual needs / avoid unnecessary expenses). For instance, you could (ejemplo concreto o paso simple), which will give you a much clearer picture before making a final decision.
+Furthermore, it would be wise to consider your (aspecto: budget / daily schedule / long-term commitment). You need to ensure that this choice remains sustainable without becoming an added source of stress. On top of that, I strongly advise against (advertencia: e.g., rushing into it / buying expensive equipment right away), because in the long run, patience always pays off.
+All things considered, I know you'll make the right choice! I hope these tips prove useful, and please let me know what you decide. Take care and talk to you soon!` },
   "sp-experience": { title: "Task 2 · Personal Experience", group: "Speaking",
     body: `I would like to tell you about a memorable experience I had (a few years ago / last summer) when I (visited a new city / started a new project).
 At that time, I was with (my family / my son / my coworkers). We decided to (go to the beach / organize an event) because...
