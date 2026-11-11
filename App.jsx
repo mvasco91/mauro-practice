@@ -265,11 +265,11 @@ Moving toward the left-hand side, I can observe (sujeto 2: a group of children /
 In the background, there are several (elementos: tall modern skyscrapers / lush green trees / neatly arranged display shelves), suggesting that this area is (cualidad: very well-maintained / located in an urban setting).
 Overall, the entire picture conveys a very (atmósfera: cheerful and dynamic / harmonious and organized) atmosphere.` },
   "sp-predict": { title: "Task 4 · Making Predictions", group: "Speaking",
-    body: `Looking at what is happening in the picture, I think several things are going to change in the next few minutes.
-First of all, the (man / girl) who is (action) will probably finish (his / her) task and leave the area.
-Furthermore, I imagine that the (other person / group in the picture) is going to move towards the...
-I wouldn't be surprised if (something that follows from the scene), causing everyone to (react).
-In short, I believe the situation will (change / improve / get busier) in the immediate future.` },
+    body: `Based on what is currently happening in the picture, I think several things are going to change in the next few minutes.
+First of all, the (persona principal) who is currently (acción actual) is likely going to (predicción lógica: pagar e irse / guardar sus cosas), as he/she seems ready to leave.
+Furthermore, I wouldn't be surprised if the (segunda persona/grupo) (acción futura: tropieza / saluda a alguien / pide ayuda), causing the people nearby to react.
+Meanwhile, looking at the background, the (clima / llegada de más gente) suggests that the area will soon become much busier.
+In short, I believe the situation will become noticeably more active in the immediate future.` },
   "sp-compare": { title: "Task 5 · Comparing & Persuading", group: "Speaking",
     body: `Hi (name), I've been looking at both options, and while I understand why you like your choice, I strongly believe that option (A/B) is more suitable for us.
 One of the main reasons is the (price / location). Even though your option is (cheaper / larger / closer), my choice offers (better quality / more activities), which is crucial because...
