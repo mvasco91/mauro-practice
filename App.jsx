@@ -287,15 +287,15 @@ First of all, choosing this alternative is much more convenient because (razón 
 While I understand that this might not be the outcome you were hoping for, I am confident that it is the most sensible decision under the current circumstances.
 All things considered, I really appreciate your understanding, and I hope we can move forward with this plan together.` },
   "sp-opinion": { title: "Task 7 · Expressing Opinions", group: "Speaking",
-    body: `This is a controversial topic, but from my perspective, I am a firm believer that (mi opinión).
-First of all, one of the primary benefits of this is (health / economy / safety). For instance, in many cities like London, we have seen that (example), which is beneficial for (everybody / the environment).
-In addition, while some people argue that (opposite view), I strongly disagree because (reason). Furthermore, it is crucial to consider that (another benefit).
-In conclusion, I truly believe this is the best option for everyone. All things considered, it just makes sense.` },
+    body: `This is undoubtedly a controversial topic that has sparked widespread debate. However, from my perspective, I am a firm believer that (tu postura: governments should invest more in public transit / working from home is more productive), as it brings substantial benefits to both individuals and society as a whole.
+First and foremost, one of the primary advantages of this approach is (beneficio 1: public health / personal well-being / financial savings). This is crucial because it allows people to (explicación simple). For instance, in many major cities, we have seen that implementing similar policies resulted in (ejemplo concreto: lower stress levels / reduced traffic congestion), which clearly improves everyone's overall quality of life.
+On the other hand, while I acknowledge that some people argue (postura opuesta: it might be expensive initially / remote work reduces collaboration), I strongly believe that these concerns are often overstated. Furthermore, we must consider the long-term impact, as (beneficio 2: it fosters independence / it creates a cleaner environment), which far outweighs any short-term drawbacks.
+In the long run, adopting this strategy represents a much smarter and more sustainable way forward. All things considered, I am convinced that supporting this policy is the best choice for our community.` },
   "sp-unusual": { title: "Task 8 · Unusual Situation", group: "Speaking",
-    body: `Hi (name)! You won't believe what I'm seeing right now! I am at (a store / the park) and I just found the most unusual (object / animal) I've ever seen.
-It is shaped like a (circle / triangle) and it has a vivid (color) finish. On top of that, it seems to be made of (metal / wood / plastic). It's about the size of a (watermelon / laptop).
-The most interesting part is that it has (stripes / buttons / long legs) and it's located right next to the...
-I think it's fascinating! Should I take a picture or buy it for you? Let me know what you think!` },
+    body: `Hey (name)! You won't believe what I'm looking at right now! I'm currently at a (local boutique / antique shop / flea market), and I just stumbled upon the most unusual (item / piece of furniture / gadget) I've ever seen.
+To give you a better picture, it is roughly shaped like a (forma: cylinder / crescent / pyramid), and it has a vibrant (color: metallic silver / bright yellow / matte black) finish. On top of that, it seems to be crafted from (material: polished wood / durable plastic / solid metal), and it's roughly about the size of a (analogía: small microwave / large shoebox / basketball).
+The most fascinating part is that it features (detalle visual: several quirky buttons on the side / intricate hand-painted patterns / wheels instead of legs). It appears to function as a (función deducida: decorative lamp / quirky coffee maker / creative storage box), and it's sitting right in the center display.
+I immediately thought of you because it totally matches your style! Should I snap a quick picture and send it over, or would you like me to buy it for you? Let me know as soon as you can. Talk to you soon!` },
 };
 
 const CONNECTORS = [
