@@ -271,16 +271,21 @@ Furthermore, I wouldn't be surprised if the (segunda persona/grupo) (acción fut
 Meanwhile, looking at the background, the (clima / llegada de más gente) suggests that the area will soon become much busier.
 In short, I believe the situation will become noticeably more active in the immediate future.` },
   "sp-compare": { title: "Task 5 · Comparing & Persuading", group: "Speaking",
-    body: `Hi (name), I've been looking at both options, and while I understand why you like your choice, I strongly believe that option (A/B) is more suitable for us.
-One of the main reasons is the (price / location). Even though your option is (cheaper / larger / closer), my choice offers (better quality / more activities), which is crucial because...
-Also, choosing this option will definitely bring us better results. In the long run, it is a smarter investment for everyone.
-All things considered, I am convinced that option (A/B) is the way to go; at the end of the day, it gives us more value for what we invest. What do you think?` },
+    body: `Hi (name), I've been looking closely at both options. While I acknowledge that your choice has some clear advantages, I strongly believe that (my option: Option A / the downtown apartment) is much more suitable for us.
+First and foremost, let's consider the (variable 1: price / upfront cost). Even though your option is (ventaja de la otra: slightly cheaper / closer to the station), my choice offers (ventaja de tu opción: significantly better quality / all utilities included), which is crucial because it helps us avoid hidden expenses down the road.
+Furthermore, regarding the (variable 2: location / amenities / size), my option provides (beneficio práctico: more spacious rooms / modern equipment). Choosing this alternative will definitely make our daily routine much more comfortable, and in the long run, it represents a far smarter investment for everyone involved.
+All things considered, I am convinced that this option gives us the greatest value for our money. What do you think? Let's go with this one!` },
   "sp-difficult": { title: "Task 6 · Difficult Situation", group: "Speaking",
-    body: `Hi (name), I'm calling because I have some bad news. I am afraid I won't be able to (make it to your party / finish the report on time).
-The reason is that something unexpected just came up. (My son has a fever / my car broke down). Because of this, it's impossible for me to be there.
-To make it up to you, I was wondering if we could (reschedule for next weekend / I can send the file by email tonight). Is that ok?
-I sincerely apologize. Please let me know if there's anything else I can do.
-(If the task asks you to choose between two options, start instead with: I've thought about it carefully, and I've decided to (my choice), because (reason 1). Also, (reason 2).)` },
+    body: `(Opción A: cuando debes cancelar, disculparte o pedir un favor. Es el escenario más común)
+Hi (name), I'm calling because unfortunately, I have some rather disappointing news. I am afraid I won't be able to (compromiso: make it to your dinner party tonight / submit the project by the deadline).
+The reason is that something completely unexpected came up. (Causa: My daughter suddenly developed a high fever / My car broke down on the highway), and I need to deal with this emergency immediately. Because of this, it is virtually impossible for me to (asistir / cumplir) as we had originally planned.
+In light of this, and to make it up to you, I was wondering if we could (solución: reschedule for next weekend, and dinner is on me / if I could email you the completed draft first thing tomorrow morning). I want to ensure this situation doesn't cause you any major inconvenience.
+I sincerely apologize for the short notice. Please let me know if this arrangement works for you, and we'll talk very soon.
+(Opción B: cuando debes elegir entre dos opciones y comunicarle la decisión a alguien. Por ejemplo: decidir entre dos eventos familiares o dos propuestas de trabajo)
+Hi (name), thanks for giving me time to consider both options. I've thought about it very carefully, and I've decided to go with (tu elección).
+First of all, choosing this alternative is much more convenient because (razón 1: it aligns better with my current schedule / it is a prior commitment I had made months ago). Furthermore, regarding our team's resources, this option allows us to (razón 2: save a significant amount of money in the long run / focus on the main priority).
+While I understand that this might not be the outcome you were hoping for, I am confident that it is the most sensible decision under the current circumstances.
+All things considered, I really appreciate your understanding, and I hope we can move forward with this plan together.` },
   "sp-opinion": { title: "Task 7 · Expressing Opinions", group: "Speaking",
     body: `This is a controversial topic, but from my perspective, I am a firm believer that (mi opinión).
 First of all, one of the primary benefits of this is (health / economy / safety). For instance, in many cities like London, we have seen that (example), which is beneficial for (everybody / the environment).
