@@ -259,11 +259,11 @@ Initially, everything seemed to be going according to plan. However, as the day 
 Fortunately, instead of panicking, we decided to put our heads together. We managed to (acción de solución: ask a local resident for assistance / adapt our schedule / find a quick alternative). To my surprise, things turned out remarkably well, and we were able to overcome the obstacle faster than we anticipated.
 In the end, I felt (emoción: profoundly relieved / extremely proud of how we handled it). Looking back, it was truly an unforgettable experience because it taught me that (lección: staying calm under pressure / proper planning and teamwork) is essential whenever you face unforeseen challenges in life.` },
   "sp-scene": { title: "Task 3 · Describing A Scene", group: "Speaking",
-    body: `What I can see here is a vibrant scene of a (park / street / office). There are several people engaging in different activities.
-Right in the middle, I can see a (man / woman) who is (sitting / talking). He/She looks quite (happy / busy).
-To the left there is (a group of people / an object / a person) (doing something / in some place). Meanwhile, on the right side, I notice a...
-In the background, there are some (trees / buildings / shelves) that make the place look (pleasant / busy / organized).
-Overall, it seems like a very (peaceful / lively / busy) moment at the (place).` },
+    body: `This illustration depicts a vibrant and lively scene taking place at a (lugar: bustling public park / busy modern office / crowded local market), where multiple individuals are engaged in various everyday activities.
+Right in the center of the image, there is a (sujeto: middle-aged man / young woman) wearing (detalle breve: a blue casual jacket / athletic gear), who appears to be (acción: reading a newspaper / typing on a laptop / speaking animatedly on the phone).
+Moving toward the left-hand side, I can observe (sujeto 2: a group of children / a couple) happily (acción: playing with a colorful ball / sipping coffee at an outdoor table). Meanwhile, on the right side of the picture, a (sujeto 3: cyclist / vendor / professional) is (acción: carefully navigating through the crowd / displaying fresh products), which adds even more movement to the scene.
+In the background, there are several (elementos: tall modern skyscrapers / lush green trees / neatly arranged display shelves), suggesting that this area is (cualidad: very well-maintained / located in an urban setting).
+Overall, the entire picture conveys a very (atmósfera: cheerful and dynamic / harmonious and organized) atmosphere.` },
   "sp-predict": { title: "Task 4 · Making Predictions", group: "Speaking",
     body: `Looking at what is happening in the picture, I think several things are going to change in the next few minutes.
 First of all, the (man / girl) who is (action) will probably finish (his / her) task and leave the area.
