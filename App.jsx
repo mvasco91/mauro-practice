@@ -221,13 +221,14 @@ const SPEAKING_TASKS = [
 
 const TEMPLATES = {
   "email-formal": { title: "Email Formal", group: "Writing",
-    body: `Dear (name),
-I am writing to express my concern / interest / dissatisfaction regarding the recent issue that took place at...
-First and foremost, it is important to highlight that (qué pasó).
-Furthermore, this situation has caused inconvenience / delays because (por qué me afecta).
-In light of this, I would like to suggest that (la solución).
-I sincerely appreciate your time and attention to this matter. I look forward to your prompt response.
-Best regards,` },
+    body: `Dear (Mr./Ms. LastName o Title),
+I am writing to (propósito directo: express my dissatisfaction regarding... / inquire about...).
+First of all, (Viñeta 1: fecha, número de orden o lugar, y qué sucedió exactamente. 2–3 frases concretas).
+Furthermore, (Viñeta 2: el problema específico o la consecuencia negativa causada. 2–3 frases).
+To resolve this matter, I would appreciate it if you could (Viñeta 3: solución requerida, como reembolso o reemplazo). Please let me know when I can expect an update regarding this issue.
+Thank you for your time and prompt attention to this matter.
+Sincerely,
+(your name)` },
   "email-informal": { title: "Email Informal", group: "Writing",
     body: `Hi / Hey (name),
 I hope you are doing great. It has been a while since we last caught up.
@@ -243,58 +244,59 @@ Is there any way you could (send me a replacement / give me a refund)?
 Thanks in advance for your help.
 Regards / Sincerely,` },
   survey: { title: "Survey A/B", group: "Writing",
-    body: `Thank you for considering my opinion regarding the upcoming decision. From my perspective, I strongly believe that Option A/B is the most favourable and practical choice for everyone involved.
-One compelling reason is that it would significantly enhance (el beneficio).
-While I acknowledge that option A/B has some potential benefits, it might also lead to (aspecto negativo). Therefore, option A/B remains a more sustainable solution.
-All things considered, I am convinced that choosing option A/B will result in a more positive outcome for the community in the long run.
-Ultimately, I am happy to support whichever decision is made and I will be ready to help in any way possible.` },
+    body: `I appreciate the opportunity to provide input on this survey. After careful consideration, I strongly support (Option A / Option B).
+One compelling reason is that it would significantly enhance (beneficio 1: employee well-being / public safety / cost savings). For example, (ejemplo concreto de 2 frases con detalles de rutina o ahorro).
+Another important reason is that it improves (beneficio 2: community convenience / long-term flexibility), which matters because (explicación clara de su impacto positivo).
+While I acknowledge that the alternative option has some merits, such as (ventaja menor de la otra opción), its drawbacks cannot be overlooked. In the long run, choosing (tu opción) is the most sensible and practical decision for everyone involved.
+Thank you for taking my perspective into consideration.` },
   "sp-advice": { title: "Task 1 · Giving Advice", group: "Speaking",
     body: `Hey (name), that sounds exciting! I have a couple of quick tips for you.
 First of all, you should start by (consejo 1). This is great because it helps you (beneficio). For example, you could (ejemplo muy corto).
-Also, keep your (budget / time) in mind so you don't get stressed out. Don't rush into it; taking your time always pays off.
+Also, keep your (budget / time) in mind so you don't get stressed out. Don't rush into it; taking your time always pays off in the long run.
 All things considered, I'm sure you'll make the right call! Let me know what you decide.` },
   "sp-experience": { title: "Task 2 · Personal Experience", group: "Speaking",
     body: `I remember a couple of years ago when I went to (lugar) with (amigos / familia) to (meta).
 At first, everything was great. But suddenly, (el imprevisto breve), which was pretty stressful.
-Fortunately, we kept our cool and worked together. We managed to (solución corta), and it worked out really well.
+Fortunately, we kept our cool and worked together to sort it out. We managed to (solución corta con detalle), and it worked out really well.
 In the end, I was so relieved. Looking back, it taught me to stay calm whenever unexpected things happen.` },
   "sp-scene": { title: "Task 3 · Describing A Scene", group: "Speaking",
-    body: `In this picture, there's a lot going on at a busy (lugar).
+    body: `In this picture, there's a lot going on at a busy (park / street / office).
 Right in the middle, a (persona) is (acción principal).
 On the left, there is a (persona/grupo) (acción), while on the right, someone else is (acción).
-In the background, I can see some (árboles / edificios).
-Overall, everyone seems to be having a good time, and it has a very lively vibe.` },
+In the background, I can see some (árboles / edificios / estantes).
+Overall, it looks like a typical (morning / afternoon) at a (lugar).` },
   "sp-predict": { title: "Task 4 · Making Predictions", group: "Speaking",
     body: `Looking at the picture, I think a few things will happen soon.
 First, the (persona principal) will probably finish (acción actual) and head out.
-Also, I wouldn't be surprised if the (segunda persona) ends up (acción futura corta), making nearby people look over.
+Also, I wouldn't be surprised if the (segunda persona/grupo) ends up (acción futura corta), making nearby people look over.
 Meanwhile, the background suggests the place will get a lot busier shortly.
 In short, things are going to pick up pretty quickly.` },
   "sp-compare": { title: "Task 5 · Comparing & Persuading", group: "Speaking",
     body: `Hey (name), I looked at both options, and I really think (tu opción) makes more sense for us.
 Even though your pick is (ventaja de la otra: cheaper / closer), mine offers (ventaja de la tuya), which will save us a lot of trouble.
-Plus, it'll make our routine much easier, and in the long run, it's the smarter choice.
-All things considered, it gives us the best value. What do you think? Let's go with this one!` },
+Plus, it'll make our routine much easier, and in the long run, it's definitely the smarter choice.
+All things considered, it gives us the best value for our money. What do you think? Let's go with this one!` },
   "sp-difficult": { title: "Task 6 · Difficult Situation", group: "Speaking",
     body: `(Opción A: cuando debes cancelar, disculparte o pedir un favor. Es el escenario más común)
 Hey (name), I'm really sorry, but something urgent came up and I won't be able to make it to (evento / entrega).
 My (kid got sick / car broke down), and I have to take care of it right away.
 To make it up to you, could we (reprogramar para el fin de semana / vernos mañana)?
 I'm really sorry for the short notice, but let me know if that works for you. Talk soon!
-(Opción B: cuando debes elegir entre dos opciones y comunicarle la decisión a alguien. Por ejemplo: decidir entre dos eventos familiares o dos propuestas de trabajo)
-Hi (name), thanks for giving me time to consider both options. I've thought about it very carefully, and I've decided to go with (tu elección).
-First of all, choosing this alternative is much more convenient because (razón 1: it aligns better with my current schedule / it is a prior commitment I had made months ago). Furthermore, regarding our team's resources, this option allows us to (razón 2: save a significant amount of money in the long run / focus on the main priority).
-While I understand that this might not be the outcome you were hoping for, I am confident that it is the most sensible decision under the current circumstances.
-All things considered, I really appreciate your understanding, and I hope we can move forward with this plan together.` },
+(Opción B: cuando debes elegir entre dos personas u opciones y comunicar la decisión)
+Hey (name), thanks for waiting. I've thought about it carefully, and I've decided to go with (tu elección).
+The main reason is that (razón principal de conveniencia o compromiso previo). Also, it allows us to (segunda razón simple).
+While I understand this might not be what you hoped for, I think it's the most sensible decision right now.
+All things considered, I appreciate your understanding. Let's talk soon!` },
   "sp-opinion": { title: "Task 7 · Expressing Opinions", group: "Speaking",
     body: `This is an interesting topic, but I personally lean towards the idea that (tu opinión).
-First of all, the main benefit is (beneficio 1). For example, it really helps people (ejemplo de 1 línea), making daily life much easier.
-I understand why some folks worry about (contraargumento), but I think that concern is a bit exaggerated. The long-term benefits are way more important.
-In the long run, this is definitely the smarter way to go. All things considered, it's just the right choice.` },
+First of all, one compelling reason is that it enhances (beneficio 1). For example, it really helps people (ejemplo concreto corto), making daily life much easier.
+On top of that, it would also improve (beneficio 2), which matters because (explicación simple de por qué ayuda a todos).
+I understand why some folks worry about (contraargumento), but I think that concern is a bit exaggerated. In the long run, the benefits definitely outweigh any small drawback.
+All things considered, it's just the right choice.` },
   "sp-unusual": { title: "Task 8 · Unusual Situation", group: "Speaking",
     body: `Hey (name)! You won't believe what I just found—it's probably the weirdest thing I've ever seen!
-It's shaped kind of like a (forma), bright (color), and looks like it's made of (material). It's about the size of a (mochila / tostadora).
-The coolest part is that it has (detalle raro), and it actually works as a (función).
+It's shaped kind of like a (forma: circle / cone / box), bright (color), and looks like it's made of (wood / metal / plastic). It's about the size of a (mochila / tostadora / microondas).
+The coolest part is that it has (detalle curioso), and it actually works as a (función deducida).
 It totally made me think of you! Do you want me to take a picture, or should I just buy it for you? Let me know!` },
 };
 
