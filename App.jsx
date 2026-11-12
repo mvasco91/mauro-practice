@@ -1556,6 +1556,17 @@ function Skeletons() {
   return <div className="card"><div className="skel" style={{ width: "55%" }} /><div className="skel" /><div className="skel" /><div className="skel" style={{ width: "80%" }} /></div>;
 }
 
+// Estima cuánto tarda en decirse una plantilla (140 palabras/min; cada hueco cuenta ~4 palabras). Si trae Opción A/B, toma la más larga.
+function tplSeconds(body) {
+  const opts = String(body).split(/\(Opción B/);
+  const secs = opts.map((b) => {
+    const blanks = (b.match(/\(([^()]*)\)/g) || []).filter((x) => !/^\(Opción/.test(x)).length;
+    const words = stripParens(b).split(/\s+/).filter(Boolean).length;
+    return ((words + blanks * 4) / 140) * 60;
+  });
+  return Math.round(Math.max(...secs));
+}
+
 function TplNote({ note }) {
   return note ? <p className="dimtx" style={{ marginTop: 10 }}>{note}</p> : null;
 }
@@ -2575,6 +2586,14 @@ function SpeakingScreen({ back, preset, update }) {
         </div>
         <TplNote note={TEMPLATES[task.tpl].note} />
         <div className="paper">{TEMPLATES[task.tpl].body}</div>
+        {(() => {
+          const est = tplSeconds(TEMPLATES[task.tpl].body), over = est > task.talk;
+          return (
+            <p className="dimtx" style={{ marginTop: 10, color: over ? "#FFB86B" : "#7FE0B2" }}>
+              Plantilla ≈ {est}s de {task.talk}s disponibles{over ? ` · te pasas ${est - task.talk}s: di solo las partes clave o acorta los huecos` : " · te cabe completa"}.
+            </p>
+          );
+        })()}
         <p className="dimtx" style={{ marginTop: 12 }}>
           Fluidez sobre perfección. Si te pierdes: "What I mean is…" y repites la idea. El template debe ser como mucho el 30–40% de tu respuesta: el resto, detalles concretos de la consigna.
         </p>
