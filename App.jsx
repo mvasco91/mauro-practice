@@ -249,53 +249,53 @@ While I acknowledge that option A/B has some potential benefits, it might also l
 All things considered, I am convinced that choosing option A/B will result in a more positive outcome for the community in the long run.
 Ultimately, I am happy to support whichever decision is made and I will be ready to help in any way possible.` },
   "sp-advice": { title: "Task 1 · Giving Advice", group: "Speaking",
-    body: `Hey (name), it's so great to hear from you! I heard you are thinking about (tema: e.g., moving to a new city / buying a used car / taking up photography). If I were in your shoes, I would definitely go for it, and I'd love to offer a couple of suggestions based on my own experience.
-First and foremost, you might want to start by (acción 1: e.g., doing thorough research / testing a couple of options first). This is crucial because it allows you to (beneficio: e.g., understand what fits your actual needs / avoid unnecessary expenses). For instance, you could (ejemplo concreto o paso simple), which will give you a much clearer picture before making a final decision.
-Furthermore, it would be wise to consider your (aspecto: budget / daily schedule / long-term commitment). You need to ensure that this choice remains sustainable without becoming an added source of stress. On top of that, I strongly advise against (advertencia: e.g., rushing into it / buying expensive equipment right away), because in the long run, patience always pays off.
-All things considered, I know you'll make the right choice! I hope these tips prove useful, and please let me know what you decide. Take care and talk to you soon!` },
+    body: `Hey (name), it's great to hear from you! If I were in your shoes, I would definitely go for (tema), and I have two quick tips for you.
+First and foremost, you might want to start by (consejo 1: investigating / testing options). This is crucial because it allows you to (beneficio simple). For instance, you could (ejemplo de 1 frase), which will give you a clear picture before deciding.
+Furthermore, it would be wise to consider your (presupuesto / tiempo). You need to make sure this fits into your weekly schedule without causing stress. On top of that, avoid rushing into it, because in the long run, patience pays off.
+All things considered, I know you'll make the right choice! Let me know what you decide.` },
   "sp-experience": { title: "Task 2 · Personal Experience", group: "Speaking",
-    body: `I would love to share a memorable experience I had (temporal: a couple of years ago / last summer), when I (acción: traveled to a new city / took on an ambitious project at work). At that time, I was accompanied by (compañía: my close friends / my family / my coworkers), and we were determined to (meta: explore the area / organize a major event) because we had been looking forward to it for months.
-Initially, everything seemed to be going according to plan. However, as the day progressed, an unexpected situation arose. Suddenly, we realized that (el obstáculo: our car broke down in the middle of nowhere / we had misplaced an important document / the weather took a turn for the worse). To make matters worse, we had limited time to fix the issue, which initially caused a great deal of stress and uncertainty.
-Fortunately, instead of panicking, we decided to put our heads together. We managed to (acción de solución: ask a local resident for assistance / adapt our schedule / find a quick alternative). To my surprise, things turned out remarkably well, and we were able to overcome the obstacle faster than we anticipated.
-In the end, I felt (emoción: profoundly relieved / extremely proud of how we handled it). Looking back, it was truly an unforgettable experience because it taught me that (lección: staying calm under pressure / proper planning and teamwork) is essential whenever you face unforeseen challenges in life.` },
+    body: `I'd like to share a memorable experience I had (hace un año / el verano pasado), when I (viaje / proyecto). At that time, I was with (familia / amigos), and we were excited to (meta).
+Initially, everything was going smoothly. However, an unexpected problem arose: suddenly, (el obstáculo: the car broke down / we lost the keys), causing a lot of stress.
+Fortunately, instead of panicking, we stayed calm. We managed to (solución en 1 frase), and to my surprise, we solved the issue faster than expected.
+In the end, I felt very relieved. Looking back, it was an unforgettable day because it taught me that staying calm is essential when facing unexpected challenges.` },
   "sp-scene": { title: "Task 3 · Describing A Scene", group: "Speaking",
-    body: `This illustration depicts a vibrant and lively scene taking place at a (lugar: bustling public park / busy modern office / crowded local market), where multiple individuals are engaged in various everyday activities.
-Right in the center of the image, there is a (sujeto: middle-aged man / young woman) wearing (detalle breve: a blue casual jacket / athletic gear), who appears to be (acción: reading a newspaper / typing on a laptop / speaking animatedly on the phone).
-Moving toward the left-hand side, I can observe (sujeto 2: a group of children / a couple) happily (acción: playing with a colorful ball / sipping coffee at an outdoor table). Meanwhile, on the right side of the picture, a (sujeto 3: cyclist / vendor / professional) is (acción: carefully navigating through the crowd / displaying fresh products), which adds even more movement to the scene.
-In the background, there are several (elementos: tall modern skyscrapers / lush green trees / neatly arranged display shelves), suggesting that this area is (cualidad: very well-maintained / located in an urban setting).
-Overall, the entire picture conveys a very (atmósfera: cheerful and dynamic / harmonious and organized) atmosphere.` },
+    body: `This illustration shows a lively scene at a (lugar).
+Right in the middle, I can see a (persona) who is (acción principal).
+To the left, there is a (persona/grupo) (acción), while on the right side, a (persona) is (acción).
+In the background, there are some (árboles/edificios), which make the area look well-organized.
+Overall, it conveys a very pleasant and cheerful atmosphere.` },
   "sp-predict": { title: "Task 4 · Making Predictions", group: "Speaking",
-    body: `Based on what is currently happening in the picture, I think several things are going to change in the next few minutes.
-First of all, the (persona principal) who is currently (acción actual) is likely going to (predicción lógica: pagar e irse / guardar sus cosas), as he/she seems ready to leave.
-Furthermore, I wouldn't be surprised if the (segunda persona/grupo) (acción futura: tropieza / saluda a alguien / pide ayuda), causing the people nearby to react.
-Meanwhile, looking at the background, the (clima / llegada de más gente) suggests that the area will soon become much busier.
-In short, I believe the situation will become noticeably more active in the immediate future.` },
+    body: `Based on this picture, a few things are bound to happen soon.
+First of all, the (persona principal) who is (acción actual) will probably (acción futura: pagar e irse).
+Furthermore, I wouldn't be surprised if the (segunda persona) (acción futura: saluda a alguien / tropieza), causing the nearby people to react.
+Meanwhile, the (gente/clima) in the background suggests the place will soon get busier.
+In short, the entire scene will become much more active shortly.` },
   "sp-compare": { title: "Task 5 · Comparing & Persuading", group: "Speaking",
-    body: `Hi (name), I've been looking closely at both options. While I acknowledge that your choice has some clear advantages, I strongly believe that (my option: Option A / the downtown apartment) is much more suitable for us.
-First and foremost, let's consider the (variable 1: price / upfront cost). Even though your option is (ventaja de la otra: slightly cheaper / closer to the station), my choice offers (ventaja de tu opción: significantly better quality / all utilities included), which is crucial because it helps us avoid hidden expenses down the road.
-Furthermore, regarding the (variable 2: location / amenities / size), my option provides (beneficio práctico: more spacious rooms / modern equipment). Choosing this alternative will definitely make our daily routine much more comfortable, and in the long run, it represents a far smarter investment for everyone involved.
-All things considered, I am convinced that this option gives us the greatest value for our money. What do you think? Let's go with this one!` },
+    body: `Hi (name), while I understand why you like your choice, I strongly believe that (tu opción) is much more suitable for us.
+First and foremost, even though your option is (ventaja de la suya: cheaper/closer), my choice offers (ventaja de la tuya: better quality/included bills), which is crucial to avoid extra costs.
+Furthermore, this alternative will make our daily routine much more comfortable, and in the long run, it's a smarter investment.
+All things considered, it gives us the best value. Let's go with this one!` },
   "sp-difficult": { title: "Task 6 · Difficult Situation", group: "Speaking",
     body: `(Opción A: cuando debes cancelar, disculparte o pedir un favor. Es el escenario más común)
-Hi (name), I'm calling because unfortunately, I have some rather disappointing news. I am afraid I won't be able to (compromiso: make it to your dinner party tonight / submit the project by the deadline).
-The reason is that something completely unexpected came up. (Causa: My daughter suddenly developed a high fever / My car broke down on the highway), and I need to deal with this emergency immediately. Because of this, it is virtually impossible for me to (asistir / cumplir) as we had originally planned.
-In light of this, and to make it up to you, I was wondering if we could (solución: reschedule for next weekend, and dinner is on me / if I could email you the completed draft first thing tomorrow morning). I want to ensure this situation doesn't cause you any major inconvenience.
-I sincerely apologize for the short notice. Please let me know if this arrangement works for you, and we'll talk very soon.
+Hi (name), I'm calling because unfortunately I have some disappointing news. I am afraid I won't be able to (evento: make it to dinner tonight / finish the report).
+The reason is that an emergency came up: (causa breve: my car broke down / my son has a fever), so it's impossible for me to attend.
+To make it up to you, could we (solución: reschedule for next weekend / meet tomorrow)?
+I sincerely apologize for the short notice, and I appreciate your understanding.
 (Opción B: cuando debes elegir entre dos opciones y comunicarle la decisión a alguien. Por ejemplo: decidir entre dos eventos familiares o dos propuestas de trabajo)
 Hi (name), thanks for giving me time to consider both options. I've thought about it very carefully, and I've decided to go with (tu elección).
 First of all, choosing this alternative is much more convenient because (razón 1: it aligns better with my current schedule / it is a prior commitment I had made months ago). Furthermore, regarding our team's resources, this option allows us to (razón 2: save a significant amount of money in the long run / focus on the main priority).
 While I understand that this might not be the outcome you were hoping for, I am confident that it is the most sensible decision under the current circumstances.
 All things considered, I really appreciate your understanding, and I hope we can move forward with this plan together.` },
   "sp-opinion": { title: "Task 7 · Expressing Opinions", group: "Speaking",
-    body: `This is undoubtedly a controversial topic that has sparked widespread debate. However, from my perspective, I am a firm believer that (tu postura: governments should invest more in public transit / working from home is more productive), as it brings substantial benefits to both individuals and society as a whole.
-First and foremost, one of the primary advantages of this approach is (beneficio 1: public health / personal well-being / financial savings). This is crucial because it allows people to (explicación simple). For instance, in many major cities, we have seen that implementing similar policies resulted in (ejemplo concreto: lower stress levels / reduced traffic congestion), which clearly improves everyone's overall quality of life.
-On the other hand, while I acknowledge that some people argue (postura opuesta: it might be expensive initially / remote work reduces collaboration), I strongly believe that these concerns are often overstated. Furthermore, we must consider the long-term impact, as (beneficio 2: it fosters independence / it creates a cleaner environment), which far outweighs any short-term drawbacks.
-In the long run, adopting this strategy represents a much smarter and more sustainable way forward. All things considered, I am convinced that supporting this policy is the best choice for our community.` },
+    body: `This is a controversial topic, but from my perspective, I am a firm believer that (tu opinión).
+First and foremost, the primary advantage is (beneficio 1: salud/economía). This is crucial because it helps people (explicación). For instance, in many cities, similar measures have led to (ejemplo simple: lower traffic/less stress), improving daily life.
+On the other hand, while I acknowledge that some people worry about (contraargumento: the initial cost), I strongly believe these concerns are overstated. Furthermore, the long-term benefits far outweigh any minor drawback.
+In the long run, this is a much smarter approach. All things considered, it is the best decision for everyone.` },
   "sp-unusual": { title: "Task 8 · Unusual Situation", group: "Speaking",
-    body: `Hey (name)! You won't believe what I'm looking at right now! I'm currently at a (local boutique / antique shop / flea market), and I just stumbled upon the most unusual (item / piece of furniture / gadget) I've ever seen.
-To give you a better picture, it is roughly shaped like a (forma: cylinder / crescent / pyramid), and it has a vibrant (color: metallic silver / bright yellow / matte black) finish. On top of that, it seems to be crafted from (material: polished wood / durable plastic / solid metal), and it's roughly about the size of a (analogía: small microwave / large shoebox / basketball).
-The most fascinating part is that it features (detalle visual: several quirky buttons on the side / intricate hand-painted patterns / wheels instead of legs). It appears to function as a (función deducida: decorative lamp / quirky coffee maker / creative storage box), and it's sitting right in the center display.
-I immediately thought of you because it totally matches your style! Should I snap a quick picture and send it over, or would you like me to buy it for you? Let me know as soon as you can. Talk to you soon!` },
+    body: `Hey (name)! You won't believe what I'm looking at right now! I'm at a store and just found the most unusual (objeto).
+It is shaped like a (círculo/cono), with a bright (color) finish, and it seems to be made of (metal/madera). It's about the size of a (mochila/microondas).
+The most interesting part is that it has (detalle raro), and it functions as a (lámpara/reloj).
+It totally matches your style! Should I take a photo or buy it for you?` },
 };
 
 const CONNECTORS = [
