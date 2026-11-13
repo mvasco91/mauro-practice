@@ -221,34 +221,34 @@ const SPEAKING_TASKS = [
 
 const TEMPLATES = {
   "email-formal": { title: "Email Formal", group: "Writing",
-    body: `Dear (Mr./Ms. LastName o Title),
-I am writing to (propósito directo: express my dissatisfaction regarding... / inquire about...).
-First of all, (Viñeta 1: fecha, número de orden o lugar, y qué sucedió exactamente. 2–3 frases concretas).
-Furthermore, (Viñeta 2: el problema específico o la consecuencia negativa causada. 2–3 frases).
-To resolve this matter, I would appreciate it if you could (Viñeta 3: solución requerida, como reembolso o reemplazo). Please let me know when I can expect an update regarding this issue.
-Thank you for your time and prompt attention to this matter.
-Sincerely,
-(your name)` },
+    body: `Dear (Name / Title / Selection Committee),
+I am writing to express my concern / interest / dissatisfaction regarding the recent issue / event that took place at (Location / Situation)... (o para peticiones: I am writing to formally request (item) in light of (reason)...)
+First and foremost, it is important to highlight that (explicación detallada del problema, mínimo 2 oraciones).
+Furthermore, this situation has caused inconvenience / delays because (explicación del impacto personal o financiero).
+In light of this, I would like to suggest / request that (propuesta concreta de solución o reembolso).
+I sincerely appreciate your time and attention to this matter. I look forward to your prompt response. (o cierre firme para quejas: I trust the matter will receive your immediate attention and look forward to a prompt resolution.)
+Best regards, / Sincerely,` },
   "email-informal": { title: "Email Informal", group: "Writing",
-    body: `Hi / Hey (name),
+    note: "Frases de soporte (informal / semi-informal): Get back to me when you can. · I just want to let you know... · It is a shame that... / It is a shame we cannot see each other... · Hey! I am sorry to bring this up... · Conectores relajados: Anyway, Actually, By the way, To be fair.",
+    body: `Hi / Hey (Name),
 I hope you are doing great. It has been a while since we last caught up.
-The reason I am reaching out is that (el plan o el problema).
-I was thinking that maybe (sugerir algo relajado).
-Let me know what you think / I cannot wait to see you soon. Looking forward to hearing from you soon.
-Take care, Cheers, Best,` },
+The reason I am reaching out is that (explicar el plan, noticia o problema).
+I was thinking that maybe (sugerencia relajada o detalles adicionales). Looking forward to hearing from you soon!
+Let me know what you think / Cannot wait to see you soon.
+Take care, / Cheers, / Best,` },
   "email-semi": { title: "Email Semi-Formal", group: "Writing",
-    body: `Hello (store name) Team, / Hi there,
-I am writing to ask about a recent order I placed. / I was wondering if you could help me with...
-To be honest, I was a bit disappointed because... (queja suave)
-Is there any way you could (send me a replacement / give me a refund)?
+    note: "Frases de soporte (informal / semi-informal): Get back to me when you can. · I just want to let you know... · It is a shame that... · Hey! I am sorry to bring this up... · Conectores relajados: Anyway, Actually, By the way, To be fair.",
+    body: `Hello (Store Name) Team / Hi there,
+I am writing to ask about a recent order I placed / I was wondering if you could help me with (issue)...
+To be honest, I was a bit disappointed because (explicar el problema de forma educada).
+Is there any way you could send me a replacement / give me a refund?
 Thanks in advance for your help.
-Regards / Sincerely,` },
+Regards, / Sincerely,` },
   survey: { title: "Survey A/B", group: "Writing",
-    body: `I appreciate the opportunity to provide input on this survey. After careful consideration, I strongly support (Option A / Option B).
-One compelling reason is that it would significantly enhance (beneficio 1: employee well-being / public safety / cost savings). For example, (ejemplo concreto de 2 frases con detalles de rutina o ahorro).
-Another important reason is that it improves (beneficio 2: community convenience / long-term flexibility), which matters because (explicación clara de su impacto positivo).
-While I acknowledge that the alternative option has some merits, such as (ventaja menor de la otra opción), its drawbacks cannot be overlooked. In the long run, choosing (tu opción) is the most sensible and practical decision for everyone involved.
-Thank you for taking my perspective into consideration.` },
+    body: `Thank you for considering my opinion regarding the upcoming decision. From my perspective, I strongly believe that Option (A/B) is the most favorable and practical choice for everyone involved. (variación de alto nivel: I would like to register my unequivocal support for Option (A/B), as I believe it would be substantially more beneficial to the community and all stakeholders involved.)
+One compelling reason is that it would significantly enhance (beneficio clave: salud pública, ahorro presupuestario, seguridad, convivencia). For instance, (desarrollar un ejemplo cotidiano concreto, mínimo 2 oraciones: impacto en jóvenes, familias o trabajadores).
+While I acknowledge that Option (opción opuesta) has some potential benefits / certainly has its merits, it might also lead to (desventaja o riesgo: sobrecostos, tráfico, ruido, falta de uso). Therefore, Option (tu opción) remains a substantially more sustainable and practical solution.
+In the long run, choosing Option (A/B) is the most sensible and practical decision for our community. Thank you for taking my perspective into consideration.` },
   "sp-advice": { title: "Task 1 · Giving Advice", group: "Speaking",
     body: `Hey (name), that sounds exciting! I have a couple of quick tips for you.
 First of all, you should start by (consejo 1). This is great because it helps you (beneficio). For example, you could (ejemplo muy corto).
